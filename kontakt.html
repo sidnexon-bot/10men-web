@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontakt – 10men Vokální skupina</title>
+  <meta name="description" content="Napište nám – rádi odpovíme na dotazy ohledně vystoupení, spolupráce nebo čehokoli dalšího.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-body {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* Form */
+    .contact-form-wrap h2 { margin-bottom: 8px; }
+    .contact-form-wrap > p {
+      color: var(--gray-text);
+      margin-bottom: 36px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    input[type="email"],
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--gray-mid);
+      border-radius: 2px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--black);
+      background: var(--white);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+      appearance: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(192,39,45,0.1);
+    }
+    textarea { resize: vertical; min-height: 140px; }
+
+    .checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      width: 18px; height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--red);
+      cursor: pointer;
+    }
+    .checkbox-wrap label {
+      font-size: 13px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+      color: var(--gray-text);
+      cursor: pointer;
+    }
+
+    .form-success {
+      display: none;
+      background: #EFF8F0;
+      border: 1px solid #4CAF50;
+      border-radius: 2px;
+      padding: 20px 24px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .form-success p { color: #2E7D32; font-weight: 500; }
+    .form-error {
+      display: none;
+      background: #FEF2F2;
+      border: 1px solid var(--red);
+      border-radius: 2px;
+      padding: 16px 20px;
+      margin-top: 12px;
+    }
+    .form-error p { color: var(--red-dark); font-size: 14px; }
+
+    /* Sidebar info */
+    .contact-info {
+      background: var(--gray-light);
+      padding: 36px;
+      border-top: 3px solid var(--red);
+    }
+    .contact-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .info-block {
+      margin-bottom: 24px;
+    }
+    .info-block h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 6px;
+    }
+    .info-block p, .info-block address {
+      font-size: 14px;
+      color: var(--gray-text);
+      font-style: normal;
+      line-height: 1.7;
+    }
+    .info-block a { color: var(--red); }
+    .info-block a:hover { text-decoration: underline; }
+
+    .social-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .social-row a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--black);
+      border: 1px solid var(--gray-mid);
+      padding: 8px 14px;
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .social-row a:hover { border-color: var(--red); color: var(--red); }
+    .social-row svg { width: 15px; height: 15px; }
+
+    @media (max-width: 720px) {
+      .contact-body { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<div class="page-header">
+  <p class="subtitle" data-i18n="contact_subtitle">Napište nám</p>
+  <h1 data-i18n="contact_h1">Kontakt</h1>
+</div>
+
+<div class="contact-body">
+
+  <!-- Form -->
+  <div class="contact-form-wrap fade-up">
+    <p class="section-label" data-i18n="form_label">Formulář</p>
+    <h2 class="section-title" data-i18n="form_title">Pošlete nám zprávu</h2>
+    <div class="accent-line"></div>
+    <p data-i18n="form_intro">Zajímá vás spolupráce, vystoupení nebo máte jakýkoli dotaz? Napište nám – rádi odpovíme.</p>
+
+    <!-- Formspree endpoint – nahraďte YOUR_FORM_ID po registraci na formspree.io -->
+    <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <div class="form-group">
+        <label for="email" data-i18n="label_email">Váš e-mail</label>
+        <input type="email" id="email" name="email" placeholder="jmeno@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="subject" data-i18n="label_subject">Předmět</label>
+        <input type="text" id="subject" name="subject" placeholder="" required>
+      </div>
+      <div class="form-group">
+        <label for="message" data-i18n="label_message">Zpráva</label>
+        <textarea id="message" name="message" required></textarea>
+      </div>
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="gdpr" name="gdpr" required>
+        <label for="gdpr" data-i18n="label_gdpr">Souhlasím s využitím svých údajů k uvedenému účelu a jejich uchováním po dobu nezbytnou k vyřízení mého dotazu.</label>
+      </div>
+      <button type="submit" class="btn btn-red" data-i18n="btn_send">Odeslat zprávu</button>
+    </form>
+
+    <div class="form-success" id="form-success">
+      <p data-i18n="success_msg">✓ Zpráva odeslána! Ozveme se vám co nejdříve.</p>
+    </div>
+    <div class="form-error" id="form-error">
+      <p data-i18n="error_msg">Něco se pokazilo. Zkuste to prosím znovu nebo nás kontaktujte přímo na info@10men.cz</p>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="contact-info fade-up delay-2">
+    <h3 data-i18n="sidebar_title">Kontaktní údaje</h3>
+
+    <div class="info-block">
+      <h4 data-i18n="addr_label">Adresa</h4>
+      <address>
+        Vokální skupina 10men, z. s.<br>
+        Smetanovo nábřeží 330/16<br>
+        110 00 Praha<br>
+        IČ 21194297
+      </address>
+    </div>
+
+    <div class="info-block">
+      <h4>E-mail</h4>
+      <p><a href="mailto:info@10men.cz">info@10men.cz</a></p>
+    </div>
+
+    <div class="info-block">
+      <h4 data-i18n="social_label">Sociální sítě</h4>
+      <div class="social-row">
+        <a href="https://www.facebook.com/vokalniskupina10men" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
+        </a>
+        <a href="https://www.instagram.com/10men.cz/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="shared.js"></script>
+<script>
+  const i18n = {
+    cs: {
+      contact_subtitle: 'Napište nám', contact_h1: 'Kontakt',
+      form_label: 'Formulář', form_title: 'Pošlete nám zprávu',
+      form_intro: 'Zajímá vás spolupráce, vystoupení nebo máte jakýkoli dotaz? Napište nám – rádi odpovíme.',
+      label_email: 'Váš e-mail', label_subject: 'Předmět',
+      label_message: 'Zpráva',
+      label_gdpr: 'Souhlasím s využitím svých údajů k uvedenému účelu a jejich uchováním po dobu nezbytnou k vyřízení mého dotazu.',
+      btn_send: 'Odeslat zprávu',
+      success_msg: '✓ Zpráva odeslána! Ozveme se vám co nejdříve.',
+      error_msg: 'Něco se pokazilo. Zkuste to prosím znovu nebo nás kontaktujte přímo na info@10men.cz',
+      sidebar_title: 'Kontaktní údaje',
+      addr_label: 'Adresa', social_label: 'Sociální sítě',
+    },
+    en: {
+      contact_subtitle: 'Get in touch', contact_h1: 'Contact',
+      form_label: 'Message', form_title: 'Send us a message',
+      form_intro: 'Interested in a collaboration, booking, or have any question? Write to us – we\'ll be happy to reply.',
+      label_email: 'Your e-mail', label_subject: 'Subject',
+      label_message: 'Message',
+      label_gdpr: 'I consent to my data being used for the stated purpose and retained for as long as necessary to handle my enquiry.',
+      btn_send: 'Send message',
+      success_msg: '✓ Message sent! We\'ll get back to you as soon as possible.',
+      error_msg: 'Something went wrong. Please try again or reach us directly at info@10men.cz',
+      sidebar_title: 'Contact Details',
+      addr_label: 'Address', social_label: 'Social Media',
+    }
+  };
+
+  window.applyI18n = function(lang) {
+    Object.keys(i18n[lang]).forEach(key => {
+      document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
+        el.textContent = i18n[lang][key];
+      });
+    });
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
+  });
+
+  // Form submission via Formspree (AJAX)
+  const form = document.getElementById('contact-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    const origText = btn.textContent;
+    btn.textContent = '…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        throw new Error();
+      }
+    } catch {
+      document.getElementById('form-error').style.display = 'block';
+      btn.textContent = origText;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

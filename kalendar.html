@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koncerty – 10men Vokální skupina</title>
+  <meta name="description" content="Nadcházející i proběhlé koncerty a akce vokální skupiny 10men.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .events-body {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+    }
+
+    /* Upcoming */
+    .upcoming-section { margin-bottom: 64px; }
+    .upcoming-section h2 { margin-bottom: 32px; }
+
+    .event-card {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 0 24px;
+      align-items: start;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .event-card:first-of-type { border-top: 1px solid var(--gray-light); }
+
+    .event-date {
+      text-align: center;
+      background: var(--red);
+      color: var(--white);
+      padding: 10px 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .event-date .day {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .event-date .month {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .event-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .event-meta {
+      font-size: 13px;
+      color: var(--gray-text);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .event-meta span { display: flex; align-items: center; gap: 5px; }
+    .event-meta svg { width: 14px; height: 14px; opacity: 0.6; }
+    .event-desc {
+      font-size: 14px;
+      color: var(--gray-text);
+      line-height: 1.6;
+    }
+
+    /* Empty state */
+    .no-events {
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--gray-light);
+      border-radius: 2px;
+    }
+    .no-events p { color: var(--gray-text); font-size: 14px; margin-top: 8px; }
+    .no-events .icon { font-size: 2rem; margin-bottom: 12px; }
+
+    /* Past events */
+    .past-section { margin-top: 0; }
+    .past-section h2 { margin-bottom: 32px; }
+
+    .past-year-group { margin-bottom: 40px; }
+    .past-year-label {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--red);
+      border-bottom: 2px solid var(--gray-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .past-event {
+      display: flex;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-light);
+      align-items: baseline;
+    }
+    .past-event-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--black);
+      min-width: 120px;
+      flex-shrink: 0;
+    }
+    .past-event-name {
+      font-size: 14px;
+      color: var(--gray-text);
+      line-height: 1.5;
+    }
+    .past-event-name strong { color: var(--black); }
+
+    .fb-links {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 480px) {
+      .event-card { grid-template-columns: 60px 1fr; gap: 0 16px; }
+      .past-event { flex-direction: column; gap: 4px; }
+      .past-event-date { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<div class="page-header">
+  <p class="subtitle" data-i18n="events_subtitle">Přijďte nás slyšet</p>
+  <h1 data-i18n="events_h1">Koncerty & akce</h1>
+</div>
+
+<div class="events-body">
+
+  <!-- Upcoming events -->
+  <section class="upcoming-section">
+    <p class="section-label" data-i18n="upcoming_label">Nadcházející</p>
+    <h2 class="section-title" data-i18n="upcoming_title">Plánované akce</h2>
+    <div class="accent-line"></div>
+
+    <!-- 
+      ═══════════════════════════════════════════════
+      JAK PŘIDAT KONCERT:
+      Zkopíruj blok níže a uprav datum, název a místo.
+      Pokud žádný koncert není, nechej prázdný stav.
+      ═══════════════════════════════════════════════
+
+    <div class="event-card fade-up">
+      <div class="event-date">
+        <div class="day">15</div>
+        <div class="month">Kvě</div>
+      </div>
+      <div class="event-info">
+        <h3>Název koncertu</h3>
+        <div class="event-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Místo konání, Město
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            19:00
+          </span>
+        </div>
+        <p class="event-desc">Popis akce – co, s kým, vstupné apod.</p>
+      </div>
+    </div>
+    -->
+
+    <div class="no-events fade-up">
+      <div class="icon">🎵</div>
+      <h3 data-i18n="no_events_h">Zatím žádné naplánované koncerty</h3>
+      <p data-i18n="no_events_p">Jakmile naplánujeme nějakou akci, objeví se zde. Sledujte nás na sociálních sítích!</p>
+    </div>
+  </section>
+
+  <!-- Past events -->
+  <section class="past-section">
+    <p class="section-label" data-i18n="past_label">Archiv</p>
+    <h2 class="section-title" data-i18n="past_title">Proběhlé akce</h2>
+    <div class="accent-line"></div>
+
+    <div class="past-year-group fade-up">
+      <div class="past-year-label">2024</div>
+      <div class="past-event">
+        <div class="past-event-date">6. dubna 2024</div>
+        <div class="past-event-name"><strong>Celovečerní koncert LAMEN</strong> – Rokycany (Farní sbor ČCE)</div>
+      </div>
+      <div class="past-event">
+        <div class="past-event-date">5. dubna 2024</div>
+        <div class="past-event-name"><strong>Celovečerní koncert LAMEN</strong> – Praha (Komunitní prostor Smíchov)</div>
+      </div>
+    </div>
+
+    <div class="past-year-group fade-up delay-1">
+      <div class="past-year-label">2022</div>
+      <div class="past-event">
+        <div class="past-event-date">19. listopadu 2022</div>
+        <div class="past-event-name"><strong>Nalaďme se společně</strong> – Rokycany (Farní sbor ČCE)</div>
+      </div>
+      <div class="past-event">
+        <div class="past-event-date">18. listopadu 2022</div>
+        <div class="past-event-name"><strong>Nalaďme se společně</strong> – Praha (Atrium Žižkov) · Officiální odhalení projektu LAMEN</div>
+      </div>
+    </div>
+
+    <div class="past-year-group fade-up delay-2">
+      <div class="past-year-label">2021</div>
+      <div class="past-event">
+        <div class="past-event-date">Prosinec 2021</div>
+        <div class="past-event-name">Vznik projektu LAMEN Acappella (10men + Lamas)</div>
+      </div>
+    </div>
+
+    <div class="past-year-group fade-up delay-3">
+      <div class="past-year-label">2019</div>
+      <div class="past-event">
+        <div class="past-event-date">2019</div>
+        <div class="past-event-name"><strong>HARMONIE FESTIVAL</strong> – Německo (mezinárodní soutěž)</div>
+      </div>
+    </div>
+
+    <div class="past-year-group fade-up">
+      <div class="past-year-label">2018</div>
+      <div class="past-event">
+        <div class="past-event-date">2018</div>
+        <div class="past-event-name"><strong>Musica Orbis Gloria</strong> – soutěž sborového umění</div>
+      </div>
+    </div>
+
+    <div class="past-year-group fade-up delay-1">
+      <div class="past-year-label">2015 – 2017</div>
+      <div class="past-event">
+        <div class="past-event-date">Opakovaně</div>
+        <div class="past-event-name"><strong>Jirkovský písňovar</strong> – opakovaná účast a ocenění</div>
+      </div>
+      <div class="past-event">
+        <div class="past-event-date">2015</div>
+        <div class="past-event-name">Debutové vystoupení skupiny 10men</div>
+      </div>
+    </div>
+
+    <div class="fb-links fade-up">
+      <a href="https://www.facebook.com/vokalniskupina10men" target="_blank" rel="noopener" class="btn btn-outline" data-i18n="fb_10men">FB 10men</a>
+      <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline" data-i18n="fb_lamen">FB LAMEN</a>
+    </div>
+  </section>
+
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="shared.js"></script>
+<script>
+  const i18n = {
+    cs: {
+      events_subtitle: 'Přijďte nás slyšet', events_h1: 'Koncerty & akce',
+      upcoming_label: 'Nadcházející', upcoming_title: 'Plánované akce',
+      no_events_h: 'Zatím žádné naplánované koncerty',
+      no_events_p: 'Jakmile naplánujeme nějakou akci, objeví se zde. Sledujte nás na sociálních sítích!',
+      past_label: 'Archiv', past_title: 'Proběhlé akce',
+      fb_10men: 'FB 10men', fb_lamen: 'FB LAMEN',
+    },
+    en: {
+      events_subtitle: 'Come hear us', events_h1: 'Concerts & Events',
+      upcoming_label: 'Upcoming', upcoming_title: 'Planned Events',
+      no_events_h: 'No concerts planned yet',
+      no_events_p: 'Once we schedule an event, it will appear here. Follow us on social media!',
+      past_label: 'Archive', past_title: 'Past Events',
+      fb_10men: 'FB 10men', fb_lamen: 'FB LAMEN',
+    }
+  };
+  window.applyI18n = function(lang) {
+    Object.keys(i18n[lang]).forEach(key => {
+      document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
+        el.textContent = i18n[lang][key];
+      });
+    });
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
+  });
+</script>
+</body>
+</html>
