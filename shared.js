@@ -57,7 +57,7 @@ setInterval(() => {
     <nav>
       <div class="nav-inner">
         <a href="index.html" class="nav-logo" aria-label="10men – domů">
-          <img src="images/logo.png" alt="10men logo">
+          <img src="images/logo.jpg" alt="10men logo">
           <div class="nav-logo-text">
             <span>Vokální skupina</span>
             <strong>10men</strong>
