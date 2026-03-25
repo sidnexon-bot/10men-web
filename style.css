@@ -339,3 +339,30 @@ footer a:hover { color: var(--red); }
   .footer-inner { grid-template-columns: 1fr; gap: 28px; }
   .page-header { padding: 48px 20px 40px; }
 }
+
+/* PROOF */
+.proof {
+  padding: 72px 24px;
+}
+
+.proof-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+/* BOOKING */
+.booking {
+  padding: 72px 24px;
+  background: var(--gray-light);
+}
+
+.booking-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.booking-list {
+  margin: 20px 0 30px;
+  padding-left: 18px;
+  color: var(--gray-text);
+}
