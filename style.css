@@ -2,7 +2,7 @@
    10men – Vokální skupina | Shared Stylesheet
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap');
 
 :root {
   --red: #C0272D;
@@ -13,7 +13,7 @@
   --gray-mid: #CCCAC5;
   --gray-text: #555;
   --font-display: 'Playfair Display', serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-body: 'Work Sans', sans-serif;
   --max-w: 860px;
   --transition: 0.25s ease;
 }
