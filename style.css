@@ -350,6 +350,12 @@ footer a:hover { color: var(--red); }
   margin: 0 auto;
 }
 
+.proof-list {
+  margin-top: 20px;
+  padding-left: 18px;
+  color: var(--gray-text);
+}
+
 /* BOOKING */
 .booking {
   padding: 72px 24px;
