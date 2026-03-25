@@ -5,6 +5,14 @@
   // ── Which page are we on? ──
   const path = location.pathname.split('/').pop() || 'index.html';
   const active = (href) => path === href ? 'active' : '';
+  const images = document.querySelectorAll('.photo-strip img');
+let i = 0;
+
+setInterval(() => {
+  images[i].classList.remove('active');
+  i = (i + 1) % images.length;
+  images[i].classList.add('active');
+}, 4000);
 
   // ── Language state ──
   let lang = localStorage.getItem('10men-lang') || 'cs';
