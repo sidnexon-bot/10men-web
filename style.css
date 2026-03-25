@@ -34,6 +34,22 @@ body {
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
+.photo-strip {
+  position: relative;
+}
+
+.photo-strip img {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.photo-strip img.active {
+  opacity: 1;
+  position: relative;
+}
+
 /* ── Language switcher ── */
 .lang-bar {
   display: flex;
