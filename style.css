@@ -104,28 +104,6 @@ nav {
   border-radius: 0;
   display: block;
 }
-
-.nav-logo-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-.nav-logo-text span:first-child {
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #999;
-}
-.nav-logo-text strong {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--white);
-}
-
 .nav-links {
   display: flex;
   gap: 32px;
