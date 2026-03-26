@@ -81,7 +81,7 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--white);
+  background: var(--black);
   border-bottom: 1px solid var(--gray-light);
   padding: 0 24px;
 }
