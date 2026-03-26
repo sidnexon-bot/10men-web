@@ -82,7 +82,7 @@ nav {
   top: 0;
   z-index: 100;
   background: var(--black);
-  border-bottom: 1px solid var(--red);
+  border-bottom: 1px solid var(--black);
   padding: 0 24px;
 }
 .nav-inner {
@@ -166,7 +166,7 @@ nav {
   text-transform: uppercase;
   color: #aaa;
   padding: 12px 0;
-  border-bottom: 1px solid var(--gray-light);
+  border-bottom: 1px solid var(--black);
   transition: var(--transition);
 }
 .nav-mobile a:hover, .nav-mobile a.active { color: var(--red); }
