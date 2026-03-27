@@ -36,7 +36,9 @@ img { max-width: 100%; display: block; }
 
 .photo-strip {
   position: relative;
+  height: 460px;   /* ← tohle musí být */
 }
+
 
 .photo-strip img {
   position: absolute;
