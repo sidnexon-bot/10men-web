@@ -724,6 +724,35 @@
   });
 });
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  document.querySelectorAll('.past-year-group').forEach(group => {
+    const label = group.querySelector('.past-year-label');
+    if (!label) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'year-header';
+    btn.textContent = label.textContent;
+
+    const content = document.createElement('div');
+    content.className = 'year-content';
+
+    group.querySelectorAll('.past-event').forEach(ev => {
+      content.appendChild(ev);
+    });
+
+    group.innerHTML = '';
+    group.appendChild(btn);
+    group.appendChild(content);
+
+    // 👉 CLICK HANDLER
+    btn.addEventListener('click', () => {
+      group.classList.toggle('open');
+    });
+  });
+
+});
 </script>
 </body>
 </html>
