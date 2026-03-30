@@ -396,6 +396,10 @@ footer a:hover { color: var(--red); }
   transition: max-height 0.3s ease;
 }
 
+.year-item.open .year-content {
+  max-height: 2000px;
+}
+
 .past-year-group.open .year-content {
   max-height: 2000px;
 }
