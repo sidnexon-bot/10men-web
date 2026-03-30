@@ -721,29 +721,43 @@ document.querySelectorAll('.event-card').forEach(card => {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-  document.querySelectorAll('.past-year-group').forEach(group => {
-    const label = group.querySelector('.past-year-label');
-    if (!label) return;
+  const elements = document.querySelectorAll('.past-section > *');
 
-    const btn = document.createElement('button');
-    btn.className = 'year-header';
-    btn.textContent = label.textContent;
+  let currentGroup = null;
 
-    const content = document.createElement('div');
-    content.className = 'year-content';
+  elements.forEach(el => {
 
-    group.querySelectorAll('.past-event').forEach(ev => {
-      content.appendChild(ev);
-    });
+    // pokud je to rok
+    if (el.classList.contains('past-year-group')) {
 
-    group.innerHTML = '';
-    group.appendChild(btn);
-    group.appendChild(content);
+      const group = document.createElement('div');
+      group.className = 'year-item';
 
-    // 👉 CLICK HANDLER
-    btn.addEventListener('click', () => {
-      group.classList.toggle('open');
-    });
+      const btn = document.createElement('button');
+      btn.className = 'year-header';
+      btn.textContent = el.textContent;
+
+      const content = document.createElement('div');
+      content.className = 'year-content';
+
+      group.appendChild(btn);
+      group.appendChild(content);
+
+      el.replaceWith(group);
+
+      currentGroup = group;
+
+      btn.addEventListener('click', () => {
+        group.classList.toggle('open');
+      });
+
+    }
+
+    // pokud je to event
+    else if (el.classList.contains('past-event') && currentGroup) {
+      currentGroup.querySelector('.year-content').appendChild(el);
+    }
+
   });
 
 });
