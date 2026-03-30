@@ -73,500 +73,37 @@
 
     /* Empty state */
     .no-events {
-      text-align: center;
-      padding: 48px 24px;
-      background: var(--gray-light);
-      border-radius: 2px;
-    }
-    .no-events p { color: var(--gray-text); font-size: 14px; margin-top: 8px; }
-    .no-events .icon { font-size: 2rem; margin-bottom: 12px; }
 
-    /* Past events */
-    .past-section { margin-top: 0; }
-    .past-section h2 { margin-bottom: 32px; }
-
-    .past-year-group { margin-bottom: 40px; }
-    .past-year-label {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--red);
-      border-bottom: 2px solid var(--gray-light);
-      padding-bottom: 8px;
-      margin-bottom: 16px;
-    }
-    .past-event {
-      display: flex;
-      gap: 16px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--gray-light);
-      align-items: baseline;
-    }
-    .past-event-date {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--black);
-      min-width: 120px;
-      flex-shrink: 0;
-    }
-    .past-event-name {
-      font-size: 14px;
-      color: var(--gray-text);
-      line-height: 1.5;
-    }
-    .past-event-name strong { color: var(--black); }
-
-    .fb-links {
-      margin-top: 40px;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 480px) {
-      .event-card { grid-template-columns: 60px 1fr; gap: 0 16px; }
-      .past-event { flex-direction: column; gap: 4px; }
-      .past-event-date { min-width: unset; }
-    }
-  </style>
-</head>
-<body>
-
-<div id="nav-placeholder"></div>
-
-<div class="page-header">
-  <p class="subtitle" data-i18n="events_subtitle">Přijďte si nás poslechnout</p>
-  <h1 data-i18n="events_h1">Koncerty & akce</h1>
-</div>
-
-<div class="events-body">
-
-  <!-- Upcoming events -->
-  <section class="upcoming-section">
-    <p class="section-label" data-i18n="upcoming_label">Nadcházející</p>
-    <h2 class="section-title" data-i18n="upcoming_title">Plánované akce</h2>
-    <div class="accent-line"></div>
-
-    <!-- 
-      ═══════════════════════════════════════════════
-      JAK PŘIDAT KONCERT:
-      Zkopíruj blok níže a uprav datum, název a místo.
-      Pokud žádný koncert není, nechej prázdný stav.
-      ═══════════════════════════════════════════════
-
-    <div class="event-card fade-up"
-     data-maps="https://maps.google.com/?q=..."
-     data-fb=""
-     data-tickets="">
-  <div class="event-header">
-    <div class="event-date">
-      <div class="day">23</div>
-      <div class="month">Dub</div>
-    </div>
-    <div class="event-info">
-      <h3>Název koncertu</h3>
-      <div class="event-meta">
-        <span>... místo ...</span>
-        <span>... čas ...</span>
-      </div>
-    </div>
-    <div class="event-toggle">
-      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-  </div>
-  <div class="event-body">
-    <p class="event-desc">Popis akce...</p>
-    <div class="event-links"></div>
+  <div class="past-event">
+    <div class="past-event-date">2020</div>
+    <div class="past-event-name">Zrušené koncerty (COVID období)</div>
   </div>
 </div>
-
-    -->
-
-     <div class="event-card fade-up">
-       <div class="event-card fade-up"
-     data-maps="https://maps.app.goo.gl/ukHYBrLMpPaBQkUn8"
-     data-fb=""
-     data-tickets="">
-      <div class="event-date">
-        <div class="day">23</div>
-        <div class="month">Dub</div>
-      </div>
-      <div class="event-info">
-        <h3>Společný koncert 10men & InVoice</h3>
-        <div class="event-meta">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Komunitní prostor Smíchov, Na Doubkové 2040/8, 150 00 Praha 5
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            HH:MM
-          </span>
-        </div>
-        <p class="event-desc">Společný koncert vokální skupiny 10men a sobru InVoice, vstupné bude upřesněno.</p>
-      </div>
-    </div>
-
-    <div class="event-card fade-up">
-       <div class="event-card fade-up"
-     data-maps="https://maps.app.goo.gl/VMdFgLvYreWt1gcV7"
-     data-fb=""
-     data-tickets="">
-      <div class="event-date">
-        <div class="day">16</div>
-        <div class="month">Čvn</div>
-      </div>
-      <div class="event-info">
-        <h3>Společný koncert 10men & Verum</h3>
-        <div class="event-meta">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Dykova 51/1, 101 00 Praha 10
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            HH:MM
-          </span>
-        </div>
-        <p class="event-desc">Společný koncert 10men a Verum, vstupné bude upřesněno</p>
-      </div>
-    </div>
-    
-    <!--
-    <div class="no-events fade-up">
-      <div class="icon">🎵</div>
-      <h3 data-i18n="no_events_h">Zatím žádné naplánované koncerty</h3>
-      <p data-i18n="no_events_p">Jakmile naplánujeme nějakou akci, objeví se zde. Sledujte nás na sociálních sítích!</p>
-    </div>
-  </section>
-     -->
-
-  <!-- Past events -->
-  <section class="past-section">
-    <p class="section-label" data-i18n="past_label">Archiv</p>
-    <h2 class="section-title" data-i18n="past_title">Proběhlé akce</h2>
-    <div class="accent-line"></div>
-
-   <div class="past-year-group fade-up">
-  <div class="past-year-label">2025</div>
-
-  <div class="past-event">
-    <div class="past-event-date">28. listopadu 2025</div>
-    <div class="past-event-name">Adventní trhy – Lužná u Rakovníka</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">8. listopadu 2025</div>
-    <div class="past-event-name">Řepské sousedské zpívání</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">10. října 2025</div>
-    <div class="past-event-name"><strong>Výroční koncert 10 let 10men</strong></div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">4. října 2025</div>
-    <div class="past-event-name">Hostování na koncertě Pueri gaudentes (35 let)</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">23. května 2025</div>
-    <div class="past-event-name">Noc kostelů 2025</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">22. března 2025</div>
-    <div class="past-event-name"><strong>Koncert s Huron High School (USA)</strong></div>
-  </div>
-</div>
-
-    <div class="past-year-group fade-up">
-  <div class="past-year-label">2024</div>
-
-  <div class="past-event">
-    <div class="past-event-date">19. prosince 2024</div>
-    <div class="past-event-name">Adventní koncert (10men & Vokalion)</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">30. listopadu 2024</div>
-    <div class="past-event-name">Adventní trhy – Chýně</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">říjen 2024</div>
-    <div class="past-event-name">
-      <strong>Jirkovský Písňovar – zlaté pásmo, postup do Grand Prix</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">28. září 2024</div>
-    <div class="past-event-name">Koncert v Libštátu</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">27. září 2024</div>
-    <div class="past-event-name">Svatováclavský koncert – Zbraslav</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">3. srpna 2024</div>
-    <div class="past-event-name">Soukromé vystoupení</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">6. července 2024</div>
-    <div class="past-event-name">IFAS festival – Pardubice</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">21. června 2024</div>
-    <div class="past-event-name"><strong>Koncert s University of La Verne (USA)</strong></div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">7. června 2024</div>
-    <div class="past-event-name">Noc kostelů 2024</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">25. května 2024</div>
-    <div class="past-event-name">Hostivické Sborobraní</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">18. května 2024</div>
-    <div class="past-event-name"><strong>Singende Gärten – Chemnitz (DE)</strong></div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">květen 2024</div>
-    <div class="past-event-name">
-      <strong>HARMONIE Festival (DE) – zlaté a stříbrné pásmo</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">6. dubna 2024</div>
-    <div class="past-event-name">LAMEN koncert – Rokycany</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">5. dubna 2024</div>
-    <div class="past-event-name">LAMEN koncert – Praha</div>
-  </div>
-</div>
-
-    <div class="past-year-group fade-up">
-  <div class="past-year-label">2023</div>
-
-  <div class="past-event">
-    <div class="past-event-date">17. prosince 2023</div>
-    <div class="past-event-name">Adventní koncert „Červeno-žluté Vánoce“ (Dábrlíbap)</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">16. prosince 2023</div>
-    <div class="past-event-name"><strong>Adventní koncert – Zschopau (DE)</strong></div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">1. prosince 2023</div>
-    <div class="past-event-name">Benefiční vystoupení – Alzheimer Home (Bohnice)</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">říjen 2023</div>
-    <div class="past-event-name">
-      <strong>Jirkovský Písňovar – zlaté pásmo</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">2. června 2023</div>
-    <div class="past-event-name">Noc kostelů 2023</div>
-  </div>
-</div>
-
-    <div class="past-year-group fade-up">
-  <div class="past-year-label">2022</div>
-
-  <div class="past-event">
-    <div class="past-event-date">16. prosince 2022</div>
-    <div class="past-event-name">
-      <strong>Advent s 10meny – Pražský hrad</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">9. prosince 2022</div>
-    <div class="past-event-name">Benefiční vystoupení – Alzheimer Home</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">19. listopadu 2022</div>
-    <div class="past-event-name">Nalaďme se společně – Rokycany</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">18. listopadu 2022</div>
-    <div class="past-event-name">
-      <strong>Nalaďme se společně – Atrium Žižkov (vznik LAMEN)</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">10. listopadu 2022</div>
-    <div class="past-event-name">Koncert 24:12 – kostel sv. Martina ve zdi</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">5. listopadu 2022</div>
-    <div class="past-event-name">
-      <strong>Musica Orbis Gloria – stříbrné pásmo</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">22. září 2022</div>
-    <div class="past-event-name">
-      <strong>Dvě tváře 10men – kostel sv. Anežky České na Spořilově</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">16. září 2022</div>
-    <div class="past-event-name">
-      <strong>Dvě tváře 10men – Kasárna Karlín</strong>
-    </div>
-  </div>    
-      
-  <div class="past-event">
-    <div class="past-event-date">26. srpna 2022</div>
-    <div class="past-event-name">Bohemia Cantat – Liberec</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">10. června 2022</div>
-    <div class="past-event-name">Noc kostelů</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">22. dubna 2022</div>
-    <div class="past-event-name">Koncert přátel hudby – Brandýs nad Labem</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">1. března 2022</div>
-    <div class="past-event-name">
-      <strong>Natočení ukrajinské lidové písně „Plyve Kača“ spolu se skupinami Ch-tdž! (dnes HuMuS), VOSK, Gentlemen Singers, aCámen, iScream a The Boaters jako charitativní akce na podporu Ukrajiny</strong>
-    </div>
-  </div>
-</div>
-
-    <div class="past-year-group fade-up">
-  <div class="past-year-label">2021</div>
-
-  <div class="past-event">
-    <div class="past-event-date">17. prosince 2021</div>
-    <div class="past-event-name">Vánoční koncert „Vánoční nářez“</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">25. listopadu 2021</div>
-    <div class="past-event-name">Výroční koncert Pueri gaudentes (30+1)</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">říjen 2021</div>
-    <div class="past-event-name">
-      <strong>Jirkovský Písňovar – zlaté pásmo + Grand Prix</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">20. září 2021</div>
-    <div class="past-event-name">
-      <strong>10men dvě věže – kostel sv. Vavřince na Petříně</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">11. září 2021</div>
-    <div class="past-event-name">
-      <strong>10men dvě věže – Letenská vodárenská věž</strong>
-    </div>
-  </div>    
-
-  <div class="past-event">
-    <div class="past-event-date">30. června 2021</div>
-    <div class="past-event-name">
-      <strong>Premiéra skladby „Eterea Archa“ v rámci koncertu "An die Ferne Geliebte"</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">19. června 2021</div>
-    <div class="past-event-name">Sborové slavnosti Hradec Králové</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">28. května 2021</div>
-    <div class="past-event-name">Noc kostelůc 2021</div>
-  </div>
-</div>
-
-    <div class="past-year-group fade-up">
-  <div class="past-year-label">2020</div>
-
-  <div class="past-event">
-    <div class="past-event-date">18. září 2020</div>
-    <div class="past-event-name">
-      <strong>10men dvě věže – Jindřišská věž</strong>
-    </div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">12. června 2020</div>
-    <div class="past-event-name">Noc kostelů 2020</div>
-  </div>
 
     <div class="past-year-group fade-up">
   <div class="past-year-label">2017</div>
 
   <div class="past-event">
-    <div class="past-event-date">3. prosince 2017</div>
+    <div class="past-event-date">prosinec 2017</div>
     <div class="past-event-name">Benefiční koncert u Dominikánů</div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">28. října 2017</div>
-    <div class="past-event-name">Benefiční koncert ve Smržovce</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">6.-8. října 2017</div>
+    <div class="past-event-date">říjen 2017</div>
     <div class="past-event-name">
       <strong>Jirkovský Písňovar – stříbrné pásmo</strong>
     </div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">17. června 2017</div>
-    <div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div>
+    <div class="past-event-date">červen 2017</div>
+    <div class="past-event-name">Festival chrámových sborů – Choltice</div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">9. června 2017</div>
-    <div class="past-event-name">Noc kostelů 2017</div>
-  </div>
-
-  <div class="past-event">
-    <div class="past-event-date">13. ledna 2017</div>
+    <div class="past-event-date">leden 2017</div>
     <div class="past-event-name">
-      <strong>Hostování na novoročním koncertě v klubu Lávka (Martha & Tena Elefteriadu)</strong>
+      <strong>Koncert v klubu Lávka (Martha & Tena Elefteriadu)</strong>
     </div>
   </div>
 </div>
@@ -576,33 +113,25 @@
 
   <div class="past-event">
     <div class="past-event-date">prosinec 2016</div>
-    <div class="past-event-name">Vánoční koncert spolu se sborem Sangvis Novus – Muzeum hudby</div>
+    <div class="past-event-name">Vánoční koncert – Muzeum hudby</div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">30. září - 2. října 2016</div>
+    <div class="past-event-date">říjen 2016</div>
     <div class="past-event-name">
       <strong>Jirkovský Písňovar – první zlaté pásmo</strong>
     </div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">18. června 2016</div>
-    <div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div>
+    <div class="past-event-date">červen 2016</div>
+    <div class="past-event-name">Festival chrámových sborů – Choltice</div>
   </div>
 
   <div class="past-event">
-    <div class="past-event-date">28. - 29. května 2016</div>
+    <div class="past-event-date">květen 2016</div>
     <div class="past-event-name">
       <strong>První honorované akce (Speed festival)</strong>
-    </div>
-  </div>
-</div>
-
-  <div class="past-event">
-    <div class="past-event-date">27. května 2016</div>
-    <div class="past-event-name">
-      <strong>Koncert 10men v kostele sv. Petra a Pavla v pražských Bohnicích</strong>
     </div>
   </div>
 </div>
