@@ -706,6 +706,25 @@
   document.addEventListener('DOMContentLoaded', () => {
     window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
   });
+
+  document.querySelectorAll('.event-card').forEach(card => {
+  const header = card.querySelector('.event-header');
+  const linksContainer = card.querySelector('.event-links');
+  const maps = card.dataset.maps;
+  const fb = card.dataset.fb;
+  const tickets = card.dataset.tickets;
+
+  if (maps) linksContainer.insertAdjacentHTML('beforeend', `<a href="${maps}" target="_blank" rel="noopener" class="event-link">📍 Navigovat na místo</a>`);
+  if (fb) linksContainer.insertAdjacentHTML('beforeend', `<a href="${fb}" target="_blank" rel="noopener" class="event-link">FB událost</a>`);
+  if (tickets) linksContainer.insertAdjacentHTML('beforeend', `<a href="${tickets}" target="_blank" rel="noopener" class="event-link primary">Koupit vstupenky</a>`);
+
+  header.addEventListener('click', () => {
+    const isOpen = card.classList.contains('open');
+    document.querySelectorAll('.event-card.open').forEach(c => c.classList.remove('open'));
+    if (!isOpen) card.classList.add('open');
+  });
+});
+
 </script>
 </body>
 </html>
