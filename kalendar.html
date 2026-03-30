@@ -705,8 +705,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
   });
-
-  document.querySelectorAll('.event-card').forEach(card => {
+  </script>
+      
+  <script>
+document.querySelectorAll('.event-card').forEach(card => {
   const header = card.querySelector('.event-header');
   const linksContainer = card.querySelector('.event-links');
   const maps = card.dataset.maps;
@@ -723,6 +725,7 @@
     if (!isOpen) card.classList.add('open');
   });
 });
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
