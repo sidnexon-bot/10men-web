@@ -377,3 +377,25 @@ footer a:hover { color: var(--red); }
   padding-left: 18px;
   color: var(--gray-text);
 }
+
+.year-header {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 18px 0;
+  cursor: pointer;
+}
+
+.year-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.past-year-group.open .year-content {
+  max-height: 2000px;
+}
