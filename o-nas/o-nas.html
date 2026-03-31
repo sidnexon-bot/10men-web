@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O nás – 10men Vokální skupina</title>
+  <meta name="description" content="Zjistěte více o historii a příbězích pražské vokální skupiny 10men. Od roku 2015 na české sborové scéně.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .about-body {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+    }
+    .about-lead {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.7;
+      color: var(--black);
+      margin-bottom: 20px;
+      border-left: 3px solid var(--red);
+      padding-left: 20px;
+    }
+    .about-body p {
+      color: var(--gray-text);
+      margin-bottom: 18px;
+    }
+
+    /* Timeline */
+    .history-section {
+      background: var(--gray-light);
+      padding: 72px 24px;
+    }
+    .history-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .timeline {
+      margin-top: 48px;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 80px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: var(--gray-mid);
+    }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0 32px;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .tl-year {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--red);
+      text-align: right;
+      padding-top: 2px;
+      padding-right: 32px;
+    }
+    .tl-content {
+      padding-left: 24px;
+      position: relative;
+    }
+    .tl-content::before {
+      content: '';
+      position: absolute;
+      left: -5px; top: 8px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 1px var(--red);
+    }
+    .tl-content h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .tl-content p {
+      font-size: 14px;
+      color: var(--gray-text);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Awards */
+    .awards-section {
+      padding: 72px 24px;
+    }
+    .awards-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .awards-grid {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .award-card {
+      padding: 24px;
+      border: 1px solid var(--gray-light);
+      border-top: 3px solid var(--red);
+    }
+    .award-year {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+    .award-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .award-card p {
+      font-size: 13px;
+      color: var(--gray-text);
+    }
+
+    /* Conductor */
+    .conductor-section {
+      background: var(--black);
+      color: var(--white);
+      padding: 72px 24px;
+    }
+    .conductor-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .conductor-inner .section-label { color: var(--red); }
+    .conductor-inner p { color: #BBB; margin-top: 16px; max-width: 600px; }
+
+    @media (max-width: 520px) {
+      .timeline::before { left: 52px; }
+      .tl-item { grid-template-columns: 52px 1fr; gap: 0 16px; }
+      .tl-year { font-size: 12px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="nav-placeholder"></div>
+
+<div class="page-header">
+  <p class="subtitle" data-i18n="about_subtitle">Naše příběhy</p>
+  <h1 data-i18n="about_h1">O nás</h1>
+</div>
+
+<!-- Intro text -->
+<div class="about-body">
+  <p class="about-lead" data-i18n="about_lead">
+    Jsme 10men, pražská mužská vokální skupina, která od roku 2015 okouzluje posluchače nejen na české vokální a sborové scéně.
+  </p>
+  <p data-i18n="about_p1">Náš název odkazuje na počet zakladatelů skupiny – deseti sborových nadšenců, kteří se rozhodli zpívat skladby mimo běžný sborový repertoár a založili tak vlastní vokální skupinu. Počet aktivních členů se v průběhu let mění, ale energie a láska k hudbě zůstávají konstantní.</p>
+  <p data-i18n="about_p2">Nabízíme široký repertoár od popových hitů a jazzu až po swing, a při zvláštních příležitostech i hudbu z klasického žánru. Zpíváme a cappella – čistě lidskými hlasy, bez nástrojového doprovodu.</p>
+  <p data-i18n="about_p3">Skupinu pravidelně připravuje umělecký vedoucí Karel Špinka. Pod jeho vedením jsme se zúčastnili prestižních soutěží i vystoupení doma i v zahraničí.</p>
+</div>
+
+<!-- History timeline -->
+<section class="history-section">
+  <div class="history-inner">
+    <p class="section-label" data-i18n="hist_label">Naše cesta</p>
+    <h2 class="section-title" data-i18n="hist_title">Historie skupiny</h2>
+    <div class="accent-line"></div>
+
+    <div class="timeline">
+
+  <div class="tl-item fade-up">
+    <div class="tl-year">2015</div>
+    <div class="tl-content">
+      <h3>Vznik skupiny</h3>
+      <p>
+        10men vznikli z iniciativy deseti sboristů. První zkoušky a debutové vystoupení odstartovaly činnost ansámblu.
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-1">
+    <div class="tl-year">2016</div>
+    <div class="tl-content">
+      <h3>První soutěžní úspěch</h3>
+      <p>
+        Účast na Jirkovském písňovaru a zisk prvního zlatého pásma – důležitý krok ve formování zvuku i identity skupiny.
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-2">
+    <div class="tl-year">2017</div>
+    <div class="tl-content">
+      <h3>Další soutěžní zkušenosti</h3>
+      <p>
+        Účast na Jirkovském písňovaru a další koncertní vystoupení, včetně benefičních akcí a festivalů.
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-3">
+    <div class="tl-year">2021</div>
+    <div class="tl-content">
+      <h3>Vznik projektu LAMEN</h3>
+      <p>
+        Spojení se skupinou Lamas a vznik smíšeného a cappella projektu LAMEN, který rozšířil repertoár i možnosti vystupování.
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up">
+    <div class="tl-year">2022</div>
+    <div class="tl-content">
+      <h3>Nové projekty a soutěže</h3>
+      <p>
+        Koncertní projekt „Dvě tváře 10men“ a úspěch na soutěži Musica Orbis Gloria (stříbrné pásmo).
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-1">
+    <div class="tl-year">2023</div>
+    <div class="tl-content">
+      <h3>Mezinárodní vystoupení</h3>
+      <p>
+        První zahraniční koncert v Německu a další úspěch na Jirkovském písňovaru (zlaté pásmo).
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-2">
+    <div class="tl-year">2024</div>
+    <div class="tl-content">
+      <h3>Mezinárodní úspěchy</h3>
+      <p>
+        Úspěch na HARMONIE FESTIVAL v Německu (zlaté a stříbrné pásmo), koncerty se zahraničními sbory a rozvoj projektu LAMEN.
+      </p>
+    </div>
+  </div>
+
+  <div class="tl-item fade-up delay-3">
+    <div class="tl-year">2025</div>
+    <div class="tl-content">
+      <h3>10 let 10men</h3>
+      <p>
+        Výroční koncert k deseti letům existence a další koncertní spolupráce v Česku i se zahraničními sbory.
+      </p>
+    </div>
+   </div>
+ </div>
+</div>
+</section>
+
+<!-- Awards -->
+<section class="awards-section">
+  <div class="awards-inner">
+    <p class="section-label">Úspěchy</p>
+    <h2 class="section-title">Ocenění & soutěže</h2>
+    <div class="accent-line"></div>
+
+    <div class="awards-grid">
+
+      <div class="award-card fade-up">
+        <div class="award-year">2016–2024</div>
+        <h3>Jirkovský písňovar</h3>
+        <p>
+          Opakovaná účast na jedné z nejprestižnějších sborových soutěží v ČR.
+          Vícekrát zlaté pásmo a postup do Grand Prix (např. 2024).
+        </p>
+      </div>
+
+      <div class="award-card fade-up delay-1">
+        <div class="award-year">2022</div>
+        <h3>Musica Orbis Gloria</h3>
+        <p>
+          Mezinárodní soutěž sborového umění – zisk stříbrného pásma v sále HAMU v Praze.
+        </p>
+      </div>
+
+      <div class="award-card fade-up delay-2">
+        <div class="award-year">2024</div>
+        <h3>HARMONIE FESTIVAL (DE)</h3>
+        <p>
+          Mezinárodní soutěž v Německu – zlaté pásmo v kategorii mužských sborů
+          a stříbrné pásmo v kategorii vokálních ansámblů.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Conductor -->
+<section class="conductor-section">
+  <div class="conductor-inner">
+    <p class="section-label" data-i18n="conductor_label">Umělecký vedoucí</p>
+    <h2 class="section-title" style="color:var(--white)" data-i18n="conductor_name">Karel Špinka</h2>
+    <p data-i18n="conductor_p">Karel Špinka je uměleckým vedoucím skupiny 10men. Pod jeho vedením skupina pravidelně rozvíjí svůj repertoár, nacvičuje nové skladby a připravuje se na soutěžní i nekoncertní vystoupení.</p>
+  </div>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<script src="shared.js"></script>
+<script>
+  const i18n = {
+    cs: {
+      about_subtitle: 'Naše příběhy', about_h1: 'O nás',
+      about_lead: 'Jsme 10men, pražská mužská vokální skupina, která od roku 2015 okouzluje posluchače nejen na české vokální a sborové scéně.',
+      about_p1: 'Náš název odkazuje na počet zakladatelů skupiny – deseti středoškolských sborových nadšenců, kteří se rozhodli zpívat sami za sebe, bez not v ruce a s mikrofonem. Počet aktivních členů se v průběhu let mění, ale energie a láska k hudbě zůstávají konstantní.',
+      about_p2: 'Nabízíme široký repertoár od popových hitů a jazzu až po swing, a při zvláštních příležitostech i hudbu z klasického žánru. Zpíváme převážně a cappella – čistě lidskými hlasy, bez nástrojového doprovodu.',
+      about_p3: 'Skupinu pravidelně připravuje umělecký vedoucí Karel Špinka.',
+      hist_label: 'Naše cesta', hist_title: 'Historie skupiny',
+      tl_2015_h: 'Vznik skupiny', tl_2015_p: '10men vznikli z iniciativy deseti sboristů středoškolského věku s cílem zdokonalovat méně zpívané skladby a bavit se u toho.',
+      tl_2016_h: 'První soutěže', tl_2016_p: 'Skupina se poprvé účastní soutěže Jirkovský písňovar.',
+      tl_2018_h: 'Musica Orbis Gloria', tl_2018_p: 'Ocenění na prestižní soutěži Musica Orbis Gloria.',
+      tl_2019_h: 'HARMONIE FESTIVAL – Německo', tl_2019_p: 'Mezinárodní festival v Německu – první velká zahraniční zkušenost.',
+      tl_2021_h: 'Vznik projektu LAMEN', tl_2021_p: 'V prosinci 2021 se 10men spojili se skupinou Lamas a vznikl projekt LAMEN Acappella.',
+      tl_2022_h: 'Koncerty LAMEN – Praha & Rokycany', tl_2022_p: 'Dvojkoncerty „Nalaďme se společně" – oficiální odhalení projektu LAMEN.',
+      tl_2024_h: 'Celovečerní koncerty LAMEN', tl_2024_p: 'Celovečerní koncerty v Praze a Rokycanech.',
+      awards_label: 'Úspěchy', awards_title: 'Ocenění & soutěže',
+      award_jirkov: 'Jedno z nejprestižnějších sborových klání v ČR. Opakovaná účast a ocenění.',
+      award_mog: 'Mezinárodně uznávaná soutěž sborového a vokálního umění.',
+      award_harmonie: 'Mezinárodní festival v Německu – ocenění od zahraniční poroty.',
+      conductor_label: 'Umělecký vedoucí', conductor_name: 'Karel Špinka',
+      conductor_p: 'Karel Špinka je uměleckým vedoucím skupiny 10men. Pod jeho vedením skupina rozvíjí repertoár a připravuje se na soutěžní i nekoncertní vystoupení.',
+    },
+    en: {
+      about_subtitle: 'Our Story', about_h1: 'About Us',
+      about_lead: 'We are 10men, a Prague male vocal group captivating audiences on the Czech vocal and choral scene since 2015.',
+      about_p1: 'Our name refers to the ten founding members – high-school choral enthusiasts who decided to sing on their own terms, microphone in hand. The active lineup has changed over the years, but our energy and love of music remain constant.',
+      about_p2: 'We offer a wide repertoire spanning pop hits, jazz, and swing – and on special occasions, classical music too. We sing primarily a cappella – purely with human voices, without instrumental accompaniment.',
+      about_p3: 'The group is regularly prepared by artistic director Karel Špinka.',
+      hist_label: 'Our Journey', hist_title: 'Group History',
+      tl_2015_h: 'Group Founded', tl_2015_p: '10men was founded by ten high-school choral enthusiasts with a goal to sing challenging music and have fun doing it.',
+      tl_2016_h: 'First Competitions', tl_2016_p: 'The group enters Jirkovský písňovar for the first time and begins building its repertoire.',
+      tl_2018_h: 'Musica Orbis Gloria', tl_2018_p: 'Award at the prestigious Musica Orbis Gloria competition.',
+      tl_2019_h: 'HARMONIE FESTIVAL – Germany', tl_2019_p: 'International festival in Germany – first major international experience.',
+      tl_2021_h: 'LAMEN Project Founded', tl_2021_p: 'In December 2021, 10men joined forces with the female group Lamas to create the mixed a cappella project LAMEN Acappella.',
+      tl_2022_h: 'LAMEN Concerts – Prague & Rokycany', tl_2022_p: 'Twin concerts "Let\'s tune in together" – official public launch of the LAMEN project.',
+      tl_2024_h: 'Full-Evening LAMEN Concerts', tl_2024_p: 'Full-evening concerts in Prague and Rokycany.',
+      awards_label: 'Achievements', awards_title: 'Awards & Competitions',
+      award_jirkov: 'One of the most prestigious choral competitions in the Czech Republic. Repeated participation and awards.',
+      award_mog: 'Internationally recognized competition for choral and vocal arts.',
+      award_harmonie: 'International festival in Germany – award from an international jury.',
+      conductor_label: 'Artistic Director', conductor_name: 'Karel Špinka',
+      conductor_p: 'Karel Špinka is the artistic director of 10men. Under his guidance, the group develops its repertoire and prepares for competitions and concerts.',
+    }
+  };
+
+  window.applyI18n = function(lang) {
+    Object.keys(i18n[lang]).forEach(key => {
+      document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
+        el.textContent = i18n[lang][key];
+      });
+    });
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
+  });
+</script>
+</body>
+</html>
