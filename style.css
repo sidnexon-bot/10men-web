@@ -400,3 +400,23 @@ footer a:hover { color: var(--red); }
   align-items: baseline;
   justify-content: space-between;
 }
+
+/* JAZYK WEBU */
+.lang-btn {
+  display: inline-block;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--gray-mid);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 2px;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.lang-btn.active,
+.lang-btn:hover { color: var(--white); border-color: var(--red); }
