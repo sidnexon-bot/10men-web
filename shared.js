@@ -88,7 +88,7 @@ let lang = getLangFromPath();
     </div>
     <nav>
       <div class="nav-inner">
-        <a href="/index.html" class="nav-logo" aria-label="10men – domů">
+        <a href="index.html" class="nav-logo" aria-label="10men – domů">
           <img src="images/logo.jpg" alt="10men logo">
           <div class="nav-logo-text">
             <span>Vokální skupina</span>
@@ -96,20 +96,20 @@ let lang = getLangFromPath();
           </div>
         </a>
         <ul class="nav-links">
-          <li><a href="/index.html" class="${active('index.html')}" data-i18n="nav_home">${tr('nav_home')}</a></li>
-          <li><a href="/o-nas.html" class="${active('o-nas.html')}" data-i18n="nav_about">${tr('nav_about')}</a></li>
-          <li><a href="/kalendar.html" class="${active('kalendar.html')}" data-i18n="nav_events">${tr('nav_events')}</a></li>
-          <li><a href="/kontakt.html" class="${active('kontakt.html')}" data-i18n="nav_contact">${tr('nav_contact')}</a></li>
+          <li><a href="index.html" class="${active('index.html')}" data-i18n="nav_home">${tr('nav_home')}</a></li>
+          <li><a href="o-nas.html" class="${active('o-nas.html')}" data-i18n="nav_about">${tr('nav_about')}</a></li>
+          <li><a href="kalendar.html" class="${active('kalendar.html')}" data-i18n="nav_events">${tr('nav_events')}</a></li>
+          <li><a href="kontakt.html" class="${active('kontakt.html')}" data-i18n="nav_contact">${tr('nav_contact')}</a></li>
         </ul>
         <button class="nav-toggle" aria-label="Menu" onclick="toggleMobileNav()">
           <span></span><span></span><span></span>
         </button>
       </div>
       <div class="nav-mobile" id="nav-mobile">
-        <a href="/index.html" class="${active('index.html')}" data-i18n="nav_home">${tr('nav_home')}</a>
-        <a href="/o-nas.html" class="${active('o-nas.html')}" data-i18n="nav_about">${tr('nav_about')}</a>
-        <a href="/kalendar.html" class="${active('kalendar.html')}" data-i18n="nav_events">${tr('nav_events')}</a>
-        <a href="/kontakt.html" class="${active('kontakt.html')}" data-i18n="nav_contact">${tr('nav_contact')}</a>
+        <a href="index.html" class="${active('index.html')}" data-i18n="nav_home">${tr('nav_home')}</a>
+        <a href="o-nas.html" class="${active('o-nas.html')}" data-i18n="nav_about">${tr('nav_about')}</a>
+        <a href="kalendar.html" class="${active('kalendar.html')}" data-i18n="nav_events">${tr('nav_events')}</a>
+        <a href="kontakt.html" class="${active('kontakt.html')}" data-i18n="nav_contact">${tr('nav_contact')}</a>
       </div>
     </nav>`;
   }
