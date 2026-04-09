@@ -19,31 +19,55 @@ setInterval(() => {
 
   // ── Translations ──
   const t = {
-    cs: {
-      nav_home: 'Úvod',
-      nav_about: 'O nás',
-      nav_events: 'Koncerty',
-      nav_contact: 'Kontakt',
-      addr_label: 'Adresa',
-      social_label: 'Sociální sítě',
-      follow: 'Sledujte nás',
-      footer_copy: '© 2025 Vokální skupina 10men, z. s.',
-      cookies: 'Cookies',
-      privacy: 'Ochrana osobních údajů',
-    },
-    en: {
-      nav_home: 'Home',
-      nav_about: 'About',
-      nav_events: 'Events',
-      nav_contact: 'Contact',
-      addr_label: 'Address',
-      social_label: 'Social Media',
-      follow: 'Follow us',
-      footer_copy: '© 2025 Vokální skupina 10men, z. s.',
-      cookies: 'Cookies',
-      privacy: 'Privacy Policy',
-    }
-  };
+  cs: {
+    nav_home: 'Úvod',
+    nav_about: 'O nás',
+    nav_events: 'Koncerty',
+    nav_contact: 'Kontakt',
+    addr_label: 'Adresa',
+    social_label: 'Sociální sítě',
+    follow: 'Sledujte nás',
+    footer_copy: '© 2025 Vokální skupina 10men, z. s.',
+    cookies: 'Cookies',
+    privacy: 'Ochrana osobních údajů',
+  },
+  en: {
+    nav_home: 'Home',
+    nav_about: 'About',
+    nav_events: 'Events',
+    nav_contact: 'Contact',
+    addr_label: 'Address',
+    social_label: 'Social Media',
+    follow: 'Follow us',
+    footer_copy: '© 2025 Vokální skupina 10men, z. s.',
+    cookies: 'Cookies',
+    privacy: 'Privacy Policy',
+  },
+  de: {
+    nav_home: 'Startseite',
+    nav_about: 'Über uns',
+    nav_events: 'Konzerte',
+    nav_contact: 'Kontakt',
+    addr_label: 'Adresse',
+    social_label: 'Soziale Netzwerke',
+    follow: 'Folgen Sie uns',
+    footer_copy: '© 2025 Vokální skupina 10men, z. s.',
+    cookies: 'Cookies',
+    privacy: 'Datenschutz',
+  },
+  es: {
+    nav_home: 'Inicio',
+    nav_about: 'Sobre nosotros',
+    nav_events: 'Conciertos',
+    nav_contact: 'Contacto',
+    addr_label: 'Dirección',
+    social_label: 'Redes sociales',
+    follow: 'Síguenos',
+    footer_copy: '© 2025 Vokální skupina 10men, z. s.',
+    cookies: 'Cookies',
+    privacy: 'Política de privacidad',
+  }
+};
 
   function tr(key) { return t[lang][key] || key; }
 
@@ -53,6 +77,8 @@ setInterval(() => {
     <div class="lang-bar">
       <button onclick="setLang('cs')" class="${lang==='cs'?'active':''}">🇨🇿 CZ</button>
       <button onclick="setLang('en')" class="${lang==='en'?'active':''}">🇬🇧 EN</button>
+      <button onclick="setLang('de')" class="${lang==='de'?'active':''}">🇩🇪 DE</button>
+      <button onclick="setLang('es')" class="${lang==='es'?'active':''}">🇪🇸 ES</button>
     </div>
     <nav>
       <div class="nav-inner">
