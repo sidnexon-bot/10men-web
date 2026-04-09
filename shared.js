@@ -4,102 +4,102 @@
 (function () {
 
 // ── Which page are we on? ──
-const segments = location.pathname.split(’/’).filter(Boolean);
-const lastSegment = segments[segments.length - 1] || ‘’;
-const isIndexLike = lastSegment === ‘’ || lastSegment.endsWith(’/’) || !lastSegment.includes(’.’);
+const segments = location.pathname.split('/').filter(Boolean);
+const lastSegment = segments[segments.length - 1] || '';
+const isIndexLike = lastSegment === '' || lastSegment.endsWith('/') || !lastSegment.includes('.');
 
 // ── Language from URL path ──
 function getLangFromPath() {
 const first = segments[0];
-if ([‘en’, ‘de’, ‘es’].includes(first)) return first;
-return ‘cs’;
+if (['en', 'de', 'es'].includes(first)) return first;
+return 'cs';
 }
 const lang = getLangFromPath();
 
 // ── Map URL segment → canonical page key ──
 const segmentToKey = {
 // cs
-‘koncerty’:         ‘events’,
-‘kontakt’:          ‘contact’,
-‘o-nas’:            ‘about’,
+'koncerty':         'events',
+'kontakt':          'contact',
+'o-nas':            'about',
 // en
-‘events’:           ‘events’,
-‘contact’:          ‘contact’,
-‘about’:            ‘about’,
+'events':           'events',
+'contact':          'contact',
+'about':            'about',
 // de
-‘konzerte’:         ‘events’,
-‘uber-uns’:         ‘about’,
+'konzerte':         'events',
+'uber-uns':         'about',
 // es
-‘conciertos’:       ‘events’,
-‘contacto’:         ‘contact’,
-‘sobre-nosotros’:   ‘about’,
+'conciertos':       'events',
+'contacto':         'contact',
+'sobre-nosotros':   'about',
 // legacy .html filenames (fallback)
-‘kalendar.html’:    ‘events’,
-‘kontakt.html’:     ‘contact’,
-‘o-nas.html’:       ‘about’,
-‘index.html’:       ‘home’,
+'kalendar.html':    'events',
+'kontakt.html':     'contact',
+'o-nas.html':       'about',
+'index.html':       'home',
 };
 
 function getCurrentKey() {
 for (const seg of [...segments].reverse()) {
 if (segmentToKey[seg]) return segmentToKey[seg];
 }
-return ‘home’;
+return 'home';
 }
 const currentKey = getCurrentKey();
 
 // ── URL map per language ──
 const urls = {
-cs: { home: ‘/’,          events: ‘/koncerty/’, contact: ‘/kontakt/’, about: ‘/o-nas/’ },
-en: { home: ‘/en/’,       events: ‘/en/events/’, contact: ‘/en/contact/’, about: ‘/en/about/’ },
-de: { home: ‘/de/’,       events: ‘/de/konzerte/’, contact: ‘/de/kontakt/’, about: ‘/de/uber-uns/’ },
-es: { home: ‘/es/’,       events: ‘/es/conciertos/’, contact: ‘/es/contacto/’, about: ‘/es/sobre-nosotros/’ },
+cs: { home: '/',          events: '/koncerty/', contact: '/kontakt/', about: '/o-nas/' },
+en: { home: '/en/',       events: '/en/events/', contact: '/en/contact/', about: '/en/about/' },
+de: { home: '/de/',       events: '/de/konzerte/', contact: '/de/kontakt/', about: '/de/uber-uns/' },
+es: { home: '/es/',       events: '/es/conciertos/', contact: '/es/contacto/', about: '/es/sobre-nosotros/' },
 };
 
 function navHref(key) {
-return urls[lang][key] || ‘/’;
+return urls[lang][key] || '/';
 }
 
 function langSwitchHref(targetLang) {
-return urls[targetLang][currentKey] || urls[targetLang][‘home’];
+return urls[targetLang][currentKey] || urls[targetLang]['home'];
 }
 
 function isActive(key) {
-return currentKey === key ? ‘active’ : ‘’;
+return currentKey === key ? 'active' : '';
 }
 
 // ── Slideshow ──
-const images = document.querySelectorAll(’.photo-strip img’);
+const images = document.querySelectorAll('.photo-strip img');
 let i = 0;
 if (images.length) {
 setInterval(() => {
-images[i].classList.remove(‘active’);
+images[i].classList.remove('active');
 i = (i + 1) % images.length;
-images[i].classList.add(‘active’);
+images[i].classList.add('active');
 }, 4000);
 }
 
 // ── Translations ──
 const t = {
 cs: {
-nav_home: ‘\u00davod’, nav_about: ‘O n\u00e1s’, nav_events: ‘Koncerty’, nav_contact: ‘Kontakt’,
-addr_label: ‘Adresa’, social_label: ‘Soci\u00e1ln\u00ed s\u00edt\u011b’,
-footer_copy: ‘\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.’, cookies: ‘Cookies’, privacy: ‘Ochrana osobn\u00edch \u00fadaj\u016f’,
+nav_home: '\u00davod', nav_about: 'O n\u00e1s', nav_events: 'Koncerty', nav_contact: 'Kontakt',
+addr_label: 'Adresa', social_label: 'Soci\u00e1ln\u00ed s\u00edt\u011b',
+footer_copy: '\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.', cookies: 'Cookies', privacy: 'Ochrana osobn\u00edch \u00fadaj\u016f',
 },
 en: {
-nav_home: ‘Home’, nav_about: ‘About’, nav_events: ‘Events’, nav_contact: ‘Contact’,
-addr_label: ‘Address’, social_label: ‘Social Media’,
-footer_copy: ‘\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.’, cookies: ‘Cookies’, privacy: ‘Privacy Policy’,
+nav_home: 'Home', nav_about: 'About', nav_events: 'Events', nav_contact: 'Contact',
+addr_label: 'Address', social_label: 'Social Media',
+footer_copy: '\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.', cookies: 'Cookies', privacy: 'Privacy Policy',
 },
 de: {
-nav_home: ‘Startseite’, nav_about: ‘\u00dcber uns’, nav_events: ‘Konzerte’, nav_contact: ‘Kontakt’,
-addr_label: ‘Adresse’, social_label: ‘Soziale Netzwerke’,
-footer_copy: ‘\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.’, cookies: ‘Cookies’, privacy: ‘Datenschutz’,
+nav_home: 'Startseite', nav_about: '\u00dcber uns', nav_events: 'Konzerte', nav_contact: 'Kontakt',
+addr_label: 'Adresse', social_label: 'Soziale Netzwerke',
+footer_copy: '\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.', cookies: 'Cookies', privacy: 'Datenschutz',
 },
 es: {
-nav_home: ‘Inicio’, nav_about: ‘Sobre nosotros’, nav_events: ‘Conciertos’, nav_contact: ‘Contacto’,
-addr_label: ‘Direcci\u00f3n’, social_label: ‘Redes sociales’,
-footer_copy: ‘\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.’, cookies: ‘Cookies’, privacy: ‘Pol\u00edtica de privacidad’,
+nav_home: 'Inicio', nav_about: 'Sobre nosotros', nav_events: 'Conciertos', nav_contact: 'Contacto',
+addr_label: 'Direcci\u00f3n', social_label: 'Redes sociales',
+footer_copy: '\u00a9 2025 Vok\u00e1ln\u00ed skupina 10men, z.\u00a0s.', cookies: 'Cookies', privacy: 'Pol\u00edtica de privacidad',
 }
 };
 
@@ -118,9 +118,9 @@ return ` <footer> <div class="footer-inner"> <div> <h4 data-i18n="addr_label">${
 }
 
 // ── Mount ──
-document.addEventListener(‘DOMContentLoaded’, () => {
-const navEl = document.getElementById(‘nav-placeholder’);
-const footerEl = document.getElementById(‘footer-placeholder’);
+document.addEventListener('DOMContentLoaded', () => {
+const navEl = document.getElementById('nav-placeholder');
+const footerEl = document.getElementById('footer-placeholder');
 if (navEl) navEl.outerHTML = renderNav();
 if (footerEl) footerEl.outerHTML = renderFooter();
 });
@@ -131,8 +131,8 @@ window.location.href = langSwitchHref(l);
 };
 
 window.toggleMobileNav = function () {
-const m = document.getElementById(‘nav-mobile’);
-if (m) m.classList.toggle(‘open’);
+const m = document.getElementById('nav-mobile');
+if (m) m.classList.toggle('open');
 };
 
 window.getCurrentLang = function () { return lang; };
