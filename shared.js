@@ -124,28 +124,34 @@ setInterval(() => {
 
   // ── Mount ──
   document.addEventListener('DOMContentLoaded', () => {
-    const navPlaceholder = document.getElementById('nav-placeholder');
-    const footerPlaceholder = document.getElementById('footer-placeholder');
-    if (navPlaceholder) navPlaceholder.outerHTML = renderNav();
-    if (footerPlaceholder) footerPlaceholder.outerHTML = renderFooter();
-  });
+  const navPlaceholder = document.getElementById('nav-placeholder');
+  const footerPlaceholder = document.getElementById('footer-placeholder');
+  if (navPlaceholder) navPlaceholder.outerHTML = renderNav();
+  if (footerPlaceholder) footerPlaceholder.outerHTML = renderFooter();
+  if (lang === 'cs') {
+    fixCzechTypography();
+  }
+});
 
   // ── Global helpers ──
   window.setLang = function (l) {
-    lang = l;
-    localStorage.setItem('10men-lang', l);
-    // Re-render dynamic text
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (t[lang][key]) el.textContent = t[lang][key];
-    });
-    // Re-render page-specific i18n
-    if (window.applyI18n) window.applyI18n(lang);
-    // Update active lang buttons
-    document.querySelectorAll('.lang-bar button').forEach(btn => {
-      btn.classList.toggle('active', btn.textContent.toLowerCase().includes(l));
-    });
-  };
+  lang = l;
+  localStorage.setItem('10men-lang', l);
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[lang][key]) el.textContent = t[lang][key];
+  });
+
+  if (window.applyI18n) window.applyI18n(lang);
+  if (lang === 'cs') {
+    fixCzechTypography();
+  }
+
+  document.querySelectorAll('.lang-bar button').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase().includes(l));
+  });
+};
 
   window.toggleMobileNav = function () {
     const m = document.getElementById('nav-mobile');
@@ -154,3 +160,11 @@ setInterval(() => {
 
   window.getCurrentLang = function () { return lang; };
 })();
+
+function fixCzechTypography(root = document) {
+  const regex = /(\s|^)([aioukvszAIUOKVSZ])\s+(?=\S)/g;
+
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    el.innerHTML = el.innerHTML.replace(regex, '$1$2&nbsp;');
+  });
+}
