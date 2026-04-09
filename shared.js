@@ -138,3 +138,121 @@ if (m) m.classList.toggle('open');
 window.getCurrentLang = function () { return lang; };
 
 })();
+
+/* ══════════════════════════════════════════
+   MOBILNÍ ÚPRAVY
+   ══════════════════════════════════════════ */
+
+@media (max-width: 680px) {
+
+  /* Lang bar – menší písmo a padding */
+  .lang-bar {
+    padding: 6px 16px;
+    gap: 2px;
+  }
+  .lang-btn {
+    font-size: 11px;
+    padding: 3px 7px;
+  }
+
+  /* Hero – méně paddingu, tlačítka vedle sebe */
+  .hero {
+    padding: 48px 20px 48px;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 8vw, 2.6rem);
+    margin-bottom: 16px;
+  }
+  .hero-lead {
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+  .hero-cta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .hero-cta .btn {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 11px 16px;
+    font-size: 12px;
+  }
+
+  /* Slideshow – nižší na mobilu */
+  .photo-strip {
+    height: 260px;
+  }
+
+  /* Intro sekce */
+  .intro {
+    padding: 48px 20px;
+  }
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .intro-facts {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .fact-card {
+    flex: 1 1 calc(50% - 6px);
+    padding: 16px;
+  }
+
+  /* Proof sekce */
+  .proof {
+    padding: 48px 20px;
+  }
+
+  /* Genres */
+  .genres {
+    padding: 48px 20px;
+  }
+
+  /* Booking */
+  .booking {
+    padding: 48px 20px;
+  }
+
+  /* LAMEN teaser */
+  .lamen-teaser {
+    padding: 48px 20px;
+  }
+  .lamen-inner {
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  /* Page header (podstránky) */
+  .page-header {
+    padding: 40px 20px 32px;
+  }
+  .page-header h1 {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 48px;
+    padding: 40px 20px 28px;
+  }
+
+  /* Section titles */
+  h2.section-title {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+}
+
+/* Ještě menší mobily */
+@media (max-width: 400px) {
+  .hero-cta .btn {
+    flex: 1 1 100%;
+  }
+  .fact-card {
+    flex: 1 1 100%;
+  }
+}
