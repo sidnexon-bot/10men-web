@@ -15,7 +15,13 @@ setInterval(() => {
 }, 4000);
 
   // ── Language state ──
-  let lang = localStorage.getItem('10men-lang') || 'cs';
+  function getLangFromPath() {
+  const first = location.pathname.split('/')[1];
+  if (['en', 'de', 'es'].includes(first)) return first;
+  return 'cs';
+}
+
+let lang = getLangFromPath();
 
   // ── Translations ──
   const t = {
