@@ -41,7 +41,7 @@ const segmentToKey = {
 };
 
 function getCurrentKey() {
-for (const seg of […segments].reverse()) {
+for (const seg of [...segments].reverse()) {
 if (segmentToKey[seg]) return segmentToKey[seg];
 }
 return ‘home’;
