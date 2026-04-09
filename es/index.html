@@ -238,12 +238,12 @@
 
 <!-- Band photo -->
 <div class="photo-strip">
-  <img src="images/foto_01.jpg" class="active">
-  <img src="images/foto_02.jpg">
-  <img src="images/foto_03.jpg">
-  <img src="images/foto_04.jpg">
-  <img src="images/foto_05.jpg">
-  <img src="images/foto_06.jpg">
+  <img src="/images/foto_01.jpg" class="active">
+  <img src="/images/foto_02.jpg">
+  <img src="/images/foto_03.jpg">
+  <img src="/images/foto_04.jpg">
+  <img src="/images/foto_05.jpg">
+  <img src="/images/foto_06.jpg">
 </div>
 
 <!-- Intro / Co jsme zač -->
@@ -515,6 +515,18 @@
   document.addEventListener('DOMContentLoaded', () => {
     const lang = window.getCurrentLang ? window.getCurrentLang() : 'cs';
     window.applyI18n(lang);
+  });
+</script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const imgs = document.querySelectorAll('.photo-strip img');
+    if (!imgs.length) return;
+    let idx = 0;
+    setInterval(() => {
+      imgs[idx].classList.remove('active');
+      idx = (idx + 1) % imgs.length;
+      imgs[idx].classList.add('active');
+    }, 4000);
   });
 </script>
 </body>
