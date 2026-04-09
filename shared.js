@@ -39,7 +39,7 @@ setInterval(() => {
       addr_label: 'Address',
       social_label: 'Social Media',
       follow: 'Follow us',
-      footer_copy: '© 2025 Vocal Group 10men, z. s.',
+      footer_copy: '© 2025 Vokální skupina 10men, z. s.',
       cookies: 'Cookies',
       privacy: 'Privacy Policy',
     }
