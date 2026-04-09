@@ -167,13 +167,19 @@ let lang = getLangFromPath();
 
   // ── Global helpers ──
   window.setLang = function (l) {
-  lang = l;
-  localStorage.setItem('10men-lang', l);
+  let segments = location.pathname.split('/').filter(Boolean);
 
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (t[lang][key]) el.textContent = t[lang][key];
-  });
+  // odeber jazyk, pokud existuje
+  if (['en','de','es'].includes(segments[0])) {
+    segments.shift();
+  }
+
+  const newPath = l === 'cs'
+    ? '/' + segments.join('/')
+    : '/' + l + '/' + segments.join('/');
+
+  location.href = newPath || '/';
+};
 
   if (window.applyI18n) window.applyI18n(lang);
   if (lang === 'cs') {
