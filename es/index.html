@@ -267,9 +267,61 @@
     .cookie-btn { flex: 1; text-align: center; }
   }
 </style>
+  <script>
+  (function() {
+    var consent = localStorage.getItem('10men-cookie-consent');
+
+    function loadGA() {
+      var s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-YX26X9J3NF';
+      s.async = true;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-YX26X9J3NF', { anonymize_ip: true });
+    }
+
+    if (consent === 'accepted') {
+      loadGA();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var banner = document.getElementById('cookie-banner');
+      if (!banner) return;
+
+      if (consent === 'accepted' || consent === 'declined') {
+        banner.classList.add('hidden');
+        return;
+      }
+
+      document.getElementById('cookie-accept').addEventListener('click', function() {
+        localStorage.setItem('10men-cookie-consent', 'accepted');
+        banner.classList.add('hidden');
+        loadGA();
+      });
+
+      document.getElementById('cookie-decline').addEventListener('click', function() {
+        localStorage.setItem('10men-cookie-consent', 'declined');
+        banner.classList.add('hidden');
+      });
+    });
+  })();
+</script>
 </head>
 <body>
-
+<div id="cookie-banner">
+  <p>
+    Tento web používá cookies Google Analytics pro měření návštěvnosti.
+    Vaše data jsou anonymizována a neslouží k reklamním účelům.
+    <a href="/cookies.html">Více informací</a>
+  </p>
+  <div class="cookie-buttons">
+    <button class="cookie-btn cookie-btn-decline" id="cookie-decline">Odmítnout</button>
+    <button class="cookie-btn cookie-btn-accept" id="cookie-accept">Přijmout</button>
+  </div>
+</div>
 <div id="nav-placeholder"></div>
 
 <!-- Hero -->
