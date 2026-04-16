@@ -40,19 +40,6 @@
       color: var(--gray-mid);
       margin-bottom: 40px;
     }
-    .cookie-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #EFF8F0;
-      border: 1px solid #4CAF50;
-      color: #2E7D32;
-      padding: 12px 20px;
-      border-radius: 2px;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 32px;
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -74,6 +61,28 @@
       color: var(--gray-text);
       vertical-align: top;
     }
+    .consent-reset {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: var(--gray-light);
+      border-left: 3px solid var(--red);
+    }
+    .consent-reset p { margin-bottom: 12px; }
+    .consent-reset button {
+      padding: 9px 20px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--red);
+      border: 2px solid var(--red);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .consent-reset button:hover { background: var(--red); color: #fff; }
   </style>
 </head>
 <body>
@@ -88,18 +97,10 @@
 <div class="legal-body">
   <p class="legal-updated">Poslední aktualizace: duben 2025</p>
 
-  <div class="cookie-status">
-    ✓ Tento web nepoužívá sledovací ani analytické cookies
-  </div>
-
   <h2>Co jsou cookies</h2>
-  <p>
-    Cookies jsou malé textové soubory, které webové stránky ukládají do vašeho prohlížeče. Slouží různým účelům – od zapamatování vašich preferencí až po sledování chování uživatelů pro marketingové účely.
-  </p>
+  <p>Cookies jsou malé textové soubory ukládané do vašeho prohlížeče. Slouží různým účelům – od zapamatování vašich preferencí až po měření návštěvnosti webu.</p>
 
   <h2>Jaké cookies tento web používá</h2>
-  <p>Web 10men.cz používá výhradně technické cookies nezbytné pro správnou funkci webu. Nepoužíváme žádné analytické, marketingové ani sledovací cookies.</p>
-
   <table>
     <tr>
       <th>Název</th>
@@ -109,24 +110,45 @@
     </tr>
     <tr>
       <td><code>10men-lang</code></td>
-      <td>Zapamatování vámi zvoleného jazyka webu (CZ/EN/DE/ES)</td>
-      <td>Technická – funkční</td>
+      <td>Zapamatování zvoleného jazyka webu (CZ/EN/DE/ES)</td>
+      <td>Funkční – nezbytná</td>
       <td>Do zavření prohlížeče</td>
+    </tr>
+    <tr>
+      <td><code>10men-cookie-consent</code></td>
+      <td>Uložení vašeho rozhodnutí ohledně analytických cookies</td>
+      <td>Funkční – nezbytná</td>
+      <td>1 rok</td>
+    </tr>
+    <tr>
+      <td><code>_ga</code>, <code>_ga_*</code></td>
+      <td>Google Analytics – měření návštěvnosti (počet návštěv, zdroje, chování na webu)</td>
+      <td>Analytická – pouze se souhlasem</td>
+      <td>2 roky</td>
     </tr>
   </table>
 
-  <p>Tato cookie neobsahuje žádné osobní údaje a neslouží ke sledování vašeho chování.</p>
+  <h2>Google Analytics</h2>
+  <p>S vaším souhlasem používáme Google Analytics 4 (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irsko). Tato služba nám umožňuje sledovat návštěvnost webu – kolik lidí stránky navštěvuje, odkud přicházejí a jak se na webu pohybují.</p>
+  <p>Veškerá data jsou <strong>anonymizována</strong> – IP adresa je zkrácena ještě před uložením a nelze ji zpětně přiřadit konkrétní osobě. Data nejsou použita pro reklamní účely.</p>
+  <p>Více informací: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.</p>
 
   <h2>Co na tomto webu nenajdete</h2>
   <ul>
-    <li>Google Analytics ani jiné analytické nástroje</li>
     <li>Facebook Pixel ani jiné marketingové sledování</li>
     <li>Reklamní sítě třetích stran</li>
     <li>Tlačítka sociálních sítí se sledováním</li>
   </ul>
 
+  <h2>Správa vašeho souhlasu</h2>
+  <p>Souhlas s analytickými cookies můžete kdykoli odvolat. Kliknutím na tlačítko níže se banner znovu zobrazí.</p>
+
+  <div class="consent-reset">
+    <p>Aktuální nastavení: <strong id="consent-status">načítám...</strong></p>
+    <button onclick="resetConsent()">Změnit nastavení cookies</button>
+  </div>
+
   <h2>Správa cookies v prohlížeči</h2>
-  <p>Cookies můžete kdykoli vymazat nebo zakázat v nastavení svého prohlížeče. Vypnutí funkční cookie pro jazyk způsobí pouze to, že web si nezapamatuje váš jazykový výběr.</p>
   <ul>
     <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
     <li><a href="https://support.mozilla.org/cs/kb/povoleni-zakazani-cookies" target="_blank" rel="noopener">Mozilla Firefox</a></li>
@@ -135,16 +157,26 @@
   </ul>
 
   <h2>Kontakt</h2>
-  <p>
-    Máte-li dotazy k používání cookies na tomto webu, kontaktujte nás na <a href="mailto:info@10men.cz">info@10men.cz</a>.
-  </p>
-  <p>
-    Více informací o zpracování osobních údajů najdete v našich <a href="/gdpr.html">Zásadách ochrany osobních údajů</a>.
-  </p>
+  <p>Dotazy zasílejte na <a href="mailto:info@10men.cz">info@10men.cz</a>. Další informace: <a href="/gdpr.html">Ochrana osobních údajů</a>.</p>
 </div>
 
 <div id="footer-placeholder"></div>
 
 <script src="/shared.js"></script>
+<script>
+  function resetConsent() {
+    localStorage.removeItem('10men-cookie-consent');
+    window.location.href = '/';
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var status = localStorage.getItem('10men-cookie-consent');
+    var el = document.getElementById('consent-status');
+    if (el) {
+      if (status === 'accepted') el.textContent = 'analytické cookies povoleny';
+      else if (status === 'declined') el.textContent = 'analytické cookies odmítnuty';
+      else el.textContent = 'souhlas dosud nebyl udělen';
+    }
+  });
+</script>
 </body>
 </html>
