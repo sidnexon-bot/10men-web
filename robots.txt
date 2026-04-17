@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /gdpr.html
+Disallow: /cookies.html
+
+Sitemap: https://10men.cz/sitemap.xml
