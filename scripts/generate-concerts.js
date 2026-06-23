@@ -187,7 +187,7 @@ async function generate() {
   console.log('');
 
   for (const lang of Object.keys(FILES)) {
-    const filePath = path.join(process.cwd(), FILES[lang]);
+    const filePath = path.join(__dirname, '..', FILES[lang]);
 
     if (!fs.existsSync(filePath)) {
       console.warn(`⚠️  Soubor nenalezen, přeskakuji: ${filePath}`);
