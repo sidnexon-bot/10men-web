@@ -400,6 +400,7 @@ footer a:hover { color: var(--red); }
   align-items: baseline;
   justify-content: space-between;
 }
+.past-event-name { font-size: 14px; color: var(--gray-text); line-height: 1.5; flex: 1; }
 
 /* JAZYK WEBU */
 .lang-btn {
