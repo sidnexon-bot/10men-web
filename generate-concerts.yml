@@ -1,0 +1,42 @@
+name: 🎵 Generovat stránku koncertů
+
+on:
+  # Ruční spuštění z GitHub UI (Actions → Run workflow)
+  workflow_dispatch:
+
+  # Automatické spuštění z admin systému (zavolá GitHub API)
+  repository_dispatch:
+    types: [concerts-updated]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repozitáře
+        uses: actions/checkout@v4
+
+      - name: Nastavení Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalace závislostí
+        run: npm install
+        working-directory: scripts
+
+      - name: Spuštění generátoru
+        run: node generate-concerts.js
+        working-directory: scripts
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Commit a push změn
+        run: |
+          git config user.name "10men-bot"
+          git config user.email "bot@10men.cz"
+          git add koncerty/index.html en/events/index.html de/konzerte/index.html es/conciertos/index.html
+          git diff --staged --quiet && echo "Žádné změny." || (
+            git commit -m "auto: aktualizace koncertů [skip ci]"
+            git push
+          )
