@@ -355,7 +355,7 @@
       <div class="toolbar-right">
         <button class="btn btn-dark" id="btn-generate">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Publikovat na web
+          Generovat web
         </button>
         <button class="btn btn-primary" id="btn-add">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -375,7 +375,7 @@
         <div class="toolbar-right">
           <button class="btn btn-dark" id="btn-onas-generate">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Publikovat na web
+            Generovat O nás
           </button>
           <button class="btn btn-primary" id="btn-onas-save">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -853,7 +853,7 @@ document.getElementById('btn-translate').addEventListener('click', async () => {
   btn.disabled = true;
   btn.innerHTML = `${IC.loader} Překládám…`;
   try {
-    const [en, de, es] = await Promise.all([translate(text,'en'), translate(text,'de'), translate(text,'es')]);
+    const { en, de, es } = await translateAll(text);
     document.getElementById('f-desc-en').value = en;
     document.getElementById('f-desc-de').value = de;
     document.getElementById('f-desc-es').value = es;
@@ -866,24 +866,60 @@ document.getElementById('btn-translate').addEventListener('click', async () => {
 });
 
 async function translate(text, toLang) {
-  let key = localStorage.getItem('10men-deepl-key');
-  if (!key) {
-    key = prompt('Zadej DeepL API klíč:');
-    if (!key) throw new Error('Chybí DeepL klíč');
-    localStorage.setItem('10men-deepl-key', key.trim());
+  // Překlad běží přes GitHub Action (DeepL bez CORS omezení)
+  // Tato funkce je volána po načtení výsledku z Firestore
+  throw new Error('Použij translateAll() místo translate()');
+}
+
+// Spustí překlad přes GitHub Action a počká na výsledek
+async function translateAll(text) {
+  let pat = localStorage.getItem('10men-github-pat');
+  if (!pat) {
+    pat = prompt('Zadej GitHub Personal Access Token (scope: workflow):');
+    if (!pat) throw new Error('Chybí GitHub token');
+    localStorage.setItem('10men-github-pat', pat.trim());
   }
-  const langMap = { en: 'EN', de: 'DE', es: 'ES' };
-  const res = await fetch('https://api-free.deepl.com/v2/translate', {
-    method: 'POST',
-    headers: { 'Authorization': `DeepL-Auth-Key ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: [text], source_lang: 'CS', target_lang: langMap[toLang] }),
-  });
-  if (!res.ok) {
-    if (res.status === 403) { localStorage.removeItem('10men-deepl-key'); throw new Error('Neplatný DeepL klíč — odstraněn, zadej znovu'); }
-    throw new Error('DeepL chyba ' + res.status);
+
+  // Unikátní ID požadavku pro párování výsledku
+  const requestId = Date.now().toString();
+
+  // Uložíme text do Firestore
+  await setDoc(doc(db, '_translate', 'pending'), { text, requestId });
+
+  // Spustíme GitHub Action
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/translate.yml/dispatches`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${pat}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ref: 'main' }),
+    }
+  );
+
+  if (res.status === 401) {
+    localStorage.removeItem('10men-github-pat');
+    throw new Error('Neplatný GitHub token');
   }
-  const data = await res.json();
-  return data.translations[0].text;
+  if (res.status !== 204) {
+    throw new Error(`GitHub API chyba ${res.status}`);
+  }
+
+  // Čekáme na výsledek (polling každé 3s, max 60s)
+  showStatus('Překládám přes DeepL… (může trvat ~30s)', 'loading');
+  for (let i = 0; i < 20; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const resultSnap = await getDoc(doc(db, '_translate', 'result'));
+    if (resultSnap.exists() && resultSnap.data().requestId === requestId) {
+      const { en, de, es } = resultSnap.data();
+      return { en, de, es };
+    }
+  }
+  throw new Error('Překlad vypršel — zkus znovu');
 }
 
 // ── Lang tabs ─────────────────────────────────────────────────────────────────
@@ -1086,7 +1122,7 @@ document.querySelectorAll('.pe-translate').forEach(btn => {
     btn.innerHTML = `${IC.loader} Překládám…`;
 
     try {
-      const [en, de, es] = await Promise.all([translate(text,'en'), translate(text,'de'), translate(text,'es')]);
+      const { en, de, es } = await translateAll(text);
       const prefix = key === 'conductor-bio' ? 'onas-conductor-bio' : `onas-${key}`;
       document.getElementById(`${prefix}-en`).value = en;
       document.getElementById(`${prefix}-de`).value = de;
@@ -1183,7 +1219,7 @@ function renderTimelineList() {
       if (!text) { alert('Vyplň nadpis CS.'); return; }
       btn.disabled = true;
       try {
-        const [en, de, es] = await Promise.all([translate(text,'en'), translate(text,'de'), translate(text,'es')]);
+        const { en, de, es } = await translateAll(text);
         document.getElementById(`tl-h-en-${i}`).value = en;
         document.getElementById(`tl-h-de-${i}`).value = de;
         document.getElementById(`tl-h-es-${i}`).value = es;
@@ -1200,7 +1236,7 @@ function renderTimelineList() {
       if (!text) { alert('Vyplň popis CS.'); return; }
       btn.disabled = true;
       try {
-        const [en, de, es] = await Promise.all([translate(text,'en'), translate(text,'de'), translate(text,'es')]);
+        const { en, de, es } = await translateAll(text);
         document.getElementById(`tl-p-en-${i}`).value = en;
         document.getElementById(`tl-p-de-${i}`).value = de;
         document.getElementById(`tl-p-es-${i}`).value = es;
@@ -1298,7 +1334,7 @@ function renderAwardsList() {
       if (!text) { alert('Vyplň popis CS.'); return; }
       btn.disabled = true;
       try {
-        const [en, de, es] = await Promise.all([translate(text,'en'), translate(text,'de'), translate(text,'es')]);
+        const { en, de, es } = await translateAll(text);
         document.getElementById(`aw-desc-en-${i}`).value = en;
         document.getElementById(`aw-desc-de-${i}`).value = de;
         document.getElementById(`aw-desc-es-${i}`).value = es;
