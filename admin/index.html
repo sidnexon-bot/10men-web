@@ -17,6 +17,7 @@
       --gray-light: #e8e8e8;
       --bg:         #f5f5f5;
       --white:      #fff;
+      --sidebar-w:  240px;
       --radius:     4px;
       --transition: 0.18s ease;
     }
@@ -45,64 +46,89 @@
     .btn-google:hover { background: var(--red-dark); }
 
     /* ── APP ── */
-    #screen-app { display: none; min-height: 100vh; }
+    #screen-app { display: none; }
 
-    /* ── HEADER ── */
-    .admin-header {
+    /* ── MOBILE HEADER ── */
+    .mobile-header {
+      display: none;
       background: var(--black); color: var(--white);
-      padding: 0 24px; height: 56px;
-      display: flex; align-items: center; gap: 16px;
-      position: sticky; top: 0; z-index: 100;
+      height: 52px; align-items: center;
+      padding: 0 16px; gap: 14px;
+      position: sticky; top: 0; z-index: 40;
     }
-    .admin-header .logo { font-weight: 900; font-size: 1.1rem; letter-spacing: -0.01em; }
-    .admin-header .logo span { color: var(--red); }
-    .admin-header .logo em { color: #555; font-style: normal; font-weight: 400; font-size: .85rem; }
-    .admin-header .spacer { flex: 1; }
+    .btn-hamburger {
+      background: none; border: none; cursor: pointer;
+      color: var(--white); padding: 4px; display: flex; align-items: center;
+      border-radius: var(--radius); transition: background var(--transition);
+    }
+    .btn-hamburger:hover { background: rgba(255,255,255,0.1); }
+    .mobile-page-title { font-weight: 700; font-size: 15px; flex: 1; }
 
-    /* Profilový button */
-    .profile-wrap { position: relative; }
-    .profile-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      overflow: hidden; border: 2px solid #444;
-      cursor: pointer; background: #333; padding: 0;
-      flex-shrink: 0; transition: border-color var(--transition);
+    /* ── SIDEBAR OVERLAY ── */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 60;
     }
-    .profile-btn:hover { border-color: #999; }
-    .profile-btn img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .profile-dropdown {
-      position: absolute; top: calc(100% + 10px); right: 0;
-      background: var(--white); color: var(--black);
-      border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-      padding: 8px; min-width: 210px; z-index: 200; display: none;
+    .sidebar-overlay.open { display: block; }
+
+    /* ── LAYOUT ── */
+    .admin-layout { display: flex; min-height: calc(100vh - 0px); }
+
+    /* ── SIDEBAR ── */
+    .admin-sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--black); color: var(--white);
+      display: flex; flex-direction: column;
+      position: fixed; left: 0; top: 0; bottom: 0;
+      z-index: 70; overflow-y: auto;
     }
-    .profile-dropdown.open { display: block; }
-    .profile-dropdown .pd-email {
-      font-size: 12px; color: var(--gray-mid);
-      padding: 6px 8px 10px; border-bottom: 1px solid var(--gray-light);
-      margin-bottom: 4px; word-break: break-all;
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-weight: 900; font-size: 1.15rem; letter-spacing: -0.01em;
     }
-    .profile-dropdown .pd-btn {
-      display: flex; align-items: center; gap: 8px;
+    .sidebar-logo span { color: var(--red); }
+    .sidebar-logo em { color: #555; font-style: normal; font-weight: 400; font-size: .8rem; margin-left: 4px; }
+
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
       width: 100%; text-align: left; background: none; border: none;
-      padding: 8px; border-radius: var(--radius);
-      font-family: inherit; font-size: 13px; cursor: pointer; color: var(--black);
+      padding: 11px 20px; font-family: inherit; font-size: 13px; font-weight: 600;
+      color: #aaa; cursor: pointer; transition: var(--transition);
+      border-left: 3px solid transparent;
     }
-    .profile-dropdown .pd-btn:hover { background: var(--bg); }
+    .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+    .nav-item.active { color: var(--white); border-left-color: var(--red); background: rgba(255,255,255,0.08); }
+    .nav-item svg { flex-shrink: 0; }
 
-    /* ── MAIN ── */
-    .admin-main { max-width: 860px; margin: 0 auto; padding: 32px 24px 80px; }
-
-    /* ── TABS ── */
-    .tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 2px solid var(--gray-light); }
-    .tab-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: none; border: none; border-bottom: 2px solid transparent;
-      margin-bottom: -2px; padding: 10px 20px;
-      font-family: inherit; font-size: 14px; font-weight: 600;
-      color: var(--gray-mid); cursor: pointer; transition: var(--transition);
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
-    .tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
-    .tab-btn:hover:not(.active) { color: var(--black); }
+    .sidebar-profile { display: flex; align-items: center; gap: 12px; }
+    .profile-photo-wrap {
+      width: 34px; height: 34px; border-radius: 50%;
+      overflow: hidden; border: 2px solid #444; flex-shrink: 0; background: #333;
+    }
+    .profile-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-info { min-width: 0; flex: 1; }
+    .profile-email { font-size: 11px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+    .btn-logout {
+      background: none; border: 1px solid #444; color: #aaa;
+      border-radius: var(--radius); padding: 4px 10px;
+      font-family: inherit; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-logout:hover { border-color: #888; color: var(--white); }
+
+    /* ── MAIN CONTENT ── */
+    .admin-main {
+      margin-left: var(--sidebar-w);
+      flex: 1; min-height: 100vh;
+      padding: 28px 28px 80px;
+      max-width: calc(100% - var(--sidebar-w));
+    }
 
     /* ── TOOLBAR ── */
     .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
@@ -173,6 +199,7 @@
 
     .form-row { margin-bottom: 18px; }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+    .form-row-3 { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     label {
       display: block; font-size: 12px; font-weight: 600;
       color: var(--gray-mid); margin-bottom: 6px;
@@ -231,20 +258,8 @@
     .advanced-section { display: none; }
     .advanced-section.open { display: block; }
 
-    /* ── STATUS BAR ── */
-    #status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--black); color: var(--white);
-      padding: 12px 24px; font-size: 13px;
-      display: none; align-items: center; gap: 10px; z-index: 300;
-    }
-    #status-bar.show { display: flex; }
-    #status-bar.error   { background: #7a0000; }
-    #status-bar.success { background: #1a5c2e; }
-
     /* ── PAGES EDITOR ── */
     #pages-panel { display: none; }
-
     .pe-section {
       background: var(--white); border: 1px solid var(--gray-light);
       border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
@@ -264,13 +279,11 @@
 
     .field-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
     .field-header label { margin: 0; }
-
     .lang-label {
       display: block; font-size: 11px; font-weight: 700;
       color: var(--gray-mid); margin: 10px 0 4px;
       text-transform: uppercase; letter-spacing: 0.08em;
     }
-    .lang-label:first-of-type { margin-top: 0; }
     .lang-label.primary { color: var(--black); }
 
     .tl-row, .aw-row {
@@ -290,20 +303,44 @@
       display: none; background: var(--white);
     }
     .tl-row-form.open, .aw-row-form.open { display: block; }
-    .form-row-3 { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 
+    /* ── STATUS BAR ── */
+    #status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--black); color: var(--white);
+      padding: 12px 24px; font-size: 13px;
+      display: none; align-items: center; gap: 10px; z-index: 300;
+    }
+    #status-bar.show { display: flex; }
+    #status-bar.error   { background: #7a0000; }
+    #status-bar.success { background: #1a5c2e; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .mobile-header { display: flex; }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        top: 0;
+      }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-left: 0; max-width: 100%; padding: 20px 16px 80px; }
+      .admin-layout { display: block; }
+    }
     @media (max-width: 560px) {
       .form-card { padding: 24px 16px; }
       .form-row-2 { grid-template-columns: 1fr; }
       .form-row-3 { grid-template-columns: 1fr; }
       .date-badge { display: none; }
       .btn-icon span { display: none; }
+      .toolbar { flex-direction: column; align-items: flex-start; }
+      .toolbar-right { width: 100%; }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══════════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="screen-login">
   <div class="login-card">
     <div class="logo">10<span>men</span></div>
@@ -315,206 +352,222 @@
   </div>
 </div>
 
-<!-- ═══ APP ══════════════════════════════════════════════════════════════════ -->
+<!-- APP -->
 <div id="screen-app">
-  <header class="admin-header">
-    <div class="logo">10<span>men</span> <em>admin</em></div>
-    <div class="spacer"></div>
-    <div class="profile-wrap">
-      <button class="profile-btn" id="profile-btn" aria-label="Profil">
-        <img id="profile-photo" src="" alt="profil">
-      </button>
-      <div class="profile-dropdown" id="profile-dropdown">
-        <div class="pd-email" id="pd-email"></div>
-        <button class="pd-btn" id="btn-logout">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          Odhlásit
-        </button>
-      </div>
-    </div>
+
+  <!-- Mobile header -->
+  <header class="mobile-header">
+    <button class="btn-hamburger" id="btn-menu" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="mobile-page-title" id="mobile-page-title">Nadcházející akce</span>
   </header>
 
-  <div class="admin-main">
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="upcoming">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        Nadcházející akce
-      </button>
-      <button class="tab-btn" data-tab="past">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Proběhlé akce
-      </button>
-      <button class="tab-btn" data-tab="pages">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Stránky
-      </button>
-    </div>
+  <!-- Sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <div class="toolbar">
-      <h2 id="tab-title">Plánované koncerty</h2>
-      <div class="toolbar-right">
-        <button class="btn btn-dark" id="btn-generate">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Generovat web
-        </button>
-        <button class="btn btn-primary" id="btn-add">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Přidat akci
-        </button>
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sidebar-logo">
+        10<span>men</span><em>admin</em>
       </div>
-    </div>
 
-    <div id="concert-list"><div class="empty-state">Načítám…</div></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="upcoming">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Nadcházející akce
+        </button>
+        <button class="nav-item" data-tab="past">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Proběhlé akce
+        </button>
+        <button class="nav-item" data-tab="pages">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Stránky
+        </button>
+      </nav>
 
-    <!-- ═══ PAGES PANEL ══════════════════════════════════════════════════════ -->
-    <div id="pages-panel">
+      <div class="sidebar-footer">
+        <div class="sidebar-profile">
+          <div class="profile-photo-wrap">
+            <img id="profile-photo" src="" alt="profil">
+          </div>
+          <div class="profile-info">
+            <div class="profile-email" id="pd-email"></div>
+            <button class="btn-logout" id="btn-logout">Odhlásit</button>
+          </div>
+        </div>
+      </div>
+    </aside>
 
-      <!-- Toolbar pro stránky -->
-      <div class="toolbar">
-        <h2>Stránka: O nás</h2>
+    <!-- Main content -->
+    <main class="admin-main">
+
+      <!-- Toolbar pro koncerty -->
+      <div class="toolbar" id="concerts-toolbar">
+        <h2 id="tab-title">Nadcházející akce</h2>
         <div class="toolbar-right">
-          <button class="btn btn-dark" id="btn-onas-generate">
+          <button class="btn btn-dark" id="btn-generate">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Generovat O nás
+            Publikovat na web
           </button>
-          <button class="btn btn-primary" id="btn-onas-save">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-            Uložit
-          </button>
-        </div>
-      </div>
-
-      <!-- Úvod -->
-      <div class="pe-section">
-        <button class="pe-toggle open" data-pe="uvod">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          Úvod
-        </button>
-        <div class="pe-body open" id="pe-uvod">
-          <!-- Perex -->
-          <div class="form-row" style="margin-top:4px">
-            <div class="field-header">
-              <label>Perex</label>
-              <button class="btn-translate pe-translate" data-key="lead">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Přeložit
-              </button>
-            </div>
-            <span class="lang-label primary">CS</span><textarea id="onas-lead-cs" rows="3"></textarea>
-            <span class="lang-label">EN</span><textarea id="onas-lead-en" rows="2"></textarea>
-            <span class="lang-label">DE</span><textarea id="onas-lead-de" rows="2"></textarea>
-            <span class="lang-label">ES</span><textarea id="onas-lead-es" rows="2"></textarea>
-          </div>
-          <hr class="form-divider">
-          <!-- Odstavec 1 -->
-          <div class="form-row">
-            <div class="field-header">
-              <label>Odstavec 1</label>
-              <button class="btn-translate pe-translate" data-key="p1">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Přeložit
-              </button>
-            </div>
-            <span class="lang-label primary">CS</span><textarea id="onas-p1-cs" rows="3"></textarea>
-            <span class="lang-label">EN</span><textarea id="onas-p1-en" rows="2"></textarea>
-            <span class="lang-label">DE</span><textarea id="onas-p1-de" rows="2"></textarea>
-            <span class="lang-label">ES</span><textarea id="onas-p1-es" rows="2"></textarea>
-          </div>
-          <hr class="form-divider">
-          <!-- Odstavec 2 -->
-          <div class="form-row">
-            <div class="field-header">
-              <label>Odstavec 2</label>
-              <button class="btn-translate pe-translate" data-key="p2">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Přeložit
-              </button>
-            </div>
-            <span class="lang-label primary">CS</span><textarea id="onas-p2-cs" rows="3"></textarea>
-            <span class="lang-label">EN</span><textarea id="onas-p2-en" rows="2"></textarea>
-            <span class="lang-label">DE</span><textarea id="onas-p2-de" rows="2"></textarea>
-            <span class="lang-label">ES</span><textarea id="onas-p2-es" rows="2"></textarea>
-          </div>
-          <hr class="form-divider">
-          <!-- Odstavec 3 -->
-          <div class="form-row">
-            <div class="field-header">
-              <label>Odstavec 3</label>
-              <button class="btn-translate pe-translate" data-key="p3">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Přeložit
-              </button>
-            </div>
-            <span class="lang-label primary">CS</span><textarea id="onas-p3-cs" rows="3"></textarea>
-            <span class="lang-label">EN</span><textarea id="onas-p3-en" rows="2"></textarea>
-            <span class="lang-label">DE</span><textarea id="onas-p3-de" rows="2"></textarea>
-            <span class="lang-label">ES</span><textarea id="onas-p3-es" rows="2"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Umělecký vedoucí -->
-      <div class="pe-section">
-        <button class="pe-toggle" data-pe="conductor">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          Umělecký vedoucí
-        </button>
-        <div class="pe-body" id="pe-conductor">
-          <div class="form-row" style="margin-top:4px">
-            <label>Jméno</label>
-            <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
-          </div>
-          <div class="form-row">
-            <div class="field-header">
-              <label>Biografie</label>
-              <button class="btn-translate pe-translate" data-key="conductor-bio">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Přeložit
-              </button>
-            </div>
-            <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
-            <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
-            <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
-            <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Timeline -->
-      <div class="pe-section">
-        <button class="pe-toggle" data-pe="timeline">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          Timeline
-        </button>
-        <div class="pe-body" id="pe-timeline">
-          <div id="tl-list" style="margin-top:4px"></div>
-          <button class="btn btn-secondary" id="btn-tl-add" style="margin-top:8px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Přidat rok
+          <button class="btn btn-primary" id="btn-add">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Přidat akci
           </button>
         </div>
       </div>
 
-      <!-- Ocenění -->
-      <div class="pe-section">
-        <button class="pe-toggle" data-pe="awards">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          Ocenění
-        </button>
-        <div class="pe-body" id="pe-awards">
-          <div id="aw-list" style="margin-top:4px"></div>
-          <button class="btn btn-secondary" id="btn-aw-add" style="margin-top:8px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Přidat ocenění
-          </button>
+      <div id="concert-list"><div class="empty-state">Načítám…</div></div>
+
+      <!-- Pages panel -->
+      <div id="pages-panel">
+        <div class="toolbar">
+          <h2>Stránka: O nás</h2>
+          <div class="toolbar-right">
+            <button class="btn btn-dark" id="btn-onas-generate">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Publikovat na web
+            </button>
+            <button class="btn btn-primary" id="btn-onas-save">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Uložit
+            </button>
+          </div>
         </div>
-      </div>
 
-    </div><!-- /#pages-panel -->
-  </div>
-</div>
+        <!-- Úvod -->
+        <div class="pe-section">
+          <button class="pe-toggle open" data-pe="uvod">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Úvod
+          </button>
+          <div class="pe-body open" id="pe-uvod">
+            <div class="form-row" style="margin-top:4px">
+              <div class="field-header">
+                <label>Perex</label>
+                <button class="btn-translate pe-translate" data-key="lead">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-lead-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-lead-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-lead-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-lead-es" rows="2"></textarea>
+            </div>
+            <hr class="form-divider">
+            <div class="form-row">
+              <div class="field-header">
+                <label>Odstavec 1</label>
+                <button class="btn-translate pe-translate" data-key="p1">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-p1-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-p1-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-p1-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-p1-es" rows="2"></textarea>
+            </div>
+            <hr class="form-divider">
+            <div class="form-row">
+              <div class="field-header">
+                <label>Odstavec 2</label>
+                <button class="btn-translate pe-translate" data-key="p2">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-p2-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-p2-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-p2-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-p2-es" rows="2"></textarea>
+            </div>
+            <hr class="form-divider">
+            <div class="form-row">
+              <div class="field-header">
+                <label>Odstavec 3</label>
+                <button class="btn-translate pe-translate" data-key="p3">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-p3-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-p3-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-p3-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-p3-es" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
 
-<!-- ═══ FORM OVERLAY ══════════════════════════════════════════════════════════ -->
+        <!-- Umělecký vedoucí -->
+        <div class="pe-section">
+          <button class="pe-toggle" data-pe="conductor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Umělecký vedoucí
+          </button>
+          <div class="pe-body" id="pe-conductor">
+            <div class="form-row" style="margin-top:4px">
+              <label>Jméno</label>
+              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
+            </div>
+            <div class="form-row">
+              <div class="field-header">
+                <label>Biografie</label>
+                <button class="btn-translate pe-translate" data-key="conductor-bio">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="pe-section">
+          <button class="pe-toggle" data-pe="timeline">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Timeline
+          </button>
+          <div class="pe-body" id="pe-timeline">
+            <div id="tl-list" style="margin-top:4px"></div>
+            <button class="btn btn-secondary" id="btn-tl-add" style="margin-top:8px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Přidat rok
+            </button>
+          </div>
+        </div>
+
+        <!-- Ocenění -->
+        <div class="pe-section">
+          <button class="pe-toggle" data-pe="awards">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Ocenění
+          </button>
+          <div class="pe-body" id="pe-awards">
+            <div id="aw-list" style="margin-top:4px"></div>
+            <button class="btn btn-secondary" id="btn-aw-add" style="margin-top:8px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Přidat ocenění
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /#pages-panel -->
+
+    </main>
+  </div><!-- /.admin-layout -->
+
+</div><!-- /#screen-app -->
+
+<!-- FORM OVERLAY -->
 <div id="form-overlay">
   <div class="form-card">
     <button class="form-close" id="form-close">
@@ -526,25 +579,16 @@
       <label>Název akce (česky)</label>
       <input type="text" id="f-title" placeholder="Např. Letní interference: 10men & Verum">
     </div>
-
     <div class="form-row-2">
-      <div>
-        <label>Datum</label>
-        <input type="date" id="f-date">
-      </div>
-      <div id="f-time-row">
-        <label>Čas (nepovinné)</label>
-        <input type="time" id="f-time">
-      </div>
+      <div><label>Datum</label><input type="date" id="f-date"></div>
+      <div id="f-time-row"><label>Čas (nepovinné)</label><input type="time" id="f-time"></div>
     </div>
 
-    <!-- UPCOMING pole -->
     <div id="upcoming-fields">
       <div class="form-row">
         <label>Místo / adresa</label>
         <input type="text" id="f-venue" placeholder="Např. Husův sbor CČSH, Dykova 51/1, Praha 10">
       </div>
-
       <div class="form-row">
         <div class="translate-header">
           <label style="margin:0">Popis akce</label>
@@ -560,21 +604,14 @@
           <button class="lang-tab" data-lang="es">ES</button>
         </div>
         <div class="lang-panel active" data-lang="cs"><textarea id="f-desc-cs" placeholder="Napište český popis akce…"></textarea></div>
-        <div class="lang-panel" data-lang="en"><textarea id="f-desc-en" placeholder="English description (auto-translated, can be edited)…"></textarea></div>
-        <div class="lang-panel" data-lang="de"><textarea id="f-desc-de" placeholder="Deutsche Beschreibung (automatisch übersetzt)…"></textarea></div>
-        <div class="lang-panel" data-lang="es"><textarea id="f-desc-es" placeholder="Descripción en español (traducida automáticamente)…"></textarea></div>
+        <div class="lang-panel" data-lang="en"><textarea id="f-desc-en" placeholder="English description…"></textarea></div>
+        <div class="lang-panel" data-lang="de"><textarea id="f-desc-de" placeholder="Deutsche Beschreibung…"></textarea></div>
+        <div class="lang-panel" data-lang="es"><textarea id="f-desc-es" placeholder="Descripción en español…"></textarea></div>
       </div>
-
       <hr class="form-divider">
       <div class="form-row-2">
-        <div>
-          <label>Google Maps odkaz</label>
-          <input type="url" id="f-maps" placeholder="https://maps.app.goo.gl/…">
-        </div>
-        <div>
-          <label>FB událost (nepovinné)</label>
-          <input type="url" id="f-fb" placeholder="https://facebook.com/events/…">
-        </div>
+        <div><label>Google Maps odkaz</label><input type="url" id="f-maps" placeholder="https://maps.app.goo.gl/…"></div>
+        <div><label>FB událost (nepovinné)</label><input type="url" id="f-fb" placeholder="https://facebook.com/events/…"></div>
       </div>
       <div class="form-row">
         <label>Vstupenky (nepovinné)</label>
@@ -582,10 +619,9 @@
       </div>
     </div>
 
-    <!-- PAST pole -->
     <div id="past-fields" style="display:none">
       <div class="form-row">
-        <label>URL fotografií (Google Photos, nepovinné)</label>
+        <label>URL fotografií (nepovinné)</label>
         <input type="url" id="f-photos" placeholder="https://photos.app.goo.gl/…">
       </div>
       <div class="form-row">
@@ -594,13 +630,12 @@
           <label for="f-highlight">Zvýraznit tučně (soutěžní výsledek, výroční akce)</label>
         </div>
       </div>
-
       <button class="section-toggle" id="toggle-advanced">
         <svg id="adv-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         Pokročilé: vlastní zobrazení data
       </button>
       <div class="advanced-section" id="advanced-section">
-        <p style="font-size:12px;color:var(--gray-mid);margin-bottom:12px">Vyplň jen pokud je datum rozsah (např. "4.–6. října 2024"). Jinak se generuje automaticky.</p>
+        <p style="font-size:12px;color:var(--gray-mid);margin-bottom:12px">Vyplň jen pokud je datum rozsah (např. "4.–6. října 2024").</p>
         <div class="form-row-2">
           <div><label>Datum CS</label><input type="text" id="f-dd-cs" placeholder="4.–6. října 2024"></div>
           <div><label>Datum EN</label><input type="text" id="f-dd-en" placeholder="October 4–6, 2024"></div>
@@ -622,13 +657,13 @@
   </div>
 </div>
 
-<!-- ═══ STATUS BAR ═══════════════════════════════════════════════════════════ -->
+<!-- STATUS BAR -->
 <div id="status-bar">
   <span id="status-icon"></span>
   <span id="status-text"></span>
 </div>
 
-<!-- ═══ SCRIPT ════════════════════════════════════════════════════════════════ -->
+<!-- SCRIPT -->
 <script type="module">
 import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider,
@@ -648,26 +683,19 @@ const FIREBASE_CONFIG = {
 };
 const GITHUB_REPO     = 'sidnexon-bot/10men-web';
 const GITHUB_WORKFLOW = 'generate-concerts.yml';
+const ALLOWLIST = [];
 
-// Allowlist — přidej e-maily správců
-const ALLOWLIST = [
-  // 'zdenek@...',
-];
-
-// SVG ikony
 const IC = {
-  edit:    `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
-  trash:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
-  star:    `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  globe:   `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-  loader:  `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`,
-  check:   `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  alert:   `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-  chevR:   `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
-  chevD:   `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+  edit:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  trash: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  star:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  globe: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  loader:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`,
+  check: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  alert: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  chevR: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
 };
 
-// Init Firebase
 const app  = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 const db   = getFirestore(app);
@@ -680,16 +708,7 @@ let editingId  = null;
 document.getElementById('btn-login').addEventListener('click', () => {
   signInWithPopup(auth, new GoogleAuthProvider()).catch(e => showStatus(e.message, 'error'));
 });
-
 document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
-
-document.getElementById('profile-btn').addEventListener('click', e => {
-  e.stopPropagation();
-  document.getElementById('profile-dropdown').classList.toggle('open');
-});
-document.addEventListener('click', () => {
-  document.getElementById('profile-dropdown').classList.remove('open');
-});
 
 onAuthStateChanged(auth, user => {
   if (!user) { show('screen-login'); hide('screen-app'); return; }
@@ -702,6 +721,41 @@ onAuthStateChanged(auth, user => {
   loadConcerts();
 });
 
+// ── Mobile drawer ─────────────────────────────────────────────────────────────
+function openDrawer() {
+  document.getElementById('admin-sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('admin-sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+document.getElementById('btn-menu').addEventListener('click', openDrawer);
+document.getElementById('sidebar-overlay').addEventListener('click', closeDrawer);
+
+// ── Nav ───────────────────────────────────────────────────────────────────────
+const TAB_TITLES = { upcoming: 'Nadcházející akce', past: 'Proběhlé akce', pages: 'Stránky' };
+
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    const isPages = tab === 'pages';
+
+    document.getElementById('tab-title').textContent = TAB_TITLES[tab];
+    document.getElementById('mobile-page-title').textContent = TAB_TITLES[tab];
+    document.getElementById('concert-list').style.display    = isPages ? 'none' : '';
+    document.getElementById('concerts-toolbar').style.display = isPages ? 'none' : '';
+    document.getElementById('pages-panel').style.display     = isPages ? 'block' : 'none';
+
+    if (!isPages) { currentTab = tab; renderList(); }
+    else loadOnas();
+
+    closeDrawer();
+  });
+});
+
 // ── Data ──────────────────────────────────────────────────────────────────────
 async function loadConcerts() {
   try {
@@ -711,15 +765,12 @@ async function loadConcerts() {
   } catch (e) { showStatus('Chyba při načítání: ' + e.message, 'error'); }
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
 const MO_CS = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
 
 function renderList() {
   const list     = document.getElementById('concert-list');
   const filtered = concerts.filter(c => c.type === currentTab);
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty-state">Žádné záznamy. Přidej první akci.</div>`; return;
-  }
+  if (filtered.length === 0) { list.innerHTML = `<div class="empty-state">Žádné záznamy. Přidej první akci.</div>`; return; }
   list.innerHTML = filtered.map(c => {
     const d    = c.date.toDate();
     const meta = currentTab === 'upcoming' ? (c.venue || '') : (c.photosUrl ? 'Fotografie k dispozici' : '');
@@ -735,14 +786,11 @@ function renderList() {
       </div>
     </div>`;
   }).join('');
-
   list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openForm(b.dataset.edit)));
   list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteConcert(b.dataset.delete)));
 }
 
-// (Tab listener přesunut níže — viz "Tabs: rozšíření o Stránky")
-
-// ── Form: otevření ────────────────────────────────────────────────────────────
+// ── Form ──────────────────────────────────────────────────────────────────────
 function openForm(id = null) {
   editingId = id;
   document.getElementById('form-title').textContent = id ? 'Upravit akci' : 'Nová akce';
@@ -790,22 +838,19 @@ function resetForm() {
   document.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === 'cs'));
   document.querySelectorAll('.lang-panel').forEach(p => p.classList.toggle('active', p.dataset.lang === 'cs'));
   document.getElementById('advanced-section').classList.remove('open');
-  document.getElementById('adv-icon').innerHTML = IC.chevR.replace(/<svg[^>]*>/, '').replace('</svg>','');
 }
 
-document.getElementById('btn-add').addEventListener('click',    () => openForm());
+document.getElementById('btn-add').addEventListener('click', () => openForm());
 document.getElementById('btn-cancel').addEventListener('click', closeForm);
 document.getElementById('form-close').addEventListener('click', closeForm);
 document.getElementById('form-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('form-overlay')) closeForm();
 });
 
-// ── Form: uložení ─────────────────────────────────────────────────────────────
 document.getElementById('btn-save').addEventListener('click', async () => {
   const title = document.getElementById('f-title').value.trim();
   const dateV = document.getElementById('f-date').value;
   if (!title || !dateV) { alert('Vyplň název a datum.'); return; }
-
   let data = { type: currentTab, title, date: Timestamp.fromDate(new Date(dateV)) };
   if (currentTab === 'upcoming') {
     Object.assign(data, {
@@ -834,7 +879,6 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   } catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
 });
 
-// ── Delete ────────────────────────────────────────────────────────────────────
 async function deleteConcert(id) {
   const c = concerts.find(x => x.id === id);
   if (!confirm(`Smazat akci "${c?.title}"?`)) return;
@@ -850,28 +894,17 @@ document.getElementById('btn-translate').addEventListener('click', async () => {
   const text = document.getElementById('f-desc-cs').value.trim();
   if (!text) { alert('Nejprve napiš český popis.'); return; }
   const btn = document.getElementById('btn-translate');
-  btn.disabled = true;
-  btn.innerHTML = `${IC.loader} Překládám…`;
+  btn.disabled = true; btn.innerHTML = `${IC.loader} Překládám…`;
   try {
     const { en, de, es } = await translateAll(text);
     document.getElementById('f-desc-en').value = en;
     document.getElementById('f-desc-de').value = de;
     document.getElementById('f-desc-es').value = es;
-    showStatus('Přeloženo. Zkontroluj a uprav dle potřeby.', 'success');
+    showStatus('Přeloženo.', 'success');
   } catch (e) { showStatus('Překlad selhal: ' + e.message, 'error'); }
-  finally {
-    btn.disabled = false;
-    btn.innerHTML = `${IC.globe} Přeložit EN / DE / ES`;
-  }
+  finally { btn.disabled = false; btn.innerHTML = `${IC.globe} Přeložit EN / DE / ES`; }
 });
 
-async function translate(text, toLang) {
-  // Překlad běží přes GitHub Action (DeepL bez CORS omezení)
-  // Tato funkce je volána po načtení výsledku z Firestore
-  throw new Error('Použij translateAll() místo translate()');
-}
-
-// Spustí překlad přes GitHub Action a počká na výsledek
 async function translateAll(text) {
   let pat = localStorage.getItem('10men-github-pat');
   if (!pat) {
@@ -879,45 +912,19 @@ async function translateAll(text) {
     if (!pat) throw new Error('Chybí GitHub token');
     localStorage.setItem('10men-github-pat', pat.trim());
   }
-
-  // Unikátní ID požadavku pro párování výsledku
   const requestId = Date.now().toString();
-
-  // Uložíme text do Firestore
   await setDoc(doc(db, '_translate', 'pending'), { text, requestId });
-
-  // Spustíme GitHub Action
   const res = await fetch(
     `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/translate.yml/dispatches`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${pat}`,
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ref: 'main' }),
-    }
+    { method: 'POST', headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: 'main' }) }
   );
-
-  if (res.status === 401) {
-    localStorage.removeItem('10men-github-pat');
-    throw new Error('Neplatný GitHub token');
-  }
-  if (res.status !== 204) {
-    throw new Error(`GitHub API chyba ${res.status}`);
-  }
-
-  // Čekáme na výsledek (polling každé 3s, max 60s)
-  showStatus('Překládám přes DeepL… (může trvat ~30s)', 'loading');
+  if (res.status === 401) { localStorage.removeItem('10men-github-pat'); throw new Error('Neplatný GitHub token'); }
+  if (res.status !== 204) throw new Error(`GitHub API chyba ${res.status}`);
+  showStatus('Překládám přes DeepL… (~30s)', 'loading');
   for (let i = 0; i < 20; i++) {
     await new Promise(r => setTimeout(r, 3000));
-    const resultSnap = await getDoc(doc(db, '_translate', 'result'));
-    if (resultSnap.exists() && resultSnap.data().requestId === requestId) {
-      const { en, de, es } = resultSnap.data();
-      return { en, de, es };
-    }
+    const snap = await getDoc(doc(db, '_translate', 'result'));
+    if (snap.exists() && snap.data().requestId === requestId) return snap.data();
   }
   throw new Error('Překlad vypršel — zkus znovu');
 }
@@ -939,188 +946,68 @@ document.getElementById('toggle-advanced').addEventListener('click', () => {
 });
 
 // ── Generovat web ─────────────────────────────────────────────────────────────
-document.getElementById('btn-generate').addEventListener('click', async () => {
+async function triggerAction(workflow) {
   let pat = localStorage.getItem('10men-github-pat');
-  if (!pat) {
-    pat = prompt('Zadej GitHub Personal Access Token (scope: workflow):');
-    if (!pat) return;
-    localStorage.setItem('10men-github-pat', pat.trim());
-  }
+  if (!pat) { pat = prompt('Zadej GitHub PAT (scope: workflow):'); if (!pat) return; localStorage.setItem('10men-github-pat', pat.trim()); }
   try {
     showStatus('Spouštím generátor…', 'loading');
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${GITHUB_WORKFLOW}/dispatches`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ref: 'main' }),
-    });
-    if (res.status === 204) {
-      showStatus('Generátor spuštěn. Web se aktualizuje za ~30 sekund.', 'success');
-    } else {
-      const err = await res.json().catch(() => ({}));
-      if (res.status === 401) { localStorage.removeItem('10men-github-pat'); showStatus('Neplatný token — odstraněn, zadej znovu.', 'error'); }
-      else showStatus(`GitHub API chyba ${res.status}: ${err.message || ''}`, 'error');
-    }
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${workflow}/dispatches`,
+      { method: 'POST', headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: 'main' }) });
+    if (res.status === 204) showStatus('Generátor spuštěn. Web se aktualizuje za ~30s.', 'success');
+    else { const err = await res.json().catch(() => ({})); if (res.status === 401) { localStorage.removeItem('10men-github-pat'); showStatus('Neplatný token.', 'error'); } else showStatus(`GitHub chyba ${res.status}: ${err.message || ''}`, 'error'); }
   } catch (e) { showStatus(e.message, 'error'); }
-});
+}
+document.getElementById('btn-generate').addEventListener('click', () => triggerAction('generate-concerts.yml'));
+document.getElementById('btn-onas-generate').addEventListener('click', () => triggerAction('generate-onas.yml'));
 
-// ── Tabs: rozšíření o Stránky ─────────────────────────────────────────────────
-// (Původní tab listener nahrazen níže — přidáme pages logiku)
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+// ── O nás ─────────────────────────────────────────────────────────────────────
+let onasData = null;
 
-    const tab = btn.dataset.tab;
-    const isPages = tab === 'pages';
-
-    // Skryj/zobraz sekce
-    document.getElementById('concert-list').style.display = isPages ? 'none' : '';
-    document.getElementById('pages-panel').style.display  = isPages ? 'block' : 'none';
-
-    // Toolbar: skryj pro pages, zobraz pro koncerty
-    const toolbar = document.querySelector('.toolbar:not(#pages-panel .toolbar)');
-    if (toolbar) toolbar.style.display = isPages ? 'none' : '';
-
-    if (!isPages) {
-      currentTab = tab;
-      document.getElementById('tab-title').textContent =
-        tab === 'upcoming' ? 'Plánované koncerty' : 'Archiv proběhlých akcí';
-      renderList();
-    } else {
-      loadOnas();
-    }
-  });
-});
-
-// ── O nás: stav ───────────────────────────────────────────────────────────────
-let onasData = null; // { about, timeline, awards, conductor }
-
-// ── O nás: načtení z Firestore ────────────────────────────────────────────────
 async function loadOnas() {
   try {
     showStatus('Načítám O nás…', 'loading');
     const snap = await getDoc(doc(db, 'pages', 'o-nas'));
-    if (!snap.exists()) {
-      showStatus('Dokument pages/o-nas nenalezen. Spusť init-onas Action.', 'error');
-      return;
-    }
-    onasData = snap.data();
-    fillOnasForm();
+    if (!snap.exists()) { showStatus('Dokument pages/o-nas nenalezen.', 'error'); return; }
+    onasData = snap.data(); fillOnasForm();
     showStatus('Načteno.', 'success');
-  } catch (e) {
-    showStatus('Chyba načítání: ' + e.message, 'error');
-  }
+  } catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
 }
 
-// ── O nás: naplnění formuláře ─────────────────────────────────────────────────
 function fillOnasForm() {
   if (!onasData) return;
-  const a = onasData.about || {};
-  const c = onasData.conductor || {};
-
-  const fill = (id, obj, lang) => {
-    const el = document.getElementById(id);
-    if (el) el.value = (obj && obj[lang]) || '';
-  };
-
+  const a = onasData.about || {}, c = onasData.conductor || {};
+  const fill = (id, obj, lang) => { const el = document.getElementById(id); if (el) el.value = (obj && obj[lang]) || ''; };
   ['cs','en','de','es'].forEach(lang => {
-    fill(`onas-lead-${lang}`,           a.lead, lang);
-    fill(`onas-p1-${lang}`,             a.p1,   lang);
-    fill(`onas-p2-${lang}`,             a.p2,   lang);
-    fill(`onas-p3-${lang}`,             a.p3,   lang);
-    fill(`onas-conductor-bio-${lang}`,  c.bio,  lang);
+    fill(`onas-lead-${lang}`, a.lead, lang); fill(`onas-p1-${lang}`, a.p1, lang);
+    fill(`onas-p2-${lang}`, a.p2, lang); fill(`onas-p3-${lang}`, a.p3, lang);
+    fill(`onas-conductor-bio-${lang}`, c.bio, lang);
   });
-
-  const nameEl = document.getElementById('onas-conductor-name');
-  if (nameEl) nameEl.value = c.name || '';
-
-  renderTimelineList();
-  renderAwardsList();
+  const n = document.getElementById('onas-conductor-name'); if (n) n.value = c.name || '';
+  renderTimelineList(); renderAwardsList();
 }
 
-// ── O nás: čtení z formuláře ──────────────────────────────────────────────────
 function readOnasForm() {
-  const get4 = prefix => ({
-    cs: document.getElementById(`${prefix}-cs`)?.value.trim() || '',
-    en: document.getElementById(`${prefix}-en`)?.value.trim() || '',
-    de: document.getElementById(`${prefix}-de`)?.value.trim() || '',
-    es: document.getElementById(`${prefix}-es`)?.value.trim() || '',
-  });
-
+  const get4 = p => ({ cs: document.getElementById(`${p}-cs`)?.value.trim()||'', en: document.getElementById(`${p}-en`)?.value.trim()||'', de: document.getElementById(`${p}-de`)?.value.trim()||'', es: document.getElementById(`${p}-es`)?.value.trim()||'' });
   return {
-    about: {
-      lead: get4('onas-lead'),
-      p1:   get4('onas-p1'),
-      p2:   get4('onas-p2'),
-      p3:   get4('onas-p3'),
-    },
-    conductor: {
-      name: document.getElementById('onas-conductor-name')?.value.trim() || '',
-      bio:  get4('onas-conductor-bio'),
-    },
-    timeline: onasData?.timeline || [],
-    awards:   onasData?.awards   || [],
+    about: { lead: get4('onas-lead'), p1: get4('onas-p1'), p2: get4('onas-p2'), p3: get4('onas-p3') },
+    conductor: { name: document.getElementById('onas-conductor-name')?.value.trim()||'', bio: get4('onas-conductor-bio') },
+    timeline: onasData?.timeline || [], awards: onasData?.awards || [],
   };
 }
 
-// ── O nás: uložení do Firestore ───────────────────────────────────────────────
 document.getElementById('btn-onas-save').addEventListener('click', async () => {
-  try {
-    showStatus('Ukládám O nás…', 'loading');
-    const data = readOnasForm();
-    await setDoc(doc(db, 'pages', 'o-nas'), data);
-    onasData = data;
-    showStatus('Uloženo.', 'success');
-  } catch (e) {
-    showStatus('Chyba ukládání: ' + e.message, 'error');
-  }
+  try { showStatus('Ukládám…', 'loading'); const data = readOnasForm(); await setDoc(doc(db, 'pages', 'o-nas'), data); onasData = data; showStatus('Uloženo.', 'success'); }
+  catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
 });
 
-// ── O nás: generovat web ──────────────────────────────────────────────────────
-document.getElementById('btn-onas-generate').addEventListener('click', async () => {
-  let pat = localStorage.getItem('10men-github-pat');
-  if (!pat) {
-    pat = prompt('Zadej GitHub Personal Access Token (scope: workflow):');
-    if (!pat) return;
-    localStorage.setItem('10men-github-pat', pat.trim());
-  }
-  try {
-    showStatus('Spouštím generátor O nás…', 'loading');
-    const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/generate-onas.yml/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${pat}`,
-          'Accept': 'application/vnd.github+json',
-          'X-GitHub-Api-Version': '2022-11-28',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ref: 'main' }),
-      }
-    );
-    if (res.status === 204) {
-      showStatus('Generátor O nás spuštěn. Web se aktualizuje za ~30 sekund.', 'success');
-    } else {
-      const err = await res.json().catch(() => ({}));
-      if (res.status === 401) { localStorage.removeItem('10men-github-pat'); showStatus('Neplatný token.', 'error'); }
-      else showStatus(`GitHub API chyba ${res.status}: ${err.message || ''}`, 'error');
-    }
-  } catch (e) { showStatus(e.message, 'error'); }
-});
-
-// ── O nás: překlad polí ──────────────────────────────────────────────────────
+// ── Pe translate ──────────────────────────────────────────────────────────────
 document.querySelectorAll('.pe-translate').forEach(btn => {
   btn.addEventListener('click', async () => {
     const key = btn.dataset.key;
     const csId = key === 'conductor-bio' ? 'onas-conductor-bio-cs' : `onas-${key}-cs`;
     const text = document.getElementById(csId)?.value.trim();
     if (!text) { alert('Nejprve vyplň český text.'); return; }
-
-    btn.disabled = true;
-    const orig = btn.innerHTML;
-    btn.innerHTML = `${IC.loader} Překládám…`;
-
+    btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = `${IC.loader} Překládám…`;
     try {
       const { en, de, es } = await translateAll(text);
       const prefix = key === 'conductor-bio' ? 'onas-conductor-bio' : `onas-${key}`;
@@ -1133,28 +1020,27 @@ document.querySelectorAll('.pe-translate').forEach(btn => {
   });
 });
 
-// ── O nás: accordion sekce ────────────────────────────────────────────────────
+// ── Pe accordion ──────────────────────────────────────────────────────────────
 document.querySelectorAll('.pe-toggle').forEach(btn => {
   btn.addEventListener('click', () => {
-    const id   = btn.dataset.pe;
-    const body = document.getElementById(`pe-${id}`);
+    const body = document.getElementById(`pe-${btn.dataset.pe}`);
     const open = body.classList.toggle('open');
     btn.classList.toggle('open', open);
   });
 });
 
-// ── Timeline: render ──────────────────────────────────────────────────────────
+// ── Timeline ──────────────────────────────────────────────────────────────────
 function renderTimelineList() {
   const list = document.getElementById('tl-list');
   const tl   = (onasData?.timeline || []).sort((a, b) => a.year - b.year);
   if (tl.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:16px">Žádné položky.</div>'; return; }
-
+  const GLOB = IC.globe, LOAD = IC.loader, EDI = IC.edit, TRA = IC.trash;
   list.innerHTML = tl.map((item, i) => `
-    <div class="tl-row" data-tl="${i}">
+    <div class="tl-row">
       <div class="tl-row-header">
         <span class="row-label">${item.year} — ${(item.h && item.h.cs) || ''}</span>
-        <button class="btn-icon" data-tl-toggle="${i}">${IC.edit} <span>Upravit</span></button>
-        <button class="btn-icon danger" data-tl-delete="${i}">${IC.trash}</button>
+        <button class="btn-icon" data-tl-toggle="${i}">${EDI} <span>Upravit</span></button>
+        <button class="btn-icon danger" data-tl-delete="${i}">${TRA}</button>
       </div>
       <div class="tl-row-form" id="tl-form-${i}">
         <div class="form-row-3">
@@ -1165,10 +1051,7 @@ function renderTimelineList() {
         <div class="form-row" style="margin-bottom:8px">
           <div class="field-header">
             <label>Překlady nadpisu</label>
-            <button class="btn-translate tl-translate-h" data-idx="${i}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              Přeložit
-            </button>
+            <button class="btn-translate tl-translate-h" data-idx="${i}">${GLOB} Přeložit</button>
           </div>
           <span class="lang-label">EN</span><input type="text" id="tl-h-en-${i}" value="${(item.h && item.h.en) || ''}">
           <span class="lang-label">DE</span><input type="text" id="tl-h-de-${i}" value="${(item.h && item.h.de) || ''}">
@@ -1177,10 +1060,7 @@ function renderTimelineList() {
         <div class="form-row">
           <div class="field-header">
             <label>Popis CS</label>
-            <button class="btn-translate tl-translate-p" data-idx="${i}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              Přeložit
-            </button>
+            <button class="btn-translate tl-translate-p" data-idx="${i}">${GLOB} Přeložit</button>
           </div>
           <textarea id="tl-p-cs-${i}" rows="2">${(item.p && item.p.cs) || ''}</textarea>
           <span class="lang-label">EN</span><textarea id="tl-p-en-${i}" rows="2">${(item.p && item.p.en) || ''}</textarea>
@@ -1193,184 +1073,76 @@ function renderTimelineList() {
       </div>
     </div>`).join('');
 
-  // Toggle expand
-  list.querySelectorAll('[data-tl-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const form = document.getElementById(`tl-form-${btn.dataset.tlToggle}`);
-      form.classList.toggle('open');
-    });
-  });
-
-  // Delete
-  list.querySelectorAll('[data-tl-delete]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const i = +btn.dataset.tlDelete;
-      if (!confirm(`Smazat rok ${tl[i]?.year}?`)) return;
-      onasData.timeline.splice(i, 1);
-      renderTimelineList();
-    });
-  });
-
-  // Translate nadpis
-  list.querySelectorAll('.tl-translate-h').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const i = btn.dataset.idx;
-      const text = document.getElementById(`tl-h-cs-${i}`)?.value.trim();
-      if (!text) { alert('Vyplň nadpis CS.'); return; }
-      btn.disabled = true;
-      try {
-        const { en, de, es } = await translateAll(text);
-        document.getElementById(`tl-h-en-${i}`).value = en;
-        document.getElementById(`tl-h-de-${i}`).value = de;
-        document.getElementById(`tl-h-es-${i}`).value = es;
-      } catch(e) { showStatus('Překlad selhal.', 'error'); }
-      finally { btn.disabled = false; }
-    });
-  });
-
-  // Translate popis
-  list.querySelectorAll('.tl-translate-p').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const i = btn.dataset.idx;
-      const text = document.getElementById(`tl-p-cs-${i}`)?.value.trim();
-      if (!text) { alert('Vyplň popis CS.'); return; }
-      btn.disabled = true;
-      try {
-        const { en, de, es } = await translateAll(text);
-        document.getElementById(`tl-p-en-${i}`).value = en;
-        document.getElementById(`tl-p-de-${i}`).value = de;
-        document.getElementById(`tl-p-es-${i}`).value = es;
-      } catch(e) { showStatus('Překlad selhal.', 'error'); }
-      finally { btn.disabled = false; }
-    });
-  });
-
-  // Uložit řádek
-  list.querySelectorAll('.tl-save-row').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const i = +btn.dataset.idx;
-      onasData.timeline[i] = {
-        year: +document.getElementById(`tl-year-${i}`).value,
-        h: { cs: document.getElementById(`tl-h-cs-${i}`).value.trim(), en: document.getElementById(`tl-h-en-${i}`).value.trim(), de: document.getElementById(`tl-h-de-${i}`).value.trim(), es: document.getElementById(`tl-h-es-${i}`).value.trim() },
-        p: { cs: document.getElementById(`tl-p-cs-${i}`).value.trim(), en: document.getElementById(`tl-p-en-${i}`).value.trim(), de: document.getElementById(`tl-p-de-${i}`).value.trim(), es: document.getElementById(`tl-p-es-${i}`).value.trim() },
-      };
-      document.getElementById(`tl-form-${i}`).classList.remove('open');
-      renderTimelineList();
-      showStatus('Řádek uložen (nezapomeň Uložit celé O nás).', 'success');
-    });
-  });
+  list.querySelectorAll('[data-tl-toggle]').forEach(b => b.addEventListener('click', () => document.getElementById(`tl-form-${b.dataset.tlToggle}`).classList.toggle('open')));
+  list.querySelectorAll('[data-tl-delete]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.tlDelete; if (!confirm(`Smazat rok ${tl[i]?.year}?`)) return; onasData.timeline.splice(i,1); renderTimelineList(); }));
+  list.querySelectorAll('.tl-translate-h').forEach(b => b.addEventListener('click', async () => {
+    const i = b.dataset.idx; const text = document.getElementById(`tl-h-cs-${i}`)?.value.trim(); if (!text) return; b.disabled=true;
+    try { const {en,de,es} = await translateAll(text); document.getElementById(`tl-h-en-${i}`).value=en; document.getElementById(`tl-h-de-${i}`).value=de; document.getElementById(`tl-h-es-${i}`).value=es; } catch(e){showStatus('Překlad selhal.','error');} finally{b.disabled=false;}
+  }));
+  list.querySelectorAll('.tl-translate-p').forEach(b => b.addEventListener('click', async () => {
+    const i = b.dataset.idx; const text = document.getElementById(`tl-p-cs-${i}`)?.value.trim(); if (!text) return; b.disabled=true;
+    try { const {en,de,es} = await translateAll(text); document.getElementById(`tl-p-en-${i}`).value=en; document.getElementById(`tl-p-de-${i}`).value=de; document.getElementById(`tl-p-es-${i}`).value=es; } catch(e){showStatus('Překlad selhal.','error');} finally{b.disabled=false;}
+  }));
+  list.querySelectorAll('.tl-save-row').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.idx;
+    onasData.timeline[i] = { year: +document.getElementById(`tl-year-${i}`).value, h: {cs:document.getElementById(`tl-h-cs-${i}`).value.trim(),en:document.getElementById(`tl-h-en-${i}`).value.trim(),de:document.getElementById(`tl-h-de-${i}`).value.trim(),es:document.getElementById(`tl-h-es-${i}`).value.trim()}, p: {cs:document.getElementById(`tl-p-cs-${i}`).value.trim(),en:document.getElementById(`tl-p-en-${i}`).value.trim(),de:document.getElementById(`tl-p-de-${i}`).value.trim(),es:document.getElementById(`tl-p-es-${i}`).value.trim()} };
+    document.getElementById(`tl-form-${i}`).classList.remove('open'); renderTimelineList(); showStatus('Řádek uložen.', 'success');
+  }));
 }
 
 document.getElementById('btn-tl-add').addEventListener('click', () => {
-  if (!onasData) return;
-  onasData.timeline = onasData.timeline || [];
-  onasData.timeline.push({ year: new Date().getFullYear(), h: { cs:'', en:'', de:'', es:'' }, p: { cs:'', en:'', de:'', es:'' } });
-  renderTimelineList();
-  // Otevři nový řádek
-  const lastIdx = onasData.timeline.length - 1;
-  document.getElementById(`tl-form-${lastIdx}`)?.classList.add('open');
+  if (!onasData) return; onasData.timeline = onasData.timeline || [];
+  onasData.timeline.push({year:new Date().getFullYear(),h:{cs:'',en:'',de:'',es:''},p:{cs:'',en:'',de:'',es:''}});
+  renderTimelineList(); document.getElementById(`tl-form-${onasData.timeline.length-1}`)?.classList.add('open');
 });
 
-// ── Ocenění: render ───────────────────────────────────────────────────────────
+// ── Ocenění ───────────────────────────────────────────────────────────────────
 function renderAwardsList() {
   const list = document.getElementById('aw-list');
   const aw   = onasData?.awards || [];
   if (aw.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:16px">Žádná ocenění.</div>'; return; }
-
+  const GLOB = IC.globe, EDI = IC.edit, TRA = IC.trash;
   list.innerHTML = aw.map((award, i) => `
-    <div class="aw-row" data-aw="${i}">
+    <div class="aw-row">
       <div class="aw-row-header">
-        <span class="row-label">${award.name || ''} (${award.years || ''})</span>
-        <button class="btn-icon" data-aw-toggle="${i}">${IC.edit} <span>Upravit</span></button>
-        <button class="btn-icon danger" data-aw-delete="${i}">${IC.trash}</button>
+        <span class="row-label">${award.name||''} (${award.years||''})</span>
+        <button class="btn-icon" data-aw-toggle="${i}">${EDI} <span>Upravit</span></button>
+        <button class="btn-icon danger" data-aw-delete="${i}">${TRA}</button>
       </div>
       <div class="aw-row-form" id="aw-form-${i}">
         <div class="form-row-2" style="margin-bottom:12px">
-          <div><label>Název soutěže</label><input type="text" id="aw-name-${i}" value="${award.name || ''}"></div>
-          <div><label>Roky účasti</label><input type="text" id="aw-years-${i}" value="${award.years || ''}" placeholder="2016, 2021, 2023"></div>
+          <div><label>Název</label><input type="text" id="aw-name-${i}" value="${award.name||''}"></div>
+          <div><label>Roky</label><input type="text" id="aw-years-${i}" value="${award.years||''}" placeholder="2016, 2021"></div>
         </div>
-        <div class="form-row" style="margin-bottom:8px">
-          <label>ID (slug, bez mezer)</label>
-          <input type="text" id="aw-id-${i}" value="${award.id || ''}" placeholder="jirkov">
-        </div>
+        <div class="form-row" style="margin-bottom:8px"><label>ID (slug)</label><input type="text" id="aw-id-${i}" value="${award.id||''}" placeholder="jirkov"></div>
         <div class="form-row">
-          <div class="field-header">
-            <label>Popis CS</label>
-            <button class="btn-translate aw-translate" data-idx="${i}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              Přeložit
-            </button>
-          </div>
-          <textarea id="aw-desc-cs-${i}" rows="2">${(award.desc && award.desc.cs) || ''}</textarea>
-          <span class="lang-label">EN</span><textarea id="aw-desc-en-${i}" rows="2">${(award.desc && award.desc.en) || ''}</textarea>
-          <span class="lang-label">DE</span><textarea id="aw-desc-de-${i}" rows="2">${(award.desc && award.desc.de) || ''}</textarea>
-          <span class="lang-label">ES</span><textarea id="aw-desc-es-${i}" rows="2">${(award.desc && award.desc.es) || ''}</textarea>
+          <div class="field-header"><label>Popis CS</label><button class="btn-translate aw-translate" data-idx="${i}">${GLOB} Přeložit</button></div>
+          <textarea id="aw-desc-cs-${i}" rows="2">${(award.desc&&award.desc.cs)||''}</textarea>
+          <span class="lang-label">EN</span><textarea id="aw-desc-en-${i}" rows="2">${(award.desc&&award.desc.en)||''}</textarea>
+          <span class="lang-label">DE</span><textarea id="aw-desc-de-${i}" rows="2">${(award.desc&&award.desc.de)||''}</textarea>
+          <span class="lang-label">ES</span><textarea id="aw-desc-es-${i}" rows="2">${(award.desc&&award.desc.es)||''}</textarea>
         </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-          <button class="btn btn-primary aw-save-row" data-idx="${i}">Uložit řádek</button>
-        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary aw-save-row" data-idx="${i}">Uložit řádek</button></div>
       </div>
     </div>`).join('');
 
-  list.querySelectorAll('[data-aw-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById(`aw-form-${btn.dataset.awToggle}`).classList.toggle('open');
-    });
-  });
-
-  list.querySelectorAll('[data-aw-delete]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const i = +btn.dataset.awDelete;
-      if (!confirm(`Smazat ocenění "${aw[i]?.name}"?`)) return;
-      onasData.awards.splice(i, 1);
-      renderAwardsList();
-    });
-  });
-
-  list.querySelectorAll('.aw-translate').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const i = btn.dataset.idx;
-      const text = document.getElementById(`aw-desc-cs-${i}`)?.value.trim();
-      if (!text) { alert('Vyplň popis CS.'); return; }
-      btn.disabled = true;
-      try {
-        const { en, de, es } = await translateAll(text);
-        document.getElementById(`aw-desc-en-${i}`).value = en;
-        document.getElementById(`aw-desc-de-${i}`).value = de;
-        document.getElementById(`aw-desc-es-${i}`).value = es;
-      } catch(e) { showStatus('Překlad selhal.', 'error'); }
-      finally { btn.disabled = false; }
-    });
-  });
-
-  list.querySelectorAll('.aw-save-row').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const i = +btn.dataset.idx;
-      onasData.awards[i] = {
-        id:    document.getElementById(`aw-id-${i}`).value.trim(),
-        name:  document.getElementById(`aw-name-${i}`).value.trim(),
-        years: document.getElementById(`aw-years-${i}`).value.trim(),
-        desc: {
-          cs: document.getElementById(`aw-desc-cs-${i}`).value.trim(),
-          en: document.getElementById(`aw-desc-en-${i}`).value.trim(),
-          de: document.getElementById(`aw-desc-de-${i}`).value.trim(),
-          es: document.getElementById(`aw-desc-es-${i}`).value.trim(),
-        },
-      };
-      document.getElementById(`aw-form-${i}`).classList.remove('open');
-      renderAwardsList();
-      showStatus('Řádek uložen (nezapomeň Uložit celé O nás).', 'success');
-    });
-  });
+  list.querySelectorAll('[data-aw-toggle]').forEach(b => b.addEventListener('click', () => document.getElementById(`aw-form-${b.dataset.awToggle}`).classList.toggle('open')));
+  list.querySelectorAll('[data-aw-delete]').forEach(b => b.addEventListener('click', () => { const i=+b.dataset.awDelete; if(!confirm(`Smazat "${aw[i]?.name}"?`))return; onasData.awards.splice(i,1); renderAwardsList(); }));
+  list.querySelectorAll('.aw-translate').forEach(b => b.addEventListener('click', async () => {
+    const i=b.dataset.idx; const text=document.getElementById(`aw-desc-cs-${i}`)?.value.trim(); if(!text)return; b.disabled=true;
+    try{const{en,de,es}=await translateAll(text);document.getElementById(`aw-desc-en-${i}`).value=en;document.getElementById(`aw-desc-de-${i}`).value=de;document.getElementById(`aw-desc-es-${i}`).value=es;}catch(e){showStatus('Překlad selhal.','error');}finally{b.disabled=false;}
+  }));
+  list.querySelectorAll('.aw-save-row').forEach(b => b.addEventListener('click', () => {
+    const i=+b.dataset.idx;
+    onasData.awards[i]={id:document.getElementById(`aw-id-${i}`).value.trim(),name:document.getElementById(`aw-name-${i}`).value.trim(),years:document.getElementById(`aw-years-${i}`).value.trim(),desc:{cs:document.getElementById(`aw-desc-cs-${i}`).value.trim(),en:document.getElementById(`aw-desc-en-${i}`).value.trim(),de:document.getElementById(`aw-desc-de-${i}`).value.trim(),es:document.getElementById(`aw-desc-es-${i}`).value.trim()}};
+    document.getElementById(`aw-form-${i}`).classList.remove('open'); renderAwardsList(); showStatus('Řádek uložen.','success');
+  }));
 }
 
 document.getElementById('btn-aw-add').addEventListener('click', () => {
-  if (!onasData) return;
-  onasData.awards = onasData.awards || [];
-  onasData.awards.push({ id: '', name: '', years: '', desc: { cs:'', en:'', de:'', es:'' } });
-  renderAwardsList();
-  const lastIdx = onasData.awards.length - 1;
-  document.getElementById(`aw-form-${lastIdx}`)?.classList.add('open');
+  if (!onasData) return; onasData.awards=onasData.awards||[];
+  onasData.awards.push({id:'',name:'',years:'',desc:{cs:'',en:'',de:'',es:''}});
+  renderAwardsList(); document.getElementById(`aw-form-${onasData.awards.length-1}`)?.classList.add('open');
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -1379,10 +1151,10 @@ function hide(id) { document.getElementById(id).style.display = 'none'; }
 
 let statusTimer;
 function showStatus(msg, type = 'loading') {
-  const bar  = document.getElementById('status-bar');
+  const bar = document.getElementById('status-bar');
   const icon = document.getElementById('status-icon');
-  bar.className = 'show' + (type === 'error' ? ' error' : type === 'success' ? ' success' : '');
-  icon.innerHTML = type === 'error' ? IC.alert : type === 'success' ? IC.check : IC.loader;
+  bar.className = 'show' + (type==='error'?' error':type==='success'?' success':'');
+  icon.innerHTML = type==='error'?IC.alert:type==='success'?IC.check:IC.loader;
   document.getElementById('status-text').textContent = msg;
   clearTimeout(statusTimer);
   if (type !== 'loading') statusTimer = setTimeout(() => bar.classList.remove('show'), 4000);
