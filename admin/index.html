@@ -866,10 +866,24 @@ document.getElementById('btn-translate').addEventListener('click', async () => {
 });
 
 async function translate(text, toLang) {
-  const res  = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=cs|${toLang}`);
+  let key = localStorage.getItem('10men-deepl-key');
+  if (!key) {
+    key = prompt('Zadej DeepL API klíč:');
+    if (!key) throw new Error('Chybí DeepL klíč');
+    localStorage.setItem('10men-deepl-key', key.trim());
+  }
+  const langMap = { en: 'EN', de: 'DE', es: 'ES' };
+  const res = await fetch('https://api-free.deepl.com/v2/translate', {
+    method: 'POST',
+    headers: { 'Authorization': `DeepL-Auth-Key ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: [text], source_lang: 'CS', target_lang: langMap[toLang] }),
+  });
+  if (!res.ok) {
+    if (res.status === 403) { localStorage.removeItem('10men-deepl-key'); throw new Error('Neplatný DeepL klíč — odstraněn, zadej znovu'); }
+    throw new Error('DeepL chyba ' + res.status);
+  }
   const data = await res.json();
-  if (data.responseStatus !== 200) throw new Error(data.responseDetails || toLang);
-  return data.responseData.translatedText;
+  return data.translations[0].text;
 }
 
 // ── Lang tabs ─────────────────────────────────────────────────────────────────
