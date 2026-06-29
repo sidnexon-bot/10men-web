@@ -1,0 +1,30 @@
+name: 📄 Generovat stránku O nás
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [onas-updated]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+        working-directory: scripts
+      - run: node generate-onas.js
+        working-directory: scripts
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Commit a push změn
+        run: |
+          git config user.name "10men-bot"
+          git config user.email "bot@10men.cz"
+          git add o-nas/index.html en/about/index.html de/uber-uns/index.html es/sobre-nosotros/index.html
+          git diff --staged --quiet && echo "Žádné změny." || (
+            git commit -m "auto: aktualizace stránky O nás [skip ci]"
+            git push
+          )
