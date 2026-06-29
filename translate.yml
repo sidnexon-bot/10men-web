@@ -1,0 +1,22 @@
+name: 🌐 Přeložit text přes DeepL
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [translate-requested]
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+        working-directory: scripts
+      - run: node translate.js
+        working-directory: scripts
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
