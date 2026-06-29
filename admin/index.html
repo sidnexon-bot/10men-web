@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin – 10men.cz</title>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/images/favicon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -85,10 +87,14 @@
     .sidebar-logo {
       padding: 20px 20px 16px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-weight: 900; font-size: 1.15rem; letter-spacing: -0.01em;
     }
-    .sidebar-logo span { color: var(--red); }
-    .sidebar-logo em { color: #555; font-style: normal; font-weight: 400; font-size: .8rem; margin-left: 4px; }
+    .sidebar-logo img {
+      width: 100%; max-width: 180px; display: block;
+    }
+    .sidebar-logo .logo-sub {
+      font-size: 11px; font-weight: 600; color: #555;
+      text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;
+    }
 
     .sidebar-nav { padding: 12px 0; flex: 1; }
     .nav-item {
@@ -371,7 +377,8 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="admin-sidebar">
       <div class="sidebar-logo">
-        10<span>men</span><em>admin</em>
+        <img src="/images/logo.jpg" alt="10men – vokální skupina">
+        <div class="logo-sub">Admin portal</div>
       </div>
 
       <nav class="sidebar-nav">
