@@ -449,12 +449,12 @@
         <div class="pe-section">
           <button class="pe-toggle open" data-pe="uvod">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Úvod
+            Úvodní text
           </button>
           <div class="pe-body open" id="pe-uvod">
             <div class="form-row" style="margin-top:4px">
               <div class="field-header">
-                <label>Perex</label>
+                <label>Hlavička</label>
                 <button class="btn-translate pe-translate" data-key="lead">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                   Přeložit
@@ -510,33 +510,6 @@
           </div>
         </div>
 
-        <!-- Umělecký vedoucí -->
-        <div class="pe-section">
-          <button class="pe-toggle" data-pe="conductor">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Umělecký vedoucí
-          </button>
-          <div class="pe-body" id="pe-conductor">
-            <div class="form-row" style="margin-top:4px">
-              <label>Jméno</label>
-              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
-            </div>
-            <div class="form-row">
-              <div class="field-header">
-                <label>Biografie</label>
-                <button class="btn-translate pe-translate" data-key="conductor-bio">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-
         <!-- Timeline -->
         <div class="pe-section">
           <button class="pe-toggle" data-pe="timeline">
@@ -564,6 +537,33 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Přidat ocenění
             </button>
+          </div>
+        </div>
+        
+        <!-- Umělecký vedoucí -->
+        <div class="pe-section">
+          <button class="pe-toggle" data-pe="conductor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Umělecký vedoucí
+          </button>
+          <div class="pe-body" id="pe-conductor">
+            <div class="form-row" style="margin-top:4px">
+              <label>Jméno</label>
+              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
+            </div>
+            <div class="form-row">
+              <div class="field-header">
+                <label>Biografie</label>
+                <button class="btn-translate pe-translate" data-key="conductor-bio">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
+            </div>
           </div>
         </div>
 
