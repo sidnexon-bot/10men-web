@@ -64,7 +64,8 @@
       border-radius: var(--radius); transition: background var(--transition);
     }
     .btn-hamburger:hover { background: rgba(255,255,255,0.1); }
-    .mobile-page-title { font-weight: 700; font-size: 15px; flex: 1; }
+    .mobile-header-logo { height: 28px; width: auto; display: block; flex: 1; }
+    .mobile-page-title { font-weight: 700; font-size: 15px; flex: 1; display: none; }
 
     /* ── SIDEBAR OVERLAY ── */
     .sidebar-overlay {
@@ -216,7 +217,7 @@
       width: 100%; min-width: 0; max-width: 100%;
       padding: 10px 12px;
       border: 1.5px solid var(--gray-light); border-radius: var(--radius);
-      font-family: inherit; font-size: 16px; color: var(--black);
+      font-family: inherit; font-size: 14px; color: var(--black);
       background: var(--white); transition: border-color var(--transition);
       appearance: none; -webkit-appearance: none; display: block;
     }
@@ -310,7 +311,36 @@
     }
     .tl-row-form.open, .aw-row-form.open { display: block; }
 
-    /* ── STATUS BAR ── */
+    /* ── DISCORD ── */
+    #discord-panel { display: none; max-width: 600px; }
+    .discord-form {
+      background: var(--white); border: 1px solid var(--gray-light);
+      border-radius: 6px; padding: 24px;
+    }
+    .discord-form h2 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+    .file-drop {
+      border: 2px dashed var(--gray-light); border-radius: var(--radius);
+      padding: 20px; text-align: center; cursor: pointer;
+      transition: border-color var(--transition); margin-bottom: 16px;
+      color: var(--gray-mid); font-size: 13px;
+    }
+    .file-drop:hover { border-color: var(--red); color: var(--black); }
+    .file-drop.has-file { border-color: var(--red); border-style: solid; }
+    .file-preview {
+      display: none; align-items: center; gap: 12px;
+      padding: 10px; background: var(--bg);
+      border-radius: var(--radius); margin-bottom: 16px;
+    }
+    .file-preview.show { display: flex; }
+    .file-preview img { width: 56px; height: 56px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+    .file-preview .file-info { flex: 1; min-width: 0; }
+    .file-preview .file-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-preview .file-size { font-size: 12px; color: var(--gray-mid); margin-top: 2px; }
+    .file-preview .file-size .compressed { color: #1a5c2e; font-weight: 600; }
+    .btn-remove-file { background: none; border: none; cursor: pointer; color: var(--gray-mid); padding: 4px; border-radius: var(--radius); }
+    .btn-remove-file:hover { color: var(--red); }
+    .discord-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .char-count { font-size: 11px; color: var(--gray-mid); text-align: right; margin-top: 4px; }
     #status-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: var(--black); color: var(--white);
@@ -366,6 +396,7 @@
     <button class="btn-hamburger" id="btn-menu" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
+    <img src="/images/logo.jpg" alt="10men" class="mobile-header-logo">
     <span class="mobile-page-title" id="mobile-page-title">Nadcházející akce</span>
   </header>
 
@@ -394,6 +425,10 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Stránky
         </button>
+        <button class="nav-item" data-tab="discord">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Discord
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -418,7 +453,7 @@
         <div class="toolbar-right">
           <button class="btn btn-dark" id="btn-generate">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Publikovat na web
+            Generovat web
           </button>
           <button class="btn btn-primary" id="btn-add">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -436,7 +471,7 @@
           <div class="toolbar-right">
             <button class="btn btn-dark" id="btn-onas-generate">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Publikovat na web
+              Generovat O nás
             </button>
             <button class="btn btn-primary" id="btn-onas-save">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -449,12 +484,12 @@
         <div class="pe-section">
           <button class="pe-toggle open" data-pe="uvod">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Úvodní text
+            Úvod
           </button>
           <div class="pe-body open" id="pe-uvod">
             <div class="form-row" style="margin-top:4px">
               <div class="field-header">
-                <label>Hlavička</label>
+                <label>Perex</label>
                 <button class="btn-translate pe-translate" data-key="lead">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                   Přeložit
@@ -510,6 +545,33 @@
           </div>
         </div>
 
+        <!-- Umělecký vedoucí -->
+        <div class="pe-section">
+          <button class="pe-toggle" data-pe="conductor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            Umělecký vedoucí
+          </button>
+          <div class="pe-body" id="pe-conductor">
+            <div class="form-row" style="margin-top:4px">
+              <label>Jméno</label>
+              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
+            </div>
+            <div class="form-row">
+              <div class="field-header">
+                <label>Biografie</label>
+                <button class="btn-translate pe-translate" data-key="conductor-bio">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  Přeložit
+                </button>
+              </div>
+              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
+              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
+              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
+              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
         <!-- Timeline -->
         <div class="pe-section">
           <button class="pe-toggle" data-pe="timeline">
@@ -539,35 +601,47 @@
             </button>
           </div>
         </div>
-        
-        <!-- Umělecký vedoucí -->
-        <div class="pe-section">
-          <button class="pe-toggle" data-pe="conductor">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Umělecký vedoucí
-          </button>
-          <div class="pe-body" id="pe-conductor">
-            <div class="form-row" style="margin-top:4px">
-              <label>Jméno</label>
-              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
-            </div>
-            <div class="form-row">
-              <div class="field-header">
-                <label>Biografie</label>
-                <button class="btn-translate pe-translate" data-key="conductor-bio">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
 
       </div><!-- /#pages-panel -->
+
+      <!-- Discord panel -->
+      <div id="discord-panel">
+        <div class="discord-form">
+          <h2>Nová zpráva na Discord</h2>
+
+          <div class="form-row">
+            <label>Text zprávy</label>
+            <textarea id="discord-text" rows="5" placeholder="Napište zprávu pro Discord…" maxlength="2000"></textarea>
+            <div class="char-count"><span id="discord-char">0</span> / 2000</div>
+          </div>
+
+          <input type="file" id="discord-file-input" accept="image/*" style="display:none">
+          <div class="file-drop" id="discord-file-drop">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div>Přidat fotku (nepovinné)</div>
+            <div style="font-size:11px;margin-top:4px">Klikni nebo přetáhni sem · max 8 MB</div>
+          </div>
+
+          <div class="file-preview" id="discord-file-preview">
+            <img id="discord-file-thumb" src="" alt="">
+            <div class="file-info">
+              <div class="file-name" id="discord-file-name"></div>
+              <div class="file-size" id="discord-file-size"></div>
+            </div>
+            <button class="btn-remove-file" id="discord-file-remove">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <div class="discord-actions">
+            <button class="btn btn-secondary" id="discord-cancel">Zrušit</button>
+            <button class="btn btn-primary" id="discord-send">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Odeslat na Discord
+            </button>
+          </div>
+        </div>
+      </div><!-- /#discord-panel -->
 
     </main>
   </div><!-- /.admin-layout -->
@@ -673,6 +747,7 @@
 <!-- SCRIPT -->
 <script type="module">
 import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import imageCompression                           from 'https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js';
 import { getAuth, GoogleAuthProvider,
          signInWithPopup, signOut,
          onAuthStateChanged }                     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -690,12 +765,7 @@ const FIREBASE_CONFIG = {
 };
 const GITHUB_REPO     = 'sidnexon-bot/10men-web';
 const GITHUB_WORKFLOW = 'generate-concerts.yml';
-const ALLOWLIST = [
-  "sidney4hassane@gmail.com",
-  "lukvorlik@gmail.com",
-  "lebedaantonin22@gmail.com",
-  "13artolomejzverina@gmail.com"
-];
+const ALLOWLIST = [];
 
 const IC = {
   edit:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
@@ -746,23 +816,26 @@ document.getElementById('btn-menu').addEventListener('click', openDrawer);
 document.getElementById('sidebar-overlay').addEventListener('click', closeDrawer);
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
-const TAB_TITLES = { upcoming: 'Nadcházející akce', past: 'Proběhlé akce', pages: 'Stránky' };
+const TAB_TITLES = { upcoming: 'Nadcházející akce', past: 'Proběhlé akce', pages: 'Stránky', discord: 'Discord' };
 
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const tab = btn.dataset.tab;
-    const isPages = tab === 'pages';
+    const isPages   = tab === 'pages';
+    const isDiscord = tab === 'discord';
+    const isConcerts = !isPages && !isDiscord;
 
     document.getElementById('tab-title').textContent = TAB_TITLES[tab];
     document.getElementById('mobile-page-title').textContent = TAB_TITLES[tab];
-    document.getElementById('concert-list').style.display    = isPages ? 'none' : '';
-    document.getElementById('concerts-toolbar').style.display = isPages ? 'none' : '';
-    document.getElementById('pages-panel').style.display     = isPages ? 'block' : 'none';
+    document.getElementById('concert-list').style.display     = isConcerts ? '' : 'none';
+    document.getElementById('concerts-toolbar').style.display = isConcerts ? '' : 'none';
+    document.getElementById('pages-panel').style.display      = isPages   ? 'block' : 'none';
+    document.getElementById('discord-panel').style.display    = isDiscord ? 'block' : 'none';
 
-    if (!isPages) { currentTab = tab; renderList(); }
-    else loadOnas();
+    if (isConcerts) { currentTab = tab; renderList(); }
+    else if (isPages) loadOnas();
 
     closeDrawer();
   });
@@ -1156,6 +1229,124 @@ document.getElementById('btn-aw-add').addEventListener('click', () => {
   onasData.awards.push({id:'',name:'',years:'',desc:{cs:'',en:'',de:'',es:''}});
   renderAwardsList(); document.getElementById(`aw-form-${onasData.awards.length-1}`)?.classList.add('open');
 });
+
+// ── Discord ───────────────────────────────────────────────────────────────────
+let discordWebhookUrl = null;
+let discordFile       = null; // compressed File object
+
+async function loadDiscordWebhook() {
+  if (discordWebhookUrl) return discordWebhookUrl;
+  const snap = await getDoc(doc(db, 'config', 'discordPublic'));
+  if (!snap.exists()) throw new Error('config/discordPublic nenalezen ve Firestore');
+  discordWebhookUrl = snap.data().webhookUrl;
+  return discordWebhookUrl;
+}
+
+// Char counter
+document.getElementById('discord-text').addEventListener('input', function() {
+  document.getElementById('discord-char').textContent = this.value.length;
+});
+
+// File drop area
+const fileDrop  = document.getElementById('discord-file-drop');
+const fileInput = document.getElementById('discord-file-input');
+
+fileDrop.addEventListener('click', () => fileInput.click());
+fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.style.borderColor = 'var(--red)'; });
+fileDrop.addEventListener('dragleave', () => { fileDrop.style.borderColor = ''; });
+fileDrop.addEventListener('drop', e => { e.preventDefault(); fileDrop.style.borderColor = ''; if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+document.getElementById('discord-file-remove').addEventListener('click', () => {
+  discordFile = null;
+  fileInput.value = '';
+  document.getElementById('discord-file-preview').classList.remove('show');
+  fileDrop.classList.remove('has-file');
+  fileDrop.style.display = '';
+});
+
+async function handleFile(file) {
+  if (!file.type.startsWith('image/')) { showStatus('Podporovány jsou pouze obrázky.', 'error'); return; }
+
+  const origMB = (file.size / 1024 / 1024).toFixed(1);
+  showStatus(`Kompresuji fotku (${origMB} MB)…`, 'loading');
+
+  try {
+    const compressed = await imageCompression(file, {
+      maxSizeMB: 7,
+      maxWidthOrHeight: 2560,
+      useWebWorker: true,
+    });
+
+    discordFile = compressed;
+    const compMB = (compressed.size / 1024 / 1024).toFixed(1);
+
+    // Thumbnail
+    const reader = new FileReader();
+    reader.onload = e => document.getElementById('discord-file-thumb').src = e.target.result;
+    reader.readAsDataURL(compressed);
+
+    document.getElementById('discord-file-name').textContent = file.name;
+    document.getElementById('discord-file-size').innerHTML =
+      `${origMB} MB → <span class="compressed">${compMB} MB</span>`;
+    document.getElementById('discord-file-preview').classList.add('show');
+    fileDrop.classList.add('has-file');
+    fileDrop.style.display = 'none';
+
+    showStatus(`Fotka připravena (${compMB} MB).`, 'success');
+  } catch (e) {
+    showStatus('Komprese selhala: ' + e.message, 'error');
+  }
+}
+
+// Odeslat
+document.getElementById('discord-send').addEventListener('click', async () => {
+  const text = document.getElementById('discord-text').value.trim();
+  if (!text && !discordFile) { alert('Vyplň text nebo přidej fotku.'); return; }
+
+  const btn = document.getElementById('discord-send');
+  btn.disabled = true;
+  showStatus('Odesílám na Discord…', 'loading');
+
+  try {
+    const webhookUrl = await loadDiscordWebhook();
+
+    let res;
+    if (discordFile) {
+      const form = new FormData();
+      form.append('payload_json', JSON.stringify({ content: text || '' }));
+      form.append('files[0]', discordFile, discordFile.name || 'fotka.jpg');
+      res = await fetch(webhookUrl, { method: 'POST', body: form });
+    } else {
+      res = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: text }),
+      });
+    }
+
+    if (res.ok || res.status === 204) {
+      showStatus('Odesláno na Discord! ✓', 'success');
+      resetDiscordForm();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showStatus(`Discord chyba ${res.status}: ${err.message || ''}`, 'error');
+    }
+  } catch (e) {
+    showStatus('Chyba: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// Zrušit
+document.getElementById('discord-cancel').addEventListener('click', resetDiscordForm);
+
+function resetDiscordForm() {
+  document.getElementById('discord-text').value = '';
+  document.getElementById('discord-char').textContent = '0';
+  document.getElementById('discord-file-remove').click();
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function show(id) { document.getElementById(id).style.display = 'block'; }
