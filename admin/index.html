@@ -804,7 +804,8 @@ onAuthStateChanged(auth, user => {
     signOut(auth); alert(`Přístup odepřen: ${user.email}`); return;
   }
   document.getElementById('profile-photo').src = user.photoURL || '';
-  document.getElementById('pd-email').textContent = user.email;
+  document.getElementById('pd-email').textContent = user.displayName || user.email;
+
   show('screen-app'); hide('screen-login');
   loadConcerts();
 });
