@@ -1,0 +1,33 @@
+name: Sestavit web
+
+# Web se přegeneruje ze zveřejněného snímku z admin portálu (/web/published v databázi 10men; čitelný veřejně, bez klíče).
+on:
+  repository_dispatch:
+    types: [web-published]      # po kliknutí na „Zveřejnit změny“ v admin portálu (volá server, ne prohlížeč)
+  schedule:
+    - cron: "15 3 * * *"        # denně: akce po datu se samy přesunou z nadcházejících do archivu
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Vygenerovat stránky
+        run: node scripts/build-site.js
+      - name: Uložit změny
+        run: |
+          git config user.name "10men-bot"
+          git config user.email "bot@10men.cz"
+          git add -A index.html en de es koncerty o-nas kontakt sitemap.xml
+          git diff --staged --quiet && echo "Žádné změny." || (git commit -m "auto: web přegenerován ze zveřejněného snímku [skip ci]" && git push)
