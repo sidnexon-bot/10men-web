@@ -1,1372 +1,433 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin – 10men.cz</title>
-  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/images/favicon-180.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --red:        #EE220C;
-      --red-dark:   #c41a09;
-      --black:      #111;
-      --gray-mid:   #888;
-      --gray-light: #e8e8e8;
-      --bg:         #f5f5f5;
-      --white:      #fff;
-      --sidebar-w:  240px;
-      --radius:     4px;
-      --transition: 0.18s ease;
-    }
-
-    body { font-family: 'Work Sans', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
-
-    /* ── LOGIN ── */
-    #screen-login {
-      min-height: 100vh; display: flex;
-      align-items: center; justify-content: center; background: var(--black);
-    }
-    .login-card {
-      background: var(--white); border-radius: 6px;
-      padding: 48px 40px; text-align: center; max-width: 360px; width: 100%;
-    }
-    .login-card .logo { font-size: 2rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 4px; }
-    .login-card .logo span { color: var(--red); }
-    .login-card p { font-size: 13px; color: var(--gray-mid); margin-bottom: 32px; }
-    .btn-google {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: var(--red); color: var(--white); border: none;
-      border-radius: var(--radius); padding: 12px 24px;
-      font-family: inherit; font-size: 16px; font-weight: 600;
-      cursor: pointer; transition: background var(--transition); width: 100%; justify-content: center;
-    }
-    .btn-google:hover { background: var(--red-dark); }
-
-    /* ── APP ── */
-    #screen-app { display: none; }
-
-    /* ── MOBILE HEADER ── */
-    .mobile-header {
-      display: none;
-      background: var(--black); color: var(--white);
-      height: 52px; align-items: center;
-      padding: 0 16px; gap: 14px;
-      position: sticky; top: 0; z-index: 40;
-    }
-    .btn-hamburger {
-      background: none; border: none; cursor: pointer;
-      color: var(--white); padding: 4px; display: flex; align-items: center;
-      border-radius: var(--radius); transition: background var(--transition);
-    }
-    .btn-hamburger:hover { background: rgba(255,255,255,0.1); }
-    .mobile-page-title { font-weight: 700; font-size: 15px; flex: 1; display: none; }
-
-    /* ── SIDEBAR OVERLAY ── */
-    .sidebar-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5); z-index: 60;
-    }
-    .sidebar-overlay.open { display: block; }
-
-    /* ── LAYOUT ── */
-    .admin-layout { display: flex; min-height: calc(100vh - 0px); }
-
-    /* ── SIDEBAR ── */
-    .admin-sidebar {
-      width: var(--sidebar-w); flex-shrink: 0;
-      background: var(--black); color: var(--white);
-      display: flex; flex-direction: column;
-      position: fixed; left: 0; top: 0; bottom: 0;
-      z-index: 70; overflow-y: auto;
-    }
-    .sidebar-logo {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar-logo img {
-      width: 100%; max-width: 180px; display: block;
-    }
-    .sidebar-logo .logo-sub {
-      font-size: 11px; font-weight: 600; color: #555;
-      text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;
-    }
-
-    .sidebar-nav { padding: 12px 0; flex: 1; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      width: 100%; text-align: left; background: none; border: none;
-      padding: 11px 20px; font-family: inherit; font-size: 13px; font-weight: 600;
-      color: #aaa; cursor: pointer; transition: var(--transition);
-      border-left: 3px solid transparent;
-    }
-    .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.06); }
-    .nav-item.active { color: var(--white); border-left-color: var(--red); background: rgba(255,255,255,0.08); }
-    .nav-item svg { flex-shrink: 0; }
-
-    .sidebar-footer {
-      padding: 16px 20px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar-profile { display: flex; align-items: center; gap: 12px; }
-    .profile-photo-wrap {
-      width: 34px; height: 34px; border-radius: 50%;
-      overflow: hidden; border: 2px solid #444; flex-shrink: 0; background: #333;
-    }
-    .profile-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .profile-info { min-width: 0; flex: 1; }
-    .profile-email { font-size: 11px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-    .btn-logout {
-      background: none; border: 1px solid #444; color: #aaa;
-      border-radius: var(--radius); padding: 4px 10px;
-      font-family: inherit; font-size: 11px; font-weight: 600;
-      cursor: pointer; transition: var(--transition);
-    }
-    .btn-logout:hover { border-color: #888; color: var(--white); }
-
-    /* ── MAIN CONTENT ── */
-    .admin-main {
-      margin-left: var(--sidebar-w);
-      flex: 1; min-height: 100vh;
-      padding: 28px 28px 80px;
-      max-width: calc(100% - var(--sidebar-w));
-    }
-
-    /* ── TOOLBAR ── */
-    .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
-    .toolbar h2 { font-size: 1rem; font-weight: 700; }
-    .toolbar-right { display: flex; gap: 10px; align-items: center; }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      border: none; border-radius: var(--radius);
-      padding: 10px 16px; font-family: inherit; font-size: 13px;
-      font-weight: 600; cursor: pointer; transition: var(--transition);
-    }
-    .btn svg { flex-shrink: 0; }
-    .btn-primary { background: var(--red); color: var(--white); }
-    .btn-primary:hover { background: var(--red-dark); }
-    .btn-secondary { background: var(--white); color: var(--black); border: 1.5px solid var(--gray-light); }
-    .btn-secondary:hover { border-color: var(--gray-mid); }
-    .btn-dark { background: #1a5c2e; color: var(--white); }
-    .btn-dark:hover { background: #144a24; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ── CONCERT LIST ── */
-    #concert-list { display: flex; flex-direction: column; gap: 10px; }
-    .concert-row {
-      background: var(--white); border-radius: var(--radius);
-      border: 1px solid var(--gray-light); padding: 14px 18px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .date-badge {
-      background: var(--red); color: var(--white); border-radius: 3px;
-      padding: 8px 10px; text-align: center; min-width: 52px; flex-shrink: 0;
-    }
-    .date-badge .day { font-weight: 900; font-size: 1.25rem; line-height: 1; }
-    .date-badge .mo  { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-top: 3px; }
-    .row-info { flex: 1; min-width: 0; }
-    .row-info .title { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
-    .row-info .meta  { font-size: 12px; color: var(--gray-mid); margin-top: 3px; }
-    .row-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .btn-icon {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: 1px solid var(--gray-light);
-      border-radius: var(--radius); padding: 6px 10px;
-      font-size: 12px; font-weight: 600; font-family: inherit;
-      cursor: pointer; transition: var(--transition); color: var(--black);
-    }
-    .btn-icon:hover { border-color: var(--gray-mid); }
-    .btn-icon.danger:hover { border-color: var(--red); color: var(--red); }
-    .empty-state { text-align: center; padding: 48px 24px; color: var(--gray-mid); font-size: 14px; }
-
-    /* ── FORM OVERLAY ── */
-    #form-overlay {
-      display: none; position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.5); overflow-y: auto; padding: 32px 16px;
-    }
-    #form-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
-    .form-card {
-      background: var(--white); border-radius: 6px;
-      width: 100%; max-width: 680px; padding: 32px; position: relative;
-    }
-    .form-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; padding-right: 32px; }
-    .form-close {
-      position: absolute; top: 16px; right: 16px;
-      background: none; border: none; cursor: pointer;
-      color: var(--gray-mid); display: flex; align-items: center; justify-content: center;
-      padding: 4px; border-radius: var(--radius); transition: var(--transition);
-    }
-    .form-close:hover { color: var(--black); background: var(--bg); }
-
-    .form-row { margin-bottom: 18px; }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
-    .form-row-3 { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-    label {
-      display: block; font-size: 12px; font-weight: 600;
-      color: var(--gray-mid); margin-bottom: 6px;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    input[type="text"], input[type="date"], input[type="time"],
-    input[type="url"], textarea, select {
-      width: 100%; min-width: 0; max-width: 100%;
-      padding: 10px 12px;
-      border: 1.5px solid var(--gray-light); border-radius: var(--radius);
-      font-family: inherit; font-size: 16px; color: var(--black);
-      background: var(--white); transition: border-color var(--transition);
-      appearance: none; -webkit-appearance: none; display: block;
-    }
-    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--red); }
-    textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-
-    .translate-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .btn-translate {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: none; border: 1.5px solid var(--gray-light);
-      border-radius: var(--radius); padding: 5px 12px;
-      font-family: inherit; font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: var(--transition); color: var(--black);
-    }
-    .btn-translate:hover { border-color: var(--red); color: var(--red); }
-    .btn-translate:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .lang-tabs { display: flex; gap: 4px; margin: 6px 0; }
-    .lang-tab {
-      padding: 4px 10px; border-radius: var(--radius);
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      border: 1.5px solid var(--gray-light); background: none;
-      transition: var(--transition); color: var(--gray-mid); font-family: inherit;
-    }
-    .lang-tab.active { background: var(--red); border-color: var(--red); color: var(--white); }
-    .lang-tab:hover:not(.active) { border-color: var(--gray-mid); color: var(--black); }
-    .lang-panel { display: none; }
-    .lang-panel.active { display: block; }
-
-    .checkbox-row { display: flex; align-items: center; gap: 10px; }
-    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; appearance: auto; -webkit-appearance: auto; }
-    .checkbox-row label { margin: 0; text-transform: none; font-size: 14px; font-weight: 400; color: var(--black); letter-spacing: 0; }
-
-    .form-divider { border: none; border-top: 1px solid var(--gray-light); margin: 20px 0; }
-    .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-    .section-toggle {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: none; font-family: inherit;
-      font-size: 12px; font-weight: 600; color: var(--gray-mid);
-      cursor: pointer; padding: 4px 0; margin-bottom: 12px;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .section-toggle:hover { color: var(--black); }
-    .advanced-section { display: none; }
-    .advanced-section.open { display: block; }
-
-    /* ── PAGES EDITOR ── */
-    #pages-panel { display: none; }
-    .pe-section {
-      background: var(--white); border: 1px solid var(--gray-light);
-      border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
-    }
-    .pe-toggle {
-      display: flex; align-items: center; gap: 8px;
-      width: 100%; text-align: left; background: none; border: none;
-      padding: 14px 18px; font-family: inherit; font-size: 16px;
-      font-weight: 700; cursor: pointer; color: var(--black);
-      transition: background var(--transition);
-    }
-    .pe-toggle:hover { background: var(--bg); }
-    .pe-toggle svg { flex-shrink: 0; transition: transform var(--transition); }
-    .pe-toggle.open svg { transform: rotate(90deg); }
-    .pe-body { padding: 0 18px 18px; display: none; }
-    .pe-body.open { display: block; }
-
-    .field-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .field-header label { margin: 0; }
-    .lang-label {
-      display: block; font-size: 11px; font-weight: 700;
-      color: var(--gray-mid); margin: 10px 0 4px;
-      text-transform: uppercase; letter-spacing: 0.08em;
-    }
-    .lang-label.primary { color: var(--black); }
-
-    .tl-row, .aw-row {
-      border: 1px solid var(--gray-light); border-radius: var(--radius);
-      margin-bottom: 8px; overflow: hidden;
-    }
-    .tl-row-header, .aw-row-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px; background: var(--bg);
-    }
-    .tl-row-header .row-label, .aw-row-header .row-label {
-      flex: 1; font-size: 13px; font-weight: 600; min-width: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .tl-row-form, .aw-row-form {
-      padding: 14px; border-top: 1px solid var(--gray-light);
-      display: none; background: var(--white);
-    }
-    .tl-row-form.open, .aw-row-form.open { display: block; }
-
-    /* ── DISCORD ── */
-    #discord-panel { display: none; max-width: 600px; }
-    .discord-form {
-      background: var(--white); border: 1px solid var(--gray-light);
-      border-radius: 6px; padding: 24px;
-    }
-    .discord-form h2 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
-    .file-drop {
-      border: 2px dashed var(--gray-light); border-radius: var(--radius);
-      padding: 20px; text-align: center; cursor: pointer;
-      transition: border-color var(--transition); margin-bottom: 16px;
-      color: var(--gray-mid); font-size: 13px;
-    }
-    .file-drop:hover { border-color: var(--red); color: var(--black); }
-    .file-drop.has-file { border-color: var(--red); border-style: solid; }
-    .file-preview {
-      display: none; align-items: center; gap: 12px;
-      padding: 10px; background: var(--bg);
-      border-radius: var(--radius); margin-bottom: 16px;
-    }
-    .file-preview.show { display: flex; }
-    .file-preview img { width: 56px; height: 56px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
-    .file-preview .file-info { flex: 1; min-width: 0; }
-    .file-preview .file-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .file-preview .file-size { font-size: 12px; color: var(--gray-mid); margin-top: 2px; }
-    .file-preview .file-size .compressed { color: #1a5c2e; font-weight: 600; }
-    .btn-remove-file { background: none; border: none; cursor: pointer; color: var(--gray-mid); padding: 4px; border-radius: var(--radius); }
-    .btn-remove-file:hover { color: var(--red); }
-    .discord-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-    .char-count { font-size: 11px; color: var(--gray-mid); text-align: right; margin-top: 4px; }
-    #status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--black); color: var(--white);
-      padding: 12px 24px; font-size: 13px;
-      display: none; align-items: center; gap: 10px; z-index: 300;
-    }
-    #status-bar.show { display: flex; }
-    #status-bar.error   { background: #7a0000; }
-    #status-bar.success { background: #1a5c2e; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .mobile-header { display: flex; }
-      .admin-sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-        top: 0;
-      }
-      .admin-sidebar.open { transform: translateX(0); }
-      .admin-main { margin-left: 0; max-width: 100%; padding: 20px 16px 80px; }
-      .admin-layout { display: block; }
-    }
-    @media (max-width: 560px) {
-      .form-card { padding: 24px 16px; }
-      .form-row-2 { grid-template-columns: 1fr; }
-      .form-row-3 { grid-template-columns: 1fr; }
-      .date-badge { display: none; }
-      .btn-icon span { display: none; }
-      .toolbar { flex-direction: column; align-items: flex-start; }
-      .toolbar-right { width: 100%; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Správa webu – 10men</title>
+<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/images/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#EE220C;--red-d:#c41a09;--ink:#111;--muted:#6e6e73;--line:#e5e5ea;--bg:#f2f2f7;--card:#fff;--ok:#1a8a4a;--warn:#b26a00;--r:16px;--nav-h:64px;--side:232px}
+@media(prefers-color-scheme:dark){:root{--ink:#f5f5f7;--muted:#98989f;--line:#2c2c2e;--bg:#000;--card:#1c1c1e}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Work Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+/* přihlášení */
+#login{min-height:100vh;display:grid;place-items:center;padding:24px;background:#111}
+.login-card{background:var(--card);border-radius:24px;padding:40px 32px;max-width:380px;width:100%;text-align:center}
+.login-card h1{font-size:28px;font-weight:800;letter-spacing:-.03em}.login-card h1 span{color:var(--red)}
+.login-card p{color:var(--muted);margin:8px 0 28px;font-size:14px}
+.login-card .err{color:var(--red);font-size:13px;margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:10px 18px;font-weight:600;font-size:14px;background:color-mix(in srgb,var(--ink) 8%,transparent);transition:background .15s}
+.btn:hover{background:color-mix(in srgb,var(--ink) 14%,transparent)}
+.btn.primary{background:var(--red);color:#fff}.btn.primary:hover{background:var(--red-d)}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.danger{color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.wide{width:100%;padding:14px}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:10px}
+/* kostra */
+#app{display:grid;grid-template-columns:var(--side) 1fr;min-height:100vh}
+aside{background:#111;color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+aside .brand{font-size:20px;font-weight:800;letter-spacing:-.03em;padding:0 10px 18px}aside .brand span{color:var(--red)}
+.nav-b{display:flex;align-items:center;gap:12px;width:100%;border:none;background:transparent;color:#bbb;padding:11px 12px;border-radius:12px;font-weight:600;text-align:left}
+.nav-b:hover{background:#1d1d1f;color:#fff}.nav-b.on{background:rgba(238,34,12,.16);color:#fff}
+.nav-b svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav-b .dot{margin-left:auto;min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 6px}
+aside .who{margin-top:auto;padding:12px;font-size:13px;color:#999;border-top:1px solid #222}aside .who b{display:block;color:#fff;font-size:14px}aside .who button{margin-top:8px;background:none;border:none;color:#999;padding:0;text-decoration:underline;font-size:13px}
+main{min-width:0;padding:28px 32px 48px;max-width:1040px;width:100%}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.top h1{font-size:26px;font-weight:800;letter-spacing:-.03em;flex:1;min-width:160px}
+.pub-state{font-size:13px;color:var(--muted)}.pub-state.dirty{color:var(--warn);font-weight:600}
+.card{background:var(--card);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card h2{font-size:15px;font-weight:700;margin-bottom:4px}.card .sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.row{display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:none}
+.row .date{width:52px;flex:none;text-align:center;line-height:1.1}.row .date b{display:block;font-size:22px;font-weight:800}.row .date small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.row .info{flex:1;min-width:0}.row .info .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row .info .m{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{display:inline-block;padding:1px 9px;border-radius:999px;font-size:11px;font-weight:700;background:color-mix(in srgb,var(--muted) 16%,transparent);color:var(--muted);white-space:nowrap}
+.chip.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.chip.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}.chip.red{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
+.seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:color-mix(in srgb,var(--ink) 7%,transparent);margin-bottom:16px;overflow-x:auto}
+.seg button{flex:1;border:none;background:transparent;padding:8px 14px;border-radius:10px;font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.empty{color:var(--muted);text-align:center;padding:28px 8px;font-size:14px}
+.hint{font-size:12px;color:var(--muted)}
+.work{font-size:12px;color:var(--warn)}
+/* formuláře */
+label.l{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px}
+input[type=text],input[type=date],input[type=time],input[type=url],input[type=number],textarea,select{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--red)}
+textarea{resize:vertical;min-height:84px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lang-tabs{display:flex;gap:6px;margin:14px 0 4px;align-items:center;flex-wrap:wrap}
+.lang-tabs button.lt{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:4px 14px;font-weight:700;font-size:12px;color:var(--muted)}.lang-tabs button.lt.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.lang-tabs .tr{margin-left:auto}
+.lp{display:none}.lp.on{display:block}
+/* modální okna */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:100}
+.dlg{background:var(--card);border-radius:22px;width:100%;max-width:560px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.dlg.big{max-width:880px}
+.dlg header{display:flex;align-items:center;gap:12px;padding:18px 22px 10px}.dlg header h2{flex:1;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.dlg header .x{border:none;background:color-mix(in srgb,var(--ink) 8%,transparent);width:34px;height:34px;border-radius:50%;font-size:16px}
+.dlg .body{padding:6px 22px 18px;overflow-y:auto;flex:1}
+.dlg footer{display:flex;gap:10px;justify-content:flex-end;padding:14px 22px;border-top:1px solid var(--line);flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:22px}
+.panel{background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:14px;padding:14px;margin-top:14px}
+.panel h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.find{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:13px}.find:first-of-type{border-top:none}
+.find input{margin-top:3px;width:18px;height:18px;flex:none}.find.block{color:var(--red)}
+.find b{font-weight:700}.find .where{color:var(--muted);font-size:12px}
+iframe.pv{width:100%;height:230px;border:1px solid var(--line);border-radius:12px;background:#fafaf8}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:11px 18px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:200;max-width:calc(100vw - 32px)}
+#toast.show{opacity:1;transform:translateX(-50%)}#toast.err{background:var(--red)}
+.tl-row{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.tl-row:first-of-type{border-top:none}.tl-row .y{font-weight:800;width:48px}.tl-row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted);cursor:pointer}.drop img{max-width:160px;max-height:120px;border-radius:10px;margin:8px auto 0;display:block}
+/* mobil */
+#bar{display:none}
+@media(max-width:820px){
+  #app{display:block}aside{display:none}
+  main{padding:16px 16px calc(var(--nav-h) + 28px)}
+  .top h1{font-size:22px}
+  #bar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));height:var(--nav-h);background:var(--card);border-radius:26px;box-shadow:0 8px 30px rgba(0,0,0,.18);z-index:50;padding:6px}
+  #bar button{flex:1;border:none;background:transparent;border-radius:20px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;position:relative}
+  #bar button.on{color:var(--red);background:color-mix(in srgb,var(--red) 10%,transparent)}
+  #bar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  #bar .dot{position:absolute;top:6px;right:22%;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;display:grid;place-items:center;padding:0 4px}
+  .ov{padding:0;align-items:flex-end}.dlg,.dlg.big{max-width:none;border-radius:22px 22px 0 0;max-height:94vh}
+  .cols{grid-template-columns:1fr}.grid2{grid-template-columns:1fr 1fr}
+  .row .info .t,.row .info .m{white-space:normal}
+  .dlg footer{display:grid;grid-template-columns:1fr 1fr;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  .dlg footer .btn.primary{grid-column:1/-1;order:-2}
+  .dlg footer [data-save]{grid-column:1/-1;order:-1}
+  .dlg footer [data-del]{margin:0!important}
+  #toast{top:calc(14px + env(safe-area-inset-top));bottom:auto;transform:translateX(-50%) translateY(-20px)}
+  #toast.show{transform:translateX(-50%)}
+}
+</style>
 </head>
 <body>
-
-<!-- LOGIN -->
-<div id="screen-login">
-  <div class="login-card">
-    <div class="logo">10<span>men</span></div>
-    <p>Správa webu – přihlaste se firemním účtem</p>
-    <button class="btn-google" id="btn-login">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.6 20-21 0-1.4-.1-2.7-.5-4z"/></svg>
-      Přihlásit přes Google
-    </button>
-  </div>
+<div id="login" class="hidden"><div class="login-card"><h1>10<span>men</span> · správa webu</h1><p>Přihlaste se účtem, který používáte v 10base a 10space.</p><button class="btn primary wide" id="btn-login">Přihlásit se přes Google</button><div class="err" id="login-err"></div></div></div>
+<div id="denied" class="hidden" style="min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center"><div class="card" style="max-width:420px"><h2 style="font-size:20px">Nemáte přístup ke správě webu</h2><p class="sub" style="margin:10px 0 18px">Přístup uděluje administrátor. Ozvěte se mu a uveďte e-mail, kterým jste se přihlásili.</p><button class="btn" id="btn-denied-out">Odhlásit se</button></div></div>
+<div id="app" class="hidden">
+  <aside>
+    <div class="brand">10<span>men</span> web</div>
+    <div id="nav-d"></div>
+    <div class="who"><b id="who-name"></b><span id="who-mail"></span><br><button id="btn-out">Odhlásit se</button></div>
+  </aside>
+  <main>
+    <div class="top"><h1 id="title"></h1><span class="pub-state" id="pubstate"></span><button class="btn primary" id="btn-publish">Zveřejnit změny</button></div>
+    <div id="view"></div>
+  </main>
+  <nav id="bar"></nav>
 </div>
-
-<!-- APP -->
-<div id="screen-app">
-
-  <!-- Mobile header -->
-  <header class="mobile-header">
-    <button class="btn-hamburger" id="btn-menu" aria-label="Menu">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <span class="mobile-page-title" id="mobile-page-title">Nadcházející akce</span>
-  </header>
-
-  <!-- Sidebar overlay -->
-  <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-  <div class="admin-layout">
-
-    <!-- Sidebar -->
-    <aside class="admin-sidebar" id="admin-sidebar">
-      <div class="sidebar-logo">
-        <img src="/images/logo.jpg" alt="10men – vokální skupina">
-        <div class="logo-sub">Admin portal</div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <button class="nav-item active" data-tab="upcoming">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-          Nadcházející akce
-        </button>
-        <button class="nav-item" data-tab="past">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          Proběhlé akce
-        </button>
-        <button class="nav-item" data-tab="pages">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Stránky
-        </button>
-        <button class="nav-item" data-tab="discord">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Discord
-        </button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="sidebar-profile">
-          <div class="profile-photo-wrap">
-            <img id="profile-photo" src="" alt="profil">
-          </div>
-          <div class="profile-info">
-            <div class="profile-email" id="pd-email"></div>
-            <button class="btn-logout" id="btn-logout">Odhlásit</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="admin-main">
-
-      <!-- Toolbar pro koncerty -->
-      <div class="toolbar" id="concerts-toolbar">
-        <h2 id="tab-title">Nadcházející akce</h2>
-        <div class="toolbar-right">
-          <button class="btn btn-dark" id="btn-generate">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Zveřejnit změny
-          </button>
-          <button class="btn btn-primary" id="btn-add">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Přidat akci
-          </button>
-        </div>
-      </div>
-
-      <div id="concert-list"><div class="empty-state">Načítám…</div></div>
-
-      <!-- Pages panel -->
-      <div id="pages-panel">
-        <div class="toolbar">
-          <h2>Stránka: O nás</h2>
-          <div class="toolbar-right">
-            <button class="btn btn-dark" id="btn-onas-generate">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Zveřejnit změny
-            </button>
-            <button class="btn btn-primary" id="btn-onas-save">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Uložit
-            </button>
-          </div>
-        </div>
-
-        <!-- Úvod -->
-        <div class="pe-section">
-          <button class="pe-toggle open" data-pe="uvod">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Úvod
-          </button>
-          <div class="pe-body open" id="pe-uvod">
-            <div class="form-row" style="margin-top:4px">
-              <div class="field-header">
-                <label>Perex</label>
-                <button class="btn-translate pe-translate" data-key="lead">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-lead-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-lead-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-lead-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-lead-es" rows="2"></textarea>
-            </div>
-            <hr class="form-divider">
-            <div class="form-row">
-              <div class="field-header">
-                <label>Odstavec 1</label>
-                <button class="btn-translate pe-translate" data-key="p1">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-p1-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-p1-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-p1-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-p1-es" rows="2"></textarea>
-            </div>
-            <hr class="form-divider">
-            <div class="form-row">
-              <div class="field-header">
-                <label>Odstavec 2</label>
-                <button class="btn-translate pe-translate" data-key="p2">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-p2-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-p2-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-p2-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-p2-es" rows="2"></textarea>
-            </div>
-            <hr class="form-divider">
-            <div class="form-row">
-              <div class="field-header">
-                <label>Odstavec 3</label>
-                <button class="btn-translate pe-translate" data-key="p3">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-p3-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-p3-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-p3-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-p3-es" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Umělecký vedoucí -->
-        <div class="pe-section">
-          <button class="pe-toggle" data-pe="conductor">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Umělecký vedoucí
-          </button>
-          <div class="pe-body" id="pe-conductor">
-            <div class="form-row" style="margin-top:4px">
-              <label>Jméno</label>
-              <input type="text" id="onas-conductor-name" placeholder="Karel Špinka">
-            </div>
-            <div class="form-row">
-              <div class="field-header">
-                <label>Biografie</label>
-                <button class="btn-translate pe-translate" data-key="conductor-bio">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  Přeložit
-                </button>
-              </div>
-              <span class="lang-label primary">CS</span><textarea id="onas-conductor-bio-cs" rows="3"></textarea>
-              <span class="lang-label">EN</span><textarea id="onas-conductor-bio-en" rows="2"></textarea>
-              <span class="lang-label">DE</span><textarea id="onas-conductor-bio-de" rows="2"></textarea>
-              <span class="lang-label">ES</span><textarea id="onas-conductor-bio-es" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- Timeline -->
-        <div class="pe-section">
-          <button class="pe-toggle" data-pe="timeline">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Timeline
-          </button>
-          <div class="pe-body" id="pe-timeline">
-            <div id="tl-list" style="margin-top:4px"></div>
-            <button class="btn btn-secondary" id="btn-tl-add" style="margin-top:8px">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Přidat rok
-            </button>
-          </div>
-        </div>
-
-        <!-- Ocenění -->
-        <div class="pe-section">
-          <button class="pe-toggle" data-pe="awards">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            Ocenění
-          </button>
-          <div class="pe-body" id="pe-awards">
-            <div id="aw-list" style="margin-top:4px"></div>
-            <button class="btn btn-secondary" id="btn-aw-add" style="margin-top:8px">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Přidat ocenění
-            </button>
-          </div>
-        </div>
-
-      </div><!-- /#pages-panel -->
-
-      <!-- Discord panel -->
-      <div id="discord-panel">
-        <div class="discord-form">
-          <h2>Nová zpráva na Discord</h2>
-
-          <div class="form-row">
-            <label>Text zprávy</label>
-            <textarea id="discord-text" rows="5" placeholder="Napište zprávu pro Discord…" maxlength="2000"></textarea>
-            <div class="char-count"><span id="discord-char">0</span> / 2000</div>
-          </div>
-
-          <input type="file" id="discord-file-input" accept="image/*" style="display:none">
-          <div class="file-drop" id="discord-file-drop">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <div>Přidat fotku (nepovinné)</div>
-            <div style="font-size:11px;margin-top:4px">Klikni nebo přetáhni sem · max 8 MB</div>
-          </div>
-
-          <div class="file-preview" id="discord-file-preview">
-            <img id="discord-file-thumb" src="" alt="">
-            <div class="file-info">
-              <div class="file-name" id="discord-file-name"></div>
-              <div class="file-size" id="discord-file-size"></div>
-            </div>
-            <button class="btn-remove-file" id="discord-file-remove">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-
-          <div class="discord-actions">
-            <button class="btn btn-secondary" id="discord-cancel">Zrušit</button>
-            <button class="btn btn-primary" id="discord-send">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Odeslat na Discord
-            </button>
-          </div>
-        </div>
-      </div><!-- /#discord-panel -->
-
-    </main>
-  </div><!-- /.admin-layout -->
-
-</div><!-- /#screen-app -->
-
-<!-- FORM OVERLAY -->
-<div id="form-overlay">
-  <div class="form-card">
-    <button class="form-close" id="form-close">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <h3 id="form-title">Nová akce</h3>
-
-    <div class="form-row">
-      <label>Název akce (česky)</label>
-      <input type="text" id="f-title" placeholder="Např. Letní interference: 10men & Verum">
-    </div>
-    <div class="form-row-2">
-      <div><label>Datum</label><input type="date" id="f-date"></div>
-      <div id="f-time-row"><label>Čas (nepovinné)</label><input type="time" id="f-time"></div>
-    </div>
-
-    <div id="upcoming-fields">
-      <div class="form-row">
-        <label>Místo / adresa</label>
-        <input type="text" id="f-venue" placeholder="Např. Husův sbor CČSH, Dykova 51/1, Praha 10">
-      </div>
-      <div class="form-row">
-        <div class="translate-header">
-          <label style="margin:0">Popis akce</label>
-          <button class="btn-translate" id="btn-translate">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            Přeložit EN / DE / ES
-          </button>
-        </div>
-        <div class="lang-tabs">
-          <button class="lang-tab active" data-lang="cs">CS</button>
-          <button class="lang-tab" data-lang="en">EN</button>
-          <button class="lang-tab" data-lang="de">DE</button>
-          <button class="lang-tab" data-lang="es">ES</button>
-        </div>
-        <div class="lang-panel active" data-lang="cs"><textarea id="f-desc-cs" placeholder="Napište český popis akce…"></textarea></div>
-        <div class="lang-panel" data-lang="en"><textarea id="f-desc-en" placeholder="English description…"></textarea></div>
-        <div class="lang-panel" data-lang="de"><textarea id="f-desc-de" placeholder="Deutsche Beschreibung…"></textarea></div>
-        <div class="lang-panel" data-lang="es"><textarea id="f-desc-es" placeholder="Descripción en español…"></textarea></div>
-      </div>
-      <hr class="form-divider">
-      <div class="form-row-2">
-        <div><label>Google Maps odkaz</label><input type="url" id="f-maps" placeholder="https://maps.app.goo.gl/…"></div>
-        <div><label>FB událost (nepovinné)</label><input type="url" id="f-fb" placeholder="https://facebook.com/events/…"></div>
-      </div>
-      <div class="form-row">
-        <label>Vstupenky (nepovinné)</label>
-        <input type="url" id="f-tickets" placeholder="https://…">
-      </div>
-    </div>
-
-    <div id="past-fields" style="display:none">
-      <div class="form-row">
-        <label>URL fotografií (nepovinné)</label>
-        <input type="url" id="f-photos" placeholder="https://photos.app.goo.gl/…">
-      </div>
-      <div class="form-row">
-        <div class="checkbox-row">
-          <input type="checkbox" id="f-highlight">
-          <label for="f-highlight">Zvýraznit tučně (soutěžní výsledek, výroční akce)</label>
-        </div>
-      </div>
-      <button class="section-toggle" id="toggle-advanced">
-        <svg id="adv-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        Pokročilé: vlastní zobrazení data
-      </button>
-      <div class="advanced-section" id="advanced-section">
-        <p style="font-size:12px;color:var(--gray-mid);margin-bottom:12px">Vyplň jen pokud je datum rozsah (např. "4.–6. října 2024").</p>
-        <div class="form-row-2">
-          <div><label>Datum CS</label><input type="text" id="f-dd-cs" placeholder="4.–6. října 2024"></div>
-          <div><label>Datum EN</label><input type="text" id="f-dd-en" placeholder="October 4–6, 2024"></div>
-        </div>
-        <div class="form-row-2">
-          <div><label>Datum DE</label><input type="text" id="f-dd-de" placeholder="4.–6. Oktober 2024"></div>
-          <div><label>Datum ES</label><input type="text" id="f-dd-es" placeholder="4–6 de octubre de 2024"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button class="btn btn-secondary" id="btn-cancel">Zrušit</button>
-      <button class="btn btn-primary" id="btn-save">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Uložit
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- STATUS BAR -->
-<div id="status-bar">
-  <span id="status-icon"></span>
-  <span id="status-text"></span>
-</div>
-
-<!-- SCRIPT -->
+<div id="toast"></div>
 <script type="module">
-import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import imageCompression                           from 'https://cdn.skypack.dev/browser-image-compression';
-import { getAuth, GoogleAuthProvider,
-         signInWithPopup, signOut,
-         onAuthStateChanged }                     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, collection, getDocs, getDoc,
-         addDoc, updateDoc, deleteDoc, setDoc, doc,
-         Timestamp, query, orderBy }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+import { getDatabase, ref, onValue, get } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyAI7PK-1bpC2-DTd7QLJ-CMrrqB3Veefz0",
-  authDomain:        "men-web-88372.firebaseapp.com",
-  projectId:         "men-web-88372",
-  storageBucket:     "men-web-88372.firebasestorage.app",
-  messagingSenderId: "516421300705",
-  appId:             "1:516421300705:web:426872d6003bc0ec74e2a0",
-};
-const GITHUB_REPO     = 'sidnexon-bot/10men-web';
-const GITHUB_WORKFLOW = 'generate-concerts.yml';
-const ALLOWLIST = [
-  'sidney4hassane@gmail.com',
-  'lukvorlik@gmail.com',
-  'lebedaantonin22@gmail.com',
-  '13artolomejzverina@gmail.com',
-  'adrian.filcik@gmail.com',
-];
-
+const app = initializeApp({ apiKey: "AIzaSyAjDCB3gpqytTHnG7zKLKJGXMNeW5vyC_I", authDomain: "base-39f52.firebaseapp.com", databaseURL: "https://base-39f52-default-rtdb.europe-west1.firebasedatabase.app", projectId: "base-39f52", appId: "1:20753597026:web:bec0c5a784492206f3c73b" });
+const auth = getAuth(app), db = getDatabase(app);
+const API = 'https://us-central1-base-39f52.cloudfunctions.net/webAdmin';
+const LANGS = ['cs', 'en', 'de', 'es'], LNAME = { cs: 'Česky', en: 'English', de: 'Deutsch', es: 'Español' };
+const MO = ['led', 'úno', 'bře', 'dub', 'kvě', 'čvn', 'čvc', 'srp', 'zář', 'říj', 'lis', 'pro'];
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const IC = {
-  edit:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
-  trash: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
-  star:  `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  globe: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
-  loader:`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>`,
-  check: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-  alert: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-  chevR: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+  home: '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+  cal: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  page: '<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+  chat: '<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+  hist: '<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5M12 8v5l3 2"/></svg>'
+};
+const TABS = [['home', 'Přehled', IC.home], ['events', 'Akce', IC.cal], ['pages', 'Stránky', IC.page], ['discord', 'Discord', IC.chat], ['history', 'Historie', IC.hist]];
+
+/* ── stav ── */
+const S = { user: null, web: {}, tab: 'home', filter: 'upcoming', inbox: null, busy: false, hashes: {} };
+const web = () => S.web || {};
+const concerts = () => Object.entries(web().concerts || {}).map(([id, c]) => ({ id, ...c }));
+
+/* ── pomocné ── */
+let tt; function toast(m, err) { const t = $('#toast'); t.textContent = m; t.className = 'show' + (err ? ' err' : ''); clearTimeout(tt); tt = setTimeout(() => t.className = '', err ? 6000 : 3200); }
+async function call(body) {
+  const tok = await auth.currentUser.getIdToken();
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || 'Akce se nezdařila.'); e.status = r.status; throw e; }
+  return j;
+}
+const canon = v => Array.isArray(v) ? v.map(canon) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
+async function sha256(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+const hashOf = c => sha256(JSON.stringify(canon([c.date, c.time || '', !!c.highlight, c.title || {}, c.venue || {}, c.desc || {}, c.dateDisplay || {}, c.mapsUrl || '', c.fbUrl || '', c.ticketsUrl || '', c.photosUrl || ''])));
+async function reviewed(c) { return !!(c.review && c.review.hash === await hashOf(c)); }
+const fmtWhen = ts => ts ? new Date(ts).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Prague' });
+const stateLabel = { koncept: ['Koncept', ''], zverejneno: ['Zveřejněno', 'ok'], skryto: ['Skryto', 'warn'] };
+
+/* ── modální okna ── */
+function modal({ title, body, footer = '', big = false, onClose }) {
+  const ov = document.createElement('div'); ov.className = 'ov';
+  ov.innerHTML = `<div class="dlg${big ? ' big' : ''}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><header><h2>${esc(title)}</h2><button class="x" aria-label="Zavřít" data-x>✕</button></header><div class="body">${body}</div>${footer ? `<footer>${footer}</footer>` : ''}</div>`;
+  document.body.appendChild(ov);
+  const close = () => { ov.remove(); document.removeEventListener('keydown', key, true); onClose && onClose(); };
+  const key = e => { if (e.key === 'Escape' && ov === [...document.querySelectorAll('.ov')].pop()) { e.stopPropagation(); close(); } };
+  document.addEventListener('keydown', key, true);
+  ov.addEventListener('mousedown', e => { if (e.target === ov) close(); });
+  $('[data-x]', ov).onclick = close;
+  return { ov, close };
+}
+function ask(title, text, okLabel = 'Pokračovat', danger = false) {
+  return new Promise(res => {
+    const m = modal({ title, body: `<p style="margin:6px 0 4px;white-space:pre-line">${esc(text)}</p>`, footer: `<button class="btn" data-n>Zrušit</button><button class="btn ${danger ? 'danger' : 'primary'}" data-y>${esc(okLabel)}</button>`, onClose: () => res(false) });
+    $('[data-n]', m.ov).onclick = () => m.close();
+    $('[data-y]', m.ov).onclick = () => { m.ov.remove(); res(true); };
+  });
+}
+async function guarded(btn, fn) { if (btn) btn.disabled = true; try { return await fn(); } catch (e) { toast(e.message, true); } finally { if (btn) btn.disabled = false; } }
+
+/* ── vícejazyčná pole ── */
+function locBlock(id, fields, v = {}) {
+  return `<div class="lb" id="${id}"><div class="lang-tabs">${LANGS.map((l, i) => `<button type="button" class="lt${i ? '' : ' on'}" data-lang="${l}">${l.toUpperCase()}</button>`).join('')}<button type="button" class="btn sm tr" data-translate>Přeložit do EN / DE / ES</button></div>${LANGS.map((l, i) => `<div class="lp${i ? '' : ' on'}" data-lp="${l}">${fields.map(f => `<label class="l">${esc(f.label)} <span class="hint">(${LNAME[l]}${l === 'cs' && f.req ? ', povinné' : ''})</span></label>${f.area ? `<textarea data-f="${f.key}" data-l="${l}" maxlength="${f.max}" rows="${f.rows || 3}">${esc((v[f.key] || {})[l] || '')}</textarea>` : `<input type="text" data-f="${f.key}" data-l="${l}" maxlength="${f.max}" value="${esc((v[f.key] || {})[l] || '')}">`}`).join('')}</div>`).join('')}</div>`;
+}
+function readLoc(root, fields) { const o = {}; fields.forEach(f => { o[f.key] = {}; LANGS.forEach(l => { const el = $(`[data-f="${f.key}"][data-l="${l}"]`, root); const t = el ? el.value.trim() : ''; if (t) o[f.key][l] = t; }); }); return o; }
+function wireLoc(root, fields, onChange) {
+  $$('.lt', root).forEach(b => b.onclick = () => { $$('.lt', root).forEach(x => x.classList.toggle('on', x === b)); $$('.lp', root).forEach(p => p.classList.toggle('on', p.dataset.lp === b.dataset.lang)); });
+  $$('input,textarea', root).forEach(e => e.addEventListener('input', () => onChange && onChange()));
+  const tb = $('[data-translate]', root);
+  tb.onclick = () => guarded(tb, async () => {
+    const cs = readLoc(root, fields), keys = fields.filter(f => cs[f.key].cs);
+    if (!keys.length) { toast('Nejdřív vyplň český text.', true); return; }
+    tb.textContent = 'Překládám…';
+    try {
+      const r = await call({ action: 'translate', texts: keys.map(f => cs[f.key].cs) });
+      keys.forEach((f, i) => ['en', 'de', 'es'].forEach(l => { const el = $(`[data-f="${f.key}"][data-l="${l}"]`, root); if (el) el.value = r.translations[i][l]; }));
+      onChange && onChange(); toast('Přeloženo. Překlady si prosím přečtěte.');
+    } finally { tb.textContent = 'Přeložit do EN / DE / ES'; }
+  });
+}
+
+/* ── vykreslení ── */
+const dirtyChanges = () => { const p = web().published; const t = p ? p.publishedAt : 0; return concerts().some(c => (c.updatedAt || 0) > t) || ['site'].some(k => (web()[k] || {}).updatedAt > t) || ((web().pages || {})['o-nas'] || {}).updatedAt > t; };
+function chrome() {
+  const nav = TABS.map(([k, n, ic]) => `<button class="nav-b${S.tab === k ? ' on' : ''}" data-tab="${k}">${ic}${n}${k === 'home' && S.inbox && S.inbox.length ? `<span class="dot">${S.inbox.length}</span>` : ''}</button>`).join('');
+  $('#nav-d').innerHTML = nav;
+  $('#bar').innerHTML = TABS.map(([k, n, ic]) => `<button class="${S.tab === k ? 'on' : ''}" data-tab="${k}">${ic}${n}${k === 'home' && S.inbox && S.inbox.length ? `<span class="dot">${S.inbox.length}</span>` : ''}</button>`).join('');
+  $$('[data-tab]').forEach(b => b.onclick = () => go(b.dataset.tab));
+  $('#title').textContent = TABS.find(t => t[0] === S.tab)[1];
+  const p = web().published, d = dirtyChanges();
+  $('#pubstate').textContent = !p ? 'Zatím nic nezveřejněno' : d ? `Neuložené změny na webu · naposledy ${fmtWhen(p.publishedAt)}` : `Web je aktuální · ${fmtWhen(p.publishedAt)}`;
+  $('#pubstate').className = 'pub-state' + (d || !p ? ' dirty' : '');
+}
+function go(tab) { S.tab = tab; render(); if (tab === 'home') loadInbox(); }
+async function render() {
+  chrome();
+  const v = $('#view');
+  if (S.tab === 'home') await viewHome(v); else if (S.tab === 'events') await viewEvents(v); else if (S.tab === 'pages') viewPages(v); else if (S.tab === 'discord') viewDiscord(v); else viewHistory(v);
+}
+async function loadInbox() { try { S.inbox = (await call({ action: 'inbox' })).items; } catch (e) { S.inbox = []; } if (S.tab === 'home') render(); else chrome(); }
+
+async function concertRow(c, opts = {}) {
+  const d = new Date(c.date + 'T00:00:00'), t = (c.title || {}).cs, rev = await reviewed(c), [sl, sc] = stateLabel[c.status] || stateLabel.koncept;
+  const flags = [`<span class="chip ${sc}">${sl}</span>`, c.status === 'zverejneno' ? (rev ? '<span class="chip ok">Zkontrolováno</span>' : '<span class="chip warn">Čeká na kontrolu</span>') : ''].join(' ');
+  return `<div class="row" data-id="${esc(c.id)}"><div class="date"><b>${d.getDate()}</b><small>${MO[d.getMonth()]}</small></div><div class="info"><div class="t">${t ? esc(t) : '<i>(bez názvu)</i>'}</div><div class="m">${esc((c.venue || {}).cs || 'bez místa')}${c.time ? ' · ' + esc(c.time) : ''} ${flags}</div></div><button class="btn sm" data-edit="${esc(c.id)}">Upravit</button></div>`;
+}
+async function viewHome(v) {
+  const list = concerts(), todo = [];
+  for (const c of list) if (c.status === 'zverejneno' && !(await reviewed(c))) todo.push(c);
+  const rows = (await Promise.all(todo.map(c => concertRow(c)))).join('');
+  const inbox = S.inbox;
+  v.innerHTML = `
+  <div class="card"><h2>Návrhy z 10base</h2><p class="sub">Nadcházející vystoupení a soutěže, které ještě nemají koncept. Pracovní název ani poznámky se na web nepřenášejí, veřejnou podobu si připravíte sami.</p>
+    ${inbox === null ? '<div class="empty">Načítám…</div>' : !inbox.length ? '<div class="empty">Žádné nové návrhy.</div>' : inbox.map(i => { const d = new Date(i.date + 'T00:00:00'); return `<div class="row"><div class="date"><b>${d.getDate()}</b><small>${MO[d.getMonth()]}</small></div><div class="info"><div class="t">${esc(i.workingName)}</div><div class="m">${esc(i.place || 'místo neuvedeno')}${i.time ? ' · ' + esc(i.time) : ''} <span class="work">pracovní název</span></div></div><button class="btn sm primary" data-import="${esc(i.akceId)}">Převzít</button></div>`; }).join('')}</div>
+  <div class="card"><h2>Čeká na kontrolu</h2><p class="sub">Zveřejněné akce, u kterých po poslední úpravě nebyla potvrzena kontrola. Bez ní se na web nedostanou.</p>${rows || '<div class="empty">Vše je zkontrolováno.</div>'}</div>
+  <div class="card"><h2>Jak zveřejňování funguje</h2><p class="sub" style="margin:0">1. Převezmete akci z 10base nebo založíte novou. 2. Vyplníte veřejný název, místo a popis a necháte přeložit. 3. Spustíte kontrolu úniků interních informací a potvrdíte ji. 4. Nastavíte stav „Zveřejněno“ a kliknete na <b>Zveřejnit změny</b>.</p></div>`;
+  $$('[data-import]', v).forEach(b => b.onclick = () => guarded(b, async () => { const r = await call({ action: 'concert_import', akceId: b.dataset.import }); S.inbox = (S.inbox || []).filter(x => x.akceId !== b.dataset.import); await waitFor(() => (web().concerts || {})[r.concert.id]); openEditor(r.concert.id); }));
+  $$('[data-edit]', v).forEach(b => b.onclick = () => openEditor(b.dataset.edit));
+}
+function waitFor(fn, ms = 4000) { return new Promise(res => { const t0 = Date.now(); (function p() { if (fn() || Date.now() - t0 > ms) return res(); setTimeout(p, 60); })(); }); }
+async function viewEvents(v) {
+  const td = today(), all = concerts();
+  const F = { upcoming: c => c.status !== 'skryto' && c.date >= td && c.status !== 'koncept', draft: c => c.status === 'koncept', past: c => c.status === 'zverejneno' && c.date < td, hidden: c => c.status === 'skryto' };
+  const sel = S.filter, list = all.filter(F[sel]).sort((a, b) => sel === 'past' ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date));
+  const cnt = k => all.filter(F[k]).length;
+  const rows = (await Promise.all(list.map(c => concertRow(c)))).join('');
+  v.innerHTML = `<div class="seg" role="tablist">${[['upcoming', 'Nadcházející'], ['draft', 'Koncepty'], ['past', 'Archiv'], ['hidden', 'Skryté']].map(([k, n]) => `<button class="${sel === k ? 'on' : ''}" data-f="${k}">${n} (${cnt(k)})</button>`).join('')}</div>
+    <div class="card" style="padding:8px 20px"><div style="display:flex;justify-content:flex-end;padding:8px 0"><button class="btn primary sm" id="btn-new">+ Nová akce</button></div>${rows || '<div class="empty">Žádné akce v tomto přehledu.</div>'}</div>`;
+  $$('[data-f]', v).forEach(b => b.onclick = () => { S.filter = b.dataset.f; render(); });
+  $('#btn-new', v).onclick = () => openEditor(null);
+  $$('[data-edit]', v).forEach(b => b.onclick = () => openEditor(b.dataset.edit));
+}
+
+/* ── editor akce ── */
+let siteCss = null;   // styl karty akce je na webu vložený přímo ve stránce koncertů, proto se stáhne odtud (zůstane v souladu s webem)
+async function loadSiteCss() { if (siteCss !== null) return siteCss; try { const h = await (await fetch('/koncerty/')).text(); siteCss = (h.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || []).map(x => x.replace(/<\/?style[^>]*>/gi, '')).join('\n'); } catch (e) { siteCss = ''; } return siteCss; }
+const CF = [{ key: 'title', label: 'Název', max: 120, req: true }, { key: 'venue', label: 'Místo', max: 160 }, { key: 'desc', label: 'Popis', max: 700, area: true, rows: 4 }];
+async function openEditor(id) {
+  const cur = id ? (web().concerts || {})[id] : null;
+  const c0 = cur || { date: today(), time: '', status: 'koncept', highlight: false, akceId: null, title: {}, venue: {}, desc: {}, dateDisplay: {}, mapsUrl: '', fbUrl: '', ticketsUrl: '', photosUrl: '', version: 0 };
+  let working = '';
+  if (c0.akceId) { try { const a = (await get(ref(db, '/akce/' + c0.akceId))).val(); working = a && a.name || ''; } catch (e) { } }
+  let rec = { id, ...c0 }, dirty = false;
+  const m = modal({ big: true, title: id ? 'Upravit akci' : 'Nová akce', onClose: () => { }, body: `
+  <div class="cols"><div>
+    ${working ? `<div class="panel" style="margin-top:6px"><span class="work">Pracovní název v 10base: <b>${esc(working)}</b></span><div class="hint">Na web se nepřenáší. Veřejný název napište níže.</div></div>` : ''}
+    <div class="grid2"><div><label class="l">Datum</label><input type="date" id="e-date" value="${esc(c0.date)}"></div><div><label class="l">Čas</label><input type="time" id="e-time" value="${esc(c0.time || '')}"></div></div>
+    <label class="l">Stav na webu</label><select id="e-status"><option value="koncept">Koncept (zatím nezveřejňovat)</option><option value="zverejneno">Zveřejnit na webu</option><option value="skryto">Skryto</option></select>
+    ${locBlock('e-loc', CF, c0)}
+    <label class="l">Odkaz na mapu</label><input type="url" id="e-maps" value="${esc(c0.mapsUrl || '')}" placeholder="https://maps.app.goo.gl/…">
+    <label class="l">Facebooková událost</label><input type="url" id="e-fb" value="${esc(c0.fbUrl || '')}" placeholder="https://facebook.com/events/…">
+    <label class="l">Vstupenky</label><input type="url" id="e-tix" value="${esc(c0.ticketsUrl || '')}" placeholder="https://…">
+    <label class="l">Fotografie (po akci)</label><input type="url" id="e-photos" value="${esc(c0.photosUrl || '')}" placeholder="https://photos.app.goo.gl/…">
+    <details style="margin-top:14px"><summary class="hint" style="cursor:pointer">Další: zobrazené datum v archivu, zvýraznění</summary>
+      ${locBlock('e-dd', [{ key: 'dateDisplay', label: 'Zobrazené datum (např. 4.–6. října 2024)', max: 60 }], { dateDisplay: c0.dateDisplay || {} })}
+      <label class="l"><input type="checkbox" id="e-hl" ${c0.highlight ? 'checked' : ''} style="width:auto;margin-right:8px">Zvýraznit v archivu (tučně)</label></details>
+  </div><div>
+    <div class="panel" style="margin-top:6px"><h3>Náhled na webu</h3><div class="hint" style="margin-bottom:8px">Karta nadcházející akce v češtině.</div><iframe class="pv" id="e-pv" sandbox title="Náhled"></iframe></div>
+    <div class="panel"><h3>Kontrola před zveřejněním</h3><div id="e-rev"></div></div>
+  </div></div>`, footer: `${id ? '<button class="btn danger" data-del style="margin-right:auto">Smazat</button>' : ''}<button class="btn" data-n>Zavřít</button><button class="btn" data-save>Uložit koncept</button><button class="btn primary" data-check>Zkontrolovat a potvrdit</button>` });
+  const ov = m.ov; $('#e-status', ov).value = c0.status || 'koncept';
+  const read = () => {
+    const l = readLoc($('#e-loc', ov), CF), dd = readLoc($('#e-dd', ov), [{ key: 'dateDisplay' }]).dateDisplay;
+    return { date: $('#e-date', ov).value, time: $('#e-time', ov).value, status: $('#e-status', ov).value, highlight: $('#e-hl', ov).checked, akceId: c0.akceId || null, title: l.title, venue: l.venue, desc: l.desc, dateDisplay: dd, mapsUrl: $('#e-maps', ov).value.trim(), fbUrl: $('#e-fb', ov).value.trim(), ticketsUrl: $('#e-tix', ov).value.trim(), photosUrl: $('#e-photos', ov).value.trim() };
+  };
+  const preview = () => {
+    const c = read(), d = new Date((c.date || today()) + 'T00:00:00'), t = esc(c.title.cs || 'Název akce'), mo = ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'][d.getMonth()];
+    $('#e-pv', ov).srcdoc = `<!doctype html><meta charset=utf-8><link rel=stylesheet href="/style.css"><style>${siteCss || ''}</style><body style="background:#fafaf8;padding:12px"><div class="event-card open" style="max-width:none"><div class="event-header"><div class="event-date"><div class="day">${d.getDate()}</div><div class="month">${mo}</div></div><div class="event-info"><h3>${t}</h3><div class="event-meta"><span>${esc(c.venue.cs || 'Místo konání')}</span> <span>${esc(c.time || 'čas bude upřesněn')}</span></div></div></div><div class="event-body" style="display:block"><p class="event-desc">${esc(c.desc.cs || '')}</p></div></div>`;
+  };
+  const markDirty = () => { dirty = true; preview(); revState(); };
+  wireLoc($('#e-loc', ov), CF, markDirty); wireLoc($('#e-dd', ov), [{ key: 'dateDisplay' }], markDirty);
+  $$('#e-date,#e-time,#e-status,#e-maps,#e-fb,#e-tix,#e-photos,#e-hl', ov).forEach(e => e.addEventListener('input', markDirty));
+  const save = async () => {
+    const payload = read(); const r = await call({ action: 'concert_save', id: rec.id || undefined, baseVersion: rec.id ? rec.version : undefined, concert: payload });
+    rec = r.concert; dirty = false; await waitFor(() => ((web().concerts || {})[rec.id] || {}).version >= rec.version); revState(); return rec;
+  };
+  let findings = null;
+  async function revState() {
+    const box = $('#e-rev', ov), r = (web().concerts || {})[rec.id] || rec;
+    if (dirty || !rec.id) { box.innerHTML = '<div class="hint">Nejdřív ulož změny, pak lze spustit kontrolu.</div>'; return; }
+    const ok = await reviewed(r);
+    if (findings) {
+      const g = {}; findings.forEach(f => { const k = f.rule + '|' + f.match + '|' + f.field + '|' + f.severity; (g[k] = g[k] || { ...f, ids: [], langs: [] }); g[k].ids.push(f.id); g[k].langs.push(f.lang.toUpperCase()); });
+      const items = Object.values(g), FN = { title: 'Název', venue: 'Místo', desc: 'Popis', dateDisplay: 'Datum' };
+      box.innerHTML = items.length ? `<div class="hint" style="margin-bottom:6px">Zkontrolujte, zda text neobsahuje interní informace. Označte upozornění, která jsou v pořádku.</div>${items.map(f => `<label class="find ${f.severity === 'block' ? 'block' : ''}">${f.severity === 'block' ? '<span style="width:18px;flex:none">⛔</span>' : `<input type="checkbox" data-ack="${esc(f.ids.join(','))}">`}<span><b>${esc(f.label)}</b>: „${esc(f.match)}“<br><span class="where">${esc(FN[f.field] || f.field)} · ${esc(f.langs.join(', '))}${f.severity === 'block' ? ' · nelze zveřejnit, text upravte' : ''}</span></span></label>`).join('')}` : '<div class="find" style="color:var(--ok)">✓ Nenalezeny žádné interní informace.</div>';
+      return;
+    }
+    box.innerHTML = ok ? `<div class="find" style="color:var(--ok)">✓ Zkontrolováno a potvrzeno${r.review && r.review.by ? ' (' + esc(r.review.by.name || '') + ', ' + esc(fmtWhen(r.review.at)) + ')' : ''}</div>` : `<div class="find" style="color:var(--warn)">⚠ Zatím nezkontrolováno. Bez potvrzení se akce na web nedostane.</div>`;
+  }
+  $('[data-n]', ov).onclick = m.close;
+  $('[data-save]', ov).onclick = e => guarded(e.currentTarget, async () => { await save(); toast('Koncept uložen.'); });
+  const del = $('[data-del]', ov); if (del) del.onclick = async () => { if (await ask('Smazat akci?', 'Akce zmizí z konceptů. Z webu zmizí po dalším zveřejnění.', 'Smazat', true)) guarded(null, async () => { await call({ action: 'concert_delete', id: rec.id }); m.close(); toast('Smazáno.'); }); };
+  const chk = $('[data-check]', ov);
+  chk.onclick = () => guarded(chk, async () => {
+    if (!findings) {   // krok 1: uložit a spustit kontrolu
+      await save(); findings = (await call({ action: 'concert_findings', id: rec.id })).findings;
+      if (!findings.length) { await call({ action: 'concert_review', id: rec.id, acknowledged: [] }); toast('Kontrola potvrzena.'); findings = null; await waitFor(() => (web().concerts[rec.id].review)); revState(); return; }
+      chk.textContent = 'Potvrdit kontrolu'; revState(); return;
+    }
+    const ack = $$('[data-ack]:checked', ov).flatMap(x => x.dataset.ack.split(','));   // krok 2: potvrdit
+    await call({ action: 'concert_review', id: rec.id, acknowledged: ack });
+    toast('Kontrola potvrzena.'); findings = null; chk.textContent = 'Zkontrolovat a potvrdit'; await waitFor(() => (web().concerts[rec.id].review)); revState();
+  });
+  loadSiteCss().then(preview); preview(); revState();
+}
+
+/* ── zveřejnění ── */
+$('#btn-publish').onclick = async () => {
+  const list = concerts().filter(c => c.status === 'zverejneno'), ready = [], notReady = [];
+  for (const c of list) (await reviewed(c) ? ready : notReady).push(c);
+  const body = `<p style="margin:6px 0 12px">Na web se dostane <b>${ready.length}</b> ${ready.length === 1 ? 'akce' : 'akcí'} a aktuální stránky „O nás“ a základní údaje.</p>${notReady.length ? `<div class="panel"><h3>Nebudou zveřejněny (chybí kontrola)</h3>${notReady.map(c => `<div class="find"><span>⚠</span><span>${esc((c.title || {}).cs || '(bez názvu)')} · ${esc(c.date)}</span></div>`).join('')}</div>` : ''}<p class="hint" style="margin-top:12px">Stránky se přegenerují během asi minuty.</p>`;
+  const m = modal({ title: 'Zveřejnit změny?', body, footer: '<button class="btn" data-n>Zrušit</button><button class="btn primary" data-y>Zveřejnit</button>' });
+  $('[data-n]', m.ov).onclick = m.close;
+  const y = $('[data-y]', m.ov); y.onclick = () => guarded(y, async () => {
+    const r = await call({ action: 'publish' }); m.close();
+    const lines = [`Zveřejněno akcí: ${r.concerts}.`, r.dispatched ? 'Web se přegeneruje, změny uvidíte asi za minutu.' : (r.dispatchError || ''), ...r.skipped.map(s => `Přeskočeno: ${s.title || '(bez názvu)'} – ${s.reason}`), ...r.warnings.map(w => `Pozor: ${w.title} – ${w.reason}`)].filter(Boolean);
+    modal({ title: 'Hotovo', body: `<p style="margin:6px 0;white-space:pre-line">${esc(lines.join('\n'))}</p>`, footer: '<button class="btn primary" data-y>OK</button>' }); $('.ov:last-child [data-y]').onclick = e => e.target.closest('.ov').remove();
+  });
 };
 
-const app  = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-let currentTab = 'upcoming';
-let concerts   = [];
-let editingId  = null;
-
-// ── Auth ──────────────────────────────────────────────────────────────────────
-document.getElementById('btn-login').addEventListener('click', () => {
-  signInWithPopup(auth, new GoogleAuthProvider()).catch(e => showStatus(e.message, 'error'));
-});
-document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
-
-onAuthStateChanged(auth, user => {
-  if (!user) { show('screen-login'); hide('screen-app'); return; }
-  if (ALLOWLIST.length > 0 && !ALLOWLIST.includes(user.email)) {
-    signOut(auth); alert(`Přístup odepřen: ${user.email}`); return;
-  }
-  document.getElementById('profile-photo').src = user.photoURL || '';
-  document.getElementById('pd-email').textContent = user.displayName || user.email;
-
-  show('screen-app'); hide('screen-login');
-  loadConcerts();
-});
-
-// ── Mobile drawer ─────────────────────────────────────────────────────────────
-function openDrawer() {
-  document.getElementById('admin-sidebar').classList.add('open');
-  document.getElementById('sidebar-overlay').classList.add('open');
-}
-function closeDrawer() {
-  document.getElementById('admin-sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('open');
-}
-document.getElementById('btn-menu').addEventListener('click', openDrawer);
-document.getElementById('sidebar-overlay').addEventListener('click', closeDrawer);
-
-// ── Nav ───────────────────────────────────────────────────────────────────────
-const TAB_TITLES = { upcoming: 'Nadcházející akce', past: 'Proběhlé akce', pages: 'Stránky', discord: 'Discord' };
-
-document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    const isPages   = tab === 'pages';
-    const isDiscord = tab === 'discord';
-    const isConcerts = !isPages && !isDiscord;
-
-    document.getElementById('tab-title').textContent = TAB_TITLES[tab];
-    document.getElementById('mobile-page-title').textContent = TAB_TITLES[tab];
-    document.getElementById('concert-list').style.display     = isConcerts ? '' : 'none';
-    document.getElementById('concerts-toolbar').style.display = isConcerts ? '' : 'none';
-    document.getElementById('pages-panel').style.display      = isPages   ? 'block' : 'none';
-    document.getElementById('discord-panel').style.display    = isDiscord ? 'block' : 'none';
-
-    if (isConcerts) { currentTab = tab; renderList(); }
-    else if (isPages) loadOnas();
-
-    closeDrawer();
-  });
-});
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-async function loadConcerts() {
-  try {
-    const snap = await getDocs(query(collection(db, 'concerts'), orderBy('date', 'desc')));
-    concerts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderList();
-  } catch (e) { showStatus('Chyba při načítání: ' + e.message, 'error'); }
-}
-
-const MO_CS = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
-
-function renderList() {
-  const list     = document.getElementById('concert-list');
-  const filtered = concerts.filter(c => c.type === currentTab);
-  if (filtered.length === 0) { list.innerHTML = `<div class="empty-state">Žádné záznamy. Přidej první akci.</div>`; return; }
-  list.innerHTML = filtered.map(c => {
-    const d    = c.date.toDate();
-    const meta = currentTab === 'upcoming' ? (c.venue || '') : (c.photosUrl ? 'Fotografie k dispozici' : '');
-    return `<div class="concert-row">
-      <div class="date-badge"><div class="day">${d.getDate()}</div><div class="mo">${MO_CS[d.getMonth()]}</div></div>
-      <div class="row-info">
-        <div class="title">${c.highlight ? IC.star : ''}${c.title}</div>
-        ${meta ? `<div class="meta">${meta}</div>` : ''}
-      </div>
-      <div class="row-actions">
-        <button class="btn-icon" data-edit="${c.id}">${IC.edit} <span>Upravit</span></button>
-        <button class="btn-icon danger" data-delete="${c.id}">${IC.trash}</button>
-      </div>
-    </div>`;
-  }).join('');
-  list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openForm(b.dataset.edit)));
-  list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteConcert(b.dataset.delete)));
-}
-
-// ── Form ──────────────────────────────────────────────────────────────────────
-function openForm(id = null) {
-  editingId = id;
-  document.getElementById('form-title').textContent = id ? 'Upravit akci' : 'Nová akce';
-  resetForm();
-  if (id) {
-    const c = concerts.find(x => x.id === id);
-    if (!c) return;
-    document.getElementById('f-title').value = c.title || '';
-    document.getElementById('f-date').value  = c.date.toDate().toISOString().slice(0,10);
-    document.getElementById('f-time').value  = c.time || '';
-    if (c.type === 'upcoming') {
-      document.getElementById('f-venue').value   = c.venue    || '';
-      document.getElementById('f-desc-cs').value = c.desc_cs  || '';
-      document.getElementById('f-desc-en').value = c.desc_en  || '';
-      document.getElementById('f-desc-de').value = c.desc_de  || '';
-      document.getElementById('f-desc-es').value = c.desc_es  || '';
-      document.getElementById('f-maps').value    = c.mapsUrl  || '';
-      document.getElementById('f-fb').value      = c.fbUrl    || '';
-      document.getElementById('f-tickets').value = c.ticketsUrl || '';
-    } else {
-      document.getElementById('f-photos').value      = c.photosUrl || '';
-      document.getElementById('f-highlight').checked = c.highlight || false;
-      if (c.dateDisplay) {
-        document.getElementById('f-dd-cs').value = c.dateDisplay.cs || '';
-        document.getElementById('f-dd-en').value = c.dateDisplay.en || '';
-        document.getElementById('f-dd-de').value = c.dateDisplay.de || '';
-        document.getElementById('f-dd-es').value = c.dateDisplay.es || '';
-      }
-    }
-  }
-  const isUp = currentTab === 'upcoming';
-  document.getElementById('upcoming-fields').style.display = isUp ? '' : 'none';
-  document.getElementById('past-fields').style.display     = isUp ? 'none' : '';
-  document.getElementById('f-time-row').style.display      = isUp ? '' : 'none';
-  document.getElementById('form-overlay').classList.add('open');
-}
-
-function closeForm() { document.getElementById('form-overlay').classList.remove('open'); }
-
-function resetForm() {
-  ['f-title','f-date','f-time','f-venue','f-desc-cs','f-desc-en','f-desc-de','f-desc-es',
-   'f-maps','f-fb','f-tickets','f-photos','f-dd-cs','f-dd-en','f-dd-de','f-dd-es']
-    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  document.getElementById('f-highlight').checked = false;
-  document.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === 'cs'));
-  document.querySelectorAll('.lang-panel').forEach(p => p.classList.toggle('active', p.dataset.lang === 'cs'));
-  document.getElementById('advanced-section').classList.remove('open');
-}
-
-document.getElementById('btn-add').addEventListener('click', () => openForm());
-document.getElementById('btn-cancel').addEventListener('click', closeForm);
-document.getElementById('form-close').addEventListener('click', closeForm);
-document.getElementById('form-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('form-overlay')) closeForm();
-});
-
-document.getElementById('btn-save').addEventListener('click', async () => {
-  const title = document.getElementById('f-title').value.trim();
-  const dateV = document.getElementById('f-date').value;
-  if (!title || !dateV) { alert('Vyplň název a datum.'); return; }
-  let data = { type: currentTab, title, date: Timestamp.fromDate(new Date(dateV)) };
-  if (currentTab === 'upcoming') {
-    Object.assign(data, {
-      time: document.getElementById('f-time').value || '',
-      venue: document.getElementById('f-venue').value.trim(),
-      desc_cs: document.getElementById('f-desc-cs').value.trim(),
-      desc_en: document.getElementById('f-desc-en').value.trim(),
-      desc_de: document.getElementById('f-desc-de').value.trim(),
-      desc_es: document.getElementById('f-desc-es').value.trim(),
-      mapsUrl: document.getElementById('f-maps').value.trim(),
-      fbUrl: document.getElementById('f-fb').value.trim(),
-      ticketsUrl: document.getElementById('f-tickets').value.trim(),
-    });
-  } else {
-    data.photosUrl = document.getElementById('f-photos').value.trim();
-    data.highlight = document.getElementById('f-highlight').checked;
-    const dd = { cs: document.getElementById('f-dd-cs').value.trim(), en: document.getElementById('f-dd-en').value.trim(), de: document.getElementById('f-dd-de').value.trim(), es: document.getElementById('f-dd-es').value.trim() };
-    if (dd.cs || dd.en || dd.de || dd.es) data.dateDisplay = dd;
-  }
-  try {
-    showStatus('Ukládám…', 'loading');
-    if (editingId) await updateDoc(doc(db, 'concerts', editingId), data);
-    else await addDoc(collection(db, 'concerts'), data);
-    closeForm(); await loadConcerts();
-    showStatus('Uloženo.', 'success');
-  } catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
-});
-
-async function deleteConcert(id) {
-  const c = concerts.find(x => x.id === id);
-  if (!confirm(`Smazat akci "${c?.title}"?`)) return;
-  try {
-    await deleteDoc(doc(db, 'concerts', id));
-    await loadConcerts();
-    showStatus('Smazáno.', 'success');
-  } catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
-}
-
-// ── Překlad ───────────────────────────────────────────────────────────────────
-document.getElementById('btn-translate').addEventListener('click', async () => {
-  const text = document.getElementById('f-desc-cs').value.trim();
-  if (!text) { alert('Nejprve napiš český popis.'); return; }
-  const btn = document.getElementById('btn-translate');
-  btn.disabled = true; btn.innerHTML = `${IC.loader} Překládám…`;
-  try {
-    const { en, de, es } = await translateAll(text);
-    document.getElementById('f-desc-en').value = en;
-    document.getElementById('f-desc-de').value = de;
-    document.getElementById('f-desc-es').value = es;
-    showStatus('Přeloženo.', 'success');
-  } catch (e) { showStatus('Překlad selhal: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = `${IC.globe} Přeložit EN / DE / ES`; }
-});
-
-async function translateAll(text) {
-  let pat = localStorage.getItem('10men-github-pat');
-  if (!pat) {
-    pat = prompt('Zadej GitHub Personal Access Token (scope: workflow):');
-    if (!pat) throw new Error('Chybí GitHub token');
-    localStorage.setItem('10men-github-pat', pat.trim());
-  }
-  const requestId = Date.now().toString();
-  await setDoc(doc(db, '_translate', 'pending'), { text, requestId });
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/translate.yml/dispatches`,
-    { method: 'POST', headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: 'main' }) }
-  );
-  if (res.status === 401) { localStorage.removeItem('10men-github-pat'); throw new Error('Neplatný GitHub token'); }
-  if (res.status !== 204) throw new Error(`GitHub API chyba ${res.status}`);
-  showStatus('Překládám přes DeepL… (~30s)', 'loading');
-  for (let i = 0; i < 20; i++) {
-    await new Promise(r => setTimeout(r, 3000));
-    const snap = await getDoc(doc(db, '_translate', 'result'));
-    if (snap.exists() && snap.data().requestId === requestId) return snap.data();
-  }
-  throw new Error('Překlad vypršel — zkus znovu');
-}
-
-// ── Lang tabs ─────────────────────────────────────────────────────────────────
-document.querySelectorAll('.lang-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const lang = tab.dataset.lang;
-    document.querySelectorAll('.lang-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
-    document.querySelectorAll('.lang-panel').forEach(p => p.classList.toggle('active', p.dataset.lang === lang));
-  });
-});
-
-// ── Advanced toggle ───────────────────────────────────────────────────────────
-document.getElementById('toggle-advanced').addEventListener('click', () => {
-  const open = document.getElementById('advanced-section').classList.toggle('open');
-  document.getElementById('adv-icon').outerHTML =
-    `<svg id="adv-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${open ? '<polyline points="6 9 12 15 18 9"/>' : '<polyline points="9 18 15 12 9 6"/>'}</svg>`;
-});
-
-// ── Generovat web ─────────────────────────────────────────────────────────────
-async function triggerAction(workflow) {
-  let pat = localStorage.getItem('10men-github-pat');
-  if (!pat) { pat = prompt('Zadej GitHub PAT (scope: workflow):'); if (!pat) return; localStorage.setItem('10men-github-pat', pat.trim()); }
-  try {
-    showStatus('Spouštím generátor…', 'loading');
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${workflow}/dispatches`,
-      { method: 'POST', headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: JSON.stringify({ ref: 'main' }) });
-    if (res.status === 204) showStatus('Generátor spuštěn. Web se aktualizuje za ~30s.', 'success');
-    else { const err = await res.json().catch(() => ({})); if (res.status === 401) { localStorage.removeItem('10men-github-pat'); showStatus('Neplatný token.', 'error'); } else showStatus(`GitHub chyba ${res.status}: ${err.message || ''}`, 'error'); }
-  } catch (e) { showStatus(e.message, 'error'); }
-}
-document.getElementById('btn-generate').addEventListener('click', () => triggerAction('generate-concerts.yml'));
-document.getElementById('btn-onas-generate').addEventListener('click', () => triggerAction('generate-onas.yml'));
-
-// ── O nás ─────────────────────────────────────────────────────────────────────
-let onasData = null;
-
-async function loadOnas() {
-  try {
-    showStatus('Načítám O nás…', 'loading');
-    const snap = await getDoc(doc(db, 'pages', 'o-nas'));
-    if (!snap.exists()) { showStatus('Dokument pages/o-nas nenalezen.', 'error'); return; }
-    onasData = snap.data(); fillOnasForm();
-    showStatus('Načteno.', 'success');
-  } catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
-}
-
-function fillOnasForm() {
-  if (!onasData) return;
-  const a = onasData.about || {}, c = onasData.conductor || {};
-  const fill = (id, obj, lang) => { const el = document.getElementById(id); if (el) el.value = (obj && obj[lang]) || ''; };
-  ['cs','en','de','es'].forEach(lang => {
-    fill(`onas-lead-${lang}`, a.lead, lang); fill(`onas-p1-${lang}`, a.p1, lang);
-    fill(`onas-p2-${lang}`, a.p2, lang); fill(`onas-p3-${lang}`, a.p3, lang);
-    fill(`onas-conductor-bio-${lang}`, c.bio, lang);
-  });
-  const n = document.getElementById('onas-conductor-name'); if (n) n.value = c.name || '';
-  renderTimelineList(); renderAwardsList();
-}
-
-function readOnasForm() {
-  const get4 = p => ({ cs: document.getElementById(`${p}-cs`)?.value.trim()||'', en: document.getElementById(`${p}-en`)?.value.trim()||'', de: document.getElementById(`${p}-de`)?.value.trim()||'', es: document.getElementById(`${p}-es`)?.value.trim()||'' });
-  return {
-    about: { lead: get4('onas-lead'), p1: get4('onas-p1'), p2: get4('onas-p2'), p3: get4('onas-p3') },
-    conductor: { name: document.getElementById('onas-conductor-name')?.value.trim()||'', bio: get4('onas-conductor-bio') },
-    timeline: onasData?.timeline || [], awards: onasData?.awards || [],
+/* ── stránky ── */
+const OF = { lead: { key: 'lead', label: 'Perex', max: 600, area: true, rows: 3 }, p1: { key: 'p1', label: 'Odstavec 1', max: 1500, area: true, rows: 4 }, p2: { key: 'p2', label: 'Odstavec 2', max: 1500, area: true, rows: 4 }, p3: { key: 'p3', label: 'Odstavec 3', max: 1500, area: true, rows: 4 }, bio: { key: 'bio', label: 'Biografie', max: 1500, area: true, rows: 4 } };
+function viewPages(v) {
+  const o = (web().pages || {})['o-nas'] || { about: {}, conductor: {}, timeline: [], awards: [] }, s = web().site || { facts: { founded: 2015, awards: 0, concerts: {} }, email: 'info@10men.cz' };
+  v.innerHTML = `
+  <div class="card"><h2>O nás</h2><p class="sub">Úvodní text stránky. Změny se na web dostanou po kliknutí na „Zveřejnit změny“.</p>
+    ${['lead', 'p1', 'p2', 'p3'].map(k => `<details ${k === 'lead' ? 'open' : ''} style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer;font-weight:600">${esc(OF[k].label)}</summary>${locBlock('o-' + k, [OF[k]], { [k]: (o.about || {})[k] || {} })}</details>`).join('')}
+    <details style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer;font-weight:600">Umělecký vedoucí</summary><label class="l">Jméno</label><input type="text" id="o-cname" maxlength="80" value="${esc((o.conductor || {}).name || '')}">${locBlock('o-bio', [OF.bio], { bio: (o.conductor || {}).bio || {} })}</details>
+    <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" id="o-save">Uložit „O nás“</button></div></div>
+  <div class="card"><h2>Naše cesta (časová osa)</h2><div id="tl"></div><button class="btn sm" id="tl-add" style="margin-top:10px">+ Přidat událost</button></div>
+  <div class="card"><h2>Ocenění</h2><div id="aw"></div><button class="btn sm" id="aw-add" style="margin-top:10px">+ Přidat ocenění</button></div>
+  <div class="card"><h2>Základní údaje webu</h2><p class="sub">Čísla na úvodní stránce.</p><div class="grid2"><div><label class="l">Rok založení</label><input type="number" id="s-founded" value="${esc(s.facts.founded)}"></div><div><label class="l">Soutěžních ocenění</label><input type="number" id="s-awards" value="${esc(s.facts.awards)}"></div></div>${locBlock('s-conc', [{ key: 'concerts', label: 'Koncertů a vystoupení (např. 50+)', max: 20 }], { concerts: s.facts.concerts || {} })}<label class="l">Kontaktní e-mail</label><input type="text" id="s-email" value="${esc(s.email)}"><div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" id="s-save">Uložit údaje</button></div></div>`;
+  ['lead', 'p1', 'p2', 'p3'].forEach(k => wireLoc($('#o-' + k, v), [OF[k]])); wireLoc($('#o-bio', v), [OF.bio]); wireLoc($('#s-conc', v), [{ key: 'concerts' }]);
+  const state = { timeline: JSON.parse(JSON.stringify(o.timeline || [])), awards: JSON.parse(JSON.stringify(o.awards || [])) };
+  const lists = () => {
+    $('#tl', v).innerHTML = state.timeline.sort((a, b) => a.year - b.year).map((t, i) => `<div class="tl-row"><span class="y">${esc(t.year)}</span><span class="t">${esc((t.h || {}).cs || '')}</span><button class="btn sm" data-te="${i}">Upravit</button><button class="btn sm danger" data-td="${i}">✕</button></div>`).join('') || '<div class="empty">Žádné položky.</div>';
+    $('#aw', v).innerHTML = state.awards.map((a, i) => `<div class="tl-row"><span class="y" style="width:auto;min-width:48px">${esc(a.years || '')}</span><span class="t">${esc(a.name || a.id)}</span><button class="btn sm" data-ae="${i}">Upravit</button><button class="btn sm danger" data-ad="${i}">✕</button></div>`).join('') || '<div class="empty">Žádná ocenění.</div>';
+    $$('[data-te]', v).forEach(b => b.onclick = () => editItem('tl', +b.dataset.te)); $$('[data-ae]', v).forEach(b => b.onclick = () => editItem('aw', +b.dataset.ae));
+    $$('[data-td]', v).forEach(b => b.onclick = async () => { if (await ask('Smazat událost?', 'Odstraní se z konceptu stránky.', 'Smazat', true)) { state.timeline.splice(+b.dataset.td, 1); lists(); } });
+    $$('[data-ad]', v).forEach(b => b.onclick = async () => { if (await ask('Smazat ocenění?', 'Odstraní se z konceptu stránky.', 'Smazat', true)) { state.awards.splice(+b.dataset.ad, 1); lists(); } });
   };
-}
-
-document.getElementById('btn-onas-save').addEventListener('click', async () => {
-  try { showStatus('Ukládám…', 'loading'); const data = readOnasForm(); await setDoc(doc(db, 'pages', 'o-nas'), data); onasData = data; showStatus('Uloženo.', 'success'); }
-  catch (e) { showStatus('Chyba: ' + e.message, 'error'); }
-});
-
-// ── Pe translate ──────────────────────────────────────────────────────────────
-document.querySelectorAll('.pe-translate').forEach(btn => {
-  btn.addEventListener('click', async () => {
-    const key = btn.dataset.key;
-    const csId = key === 'conductor-bio' ? 'onas-conductor-bio-cs' : `onas-${key}-cs`;
-    const text = document.getElementById(csId)?.value.trim();
-    if (!text) { alert('Nejprve vyplň český text.'); return; }
-    btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = `${IC.loader} Překládám…`;
-    try {
-      const { en, de, es } = await translateAll(text);
-      const prefix = key === 'conductor-bio' ? 'onas-conductor-bio' : `onas-${key}`;
-      document.getElementById(`${prefix}-en`).value = en;
-      document.getElementById(`${prefix}-de`).value = de;
-      document.getElementById(`${prefix}-es`).value = es;
-      showStatus('Přeloženo.', 'success');
-    } catch (e) { showStatus('Překlad selhal: ' + e.message, 'error'); }
-    finally { btn.disabled = false; btn.innerHTML = orig; }
-  });
-});
-
-// ── Pe accordion ──────────────────────────────────────────────────────────────
-document.querySelectorAll('.pe-toggle').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const body = document.getElementById(`pe-${btn.dataset.pe}`);
-    const open = body.classList.toggle('open');
-    btn.classList.toggle('open', open);
-  });
-});
-
-// ── Timeline ──────────────────────────────────────────────────────────────────
-function renderTimelineList() {
-  const list = document.getElementById('tl-list');
-  const tl   = (onasData?.timeline || []).sort((a, b) => a.year - b.year);
-  if (tl.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:16px">Žádné položky.</div>'; return; }
-  const GLOB = IC.globe, LOAD = IC.loader, EDI = IC.edit, TRA = IC.trash;
-  list.innerHTML = tl.map((item, i) => `
-    <div class="tl-row">
-      <div class="tl-row-header">
-        <span class="row-label">${item.year} — ${(item.h && item.h.cs) || ''}</span>
-        <button class="btn-icon" data-tl-toggle="${i}">${EDI} <span>Upravit</span></button>
-        <button class="btn-icon danger" data-tl-delete="${i}">${TRA}</button>
-      </div>
-      <div class="tl-row-form" id="tl-form-${i}">
-        <div class="form-row-3">
-          <div><label>Rok</label><input type="number" id="tl-year-${i}" value="${item.year}" min="2015" max="2099"></div>
-          <div><label>Nadpis CS</label><input type="text" id="tl-h-cs-${i}" value="${(item.h && item.h.cs) || ''}"></div>
-          <div></div>
-        </div>
-        <div class="form-row" style="margin-bottom:8px">
-          <div class="field-header">
-            <label>Překlady nadpisu</label>
-            <button class="btn-translate tl-translate-h" data-idx="${i}">${GLOB} Přeložit</button>
-          </div>
-          <span class="lang-label">EN</span><input type="text" id="tl-h-en-${i}" value="${(item.h && item.h.en) || ''}">
-          <span class="lang-label">DE</span><input type="text" id="tl-h-de-${i}" value="${(item.h && item.h.de) || ''}">
-          <span class="lang-label">ES</span><input type="text" id="tl-h-es-${i}" value="${(item.h && item.h.es) || ''}">
-        </div>
-        <div class="form-row">
-          <div class="field-header">
-            <label>Popis CS</label>
-            <button class="btn-translate tl-translate-p" data-idx="${i}">${GLOB} Přeložit</button>
-          </div>
-          <textarea id="tl-p-cs-${i}" rows="2">${(item.p && item.p.cs) || ''}</textarea>
-          <span class="lang-label">EN</span><textarea id="tl-p-en-${i}" rows="2">${(item.p && item.p.en) || ''}</textarea>
-          <span class="lang-label">DE</span><textarea id="tl-p-de-${i}" rows="2">${(item.p && item.p.de) || ''}</textarea>
-          <span class="lang-label">ES</span><textarea id="tl-p-es-${i}" rows="2">${(item.p && item.p.es) || ''}</textarea>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-          <button class="btn btn-primary tl-save-row" data-idx="${i}">Uložit řádek</button>
-        </div>
-      </div>
-    </div>`).join('');
-
-  list.querySelectorAll('[data-tl-toggle]').forEach(b => b.addEventListener('click', () => document.getElementById(`tl-form-${b.dataset.tlToggle}`).classList.toggle('open')));
-  list.querySelectorAll('[data-tl-delete]').forEach(b => b.addEventListener('click', () => { const i = +b.dataset.tlDelete; if (!confirm(`Smazat rok ${tl[i]?.year}?`)) return; onasData.timeline.splice(i,1); renderTimelineList(); }));
-  list.querySelectorAll('.tl-translate-h').forEach(b => b.addEventListener('click', async () => {
-    const i = b.dataset.idx; const text = document.getElementById(`tl-h-cs-${i}`)?.value.trim(); if (!text) return; b.disabled=true;
-    try { const {en,de,es} = await translateAll(text); document.getElementById(`tl-h-en-${i}`).value=en; document.getElementById(`tl-h-de-${i}`).value=de; document.getElementById(`tl-h-es-${i}`).value=es; } catch(e){showStatus('Překlad selhal.','error');} finally{b.disabled=false;}
-  }));
-  list.querySelectorAll('.tl-translate-p').forEach(b => b.addEventListener('click', async () => {
-    const i = b.dataset.idx; const text = document.getElementById(`tl-p-cs-${i}`)?.value.trim(); if (!text) return; b.disabled=true;
-    try { const {en,de,es} = await translateAll(text); document.getElementById(`tl-p-en-${i}`).value=en; document.getElementById(`tl-p-de-${i}`).value=de; document.getElementById(`tl-p-es-${i}`).value=es; } catch(e){showStatus('Překlad selhal.','error');} finally{b.disabled=false;}
-  }));
-  list.querySelectorAll('.tl-save-row').forEach(b => b.addEventListener('click', () => {
-    const i = +b.dataset.idx;
-    onasData.timeline[i] = { year: +document.getElementById(`tl-year-${i}`).value, h: {cs:document.getElementById(`tl-h-cs-${i}`).value.trim(),en:document.getElementById(`tl-h-en-${i}`).value.trim(),de:document.getElementById(`tl-h-de-${i}`).value.trim(),es:document.getElementById(`tl-h-es-${i}`).value.trim()}, p: {cs:document.getElementById(`tl-p-cs-${i}`).value.trim(),en:document.getElementById(`tl-p-en-${i}`).value.trim(),de:document.getElementById(`tl-p-de-${i}`).value.trim(),es:document.getElementById(`tl-p-es-${i}`).value.trim()} };
-    document.getElementById(`tl-form-${i}`).classList.remove('open'); renderTimelineList(); showStatus('Řádek uložen.', 'success');
-  }));
-}
-
-document.getElementById('btn-tl-add').addEventListener('click', () => {
-  if (!onasData) return; onasData.timeline = onasData.timeline || [];
-  onasData.timeline.push({year:new Date().getFullYear(),h:{cs:'',en:'',de:'',es:''},p:{cs:'',en:'',de:'',es:''}});
-  renderTimelineList(); document.getElementById(`tl-form-${onasData.timeline.length-1}`)?.classList.add('open');
-});
-
-// ── Ocenění ───────────────────────────────────────────────────────────────────
-function renderAwardsList() {
-  const list = document.getElementById('aw-list');
-  const aw   = onasData?.awards || [];
-  if (aw.length === 0) { list.innerHTML = '<div class="empty-state" style="padding:16px">Žádná ocenění.</div>'; return; }
-  const GLOB = IC.globe, EDI = IC.edit, TRA = IC.trash;
-  list.innerHTML = aw.map((award, i) => `
-    <div class="aw-row">
-      <div class="aw-row-header">
-        <span class="row-label">${award.name||''} (${award.years||''})</span>
-        <button class="btn-icon" data-aw-toggle="${i}">${EDI} <span>Upravit</span></button>
-        <button class="btn-icon danger" data-aw-delete="${i}">${TRA}</button>
-      </div>
-      <div class="aw-row-form" id="aw-form-${i}">
-        <div class="form-row-2" style="margin-bottom:12px">
-          <div><label>Název</label><input type="text" id="aw-name-${i}" value="${award.name||''}"></div>
-          <div><label>Roky</label><input type="text" id="aw-years-${i}" value="${award.years||''}" placeholder="2016, 2021"></div>
-        </div>
-        <div class="form-row" style="margin-bottom:8px"><label>ID (slug)</label><input type="text" id="aw-id-${i}" value="${award.id||''}" placeholder="jirkov"></div>
-        <div class="form-row">
-          <div class="field-header"><label>Popis CS</label><button class="btn-translate aw-translate" data-idx="${i}">${GLOB} Přeložit</button></div>
-          <textarea id="aw-desc-cs-${i}" rows="2">${(award.desc&&award.desc.cs)||''}</textarea>
-          <span class="lang-label">EN</span><textarea id="aw-desc-en-${i}" rows="2">${(award.desc&&award.desc.en)||''}</textarea>
-          <span class="lang-label">DE</span><textarea id="aw-desc-de-${i}" rows="2">${(award.desc&&award.desc.de)||''}</textarea>
-          <span class="lang-label">ES</span><textarea id="aw-desc-es-${i}" rows="2">${(award.desc&&award.desc.es)||''}</textarea>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn btn-primary aw-save-row" data-idx="${i}">Uložit řádek</button></div>
-      </div>
-    </div>`).join('');
-
-  list.querySelectorAll('[data-aw-toggle]').forEach(b => b.addEventListener('click', () => document.getElementById(`aw-form-${b.dataset.awToggle}`).classList.toggle('open')));
-  list.querySelectorAll('[data-aw-delete]').forEach(b => b.addEventListener('click', () => { const i=+b.dataset.awDelete; if(!confirm(`Smazat "${aw[i]?.name}"?`))return; onasData.awards.splice(i,1); renderAwardsList(); }));
-  list.querySelectorAll('.aw-translate').forEach(b => b.addEventListener('click', async () => {
-    const i=b.dataset.idx; const text=document.getElementById(`aw-desc-cs-${i}`)?.value.trim(); if(!text)return; b.disabled=true;
-    try{const{en,de,es}=await translateAll(text);document.getElementById(`aw-desc-en-${i}`).value=en;document.getElementById(`aw-desc-de-${i}`).value=de;document.getElementById(`aw-desc-es-${i}`).value=es;}catch(e){showStatus('Překlad selhal.','error');}finally{b.disabled=false;}
-  }));
-  list.querySelectorAll('.aw-save-row').forEach(b => b.addEventListener('click', () => {
-    const i=+b.dataset.idx;
-    onasData.awards[i]={id:document.getElementById(`aw-id-${i}`).value.trim(),name:document.getElementById(`aw-name-${i}`).value.trim(),years:document.getElementById(`aw-years-${i}`).value.trim(),desc:{cs:document.getElementById(`aw-desc-cs-${i}`).value.trim(),en:document.getElementById(`aw-desc-en-${i}`).value.trim(),de:document.getElementById(`aw-desc-de-${i}`).value.trim(),es:document.getElementById(`aw-desc-es-${i}`).value.trim()}};
-    document.getElementById(`aw-form-${i}`).classList.remove('open'); renderAwardsList(); showStatus('Řádek uložen.','success');
-  }));
-}
-
-document.getElementById('btn-aw-add').addEventListener('click', () => {
-  if (!onasData) return; onasData.awards=onasData.awards||[];
-  onasData.awards.push({id:'',name:'',years:'',desc:{cs:'',en:'',de:'',es:''}});
-  renderAwardsList(); document.getElementById(`aw-form-${onasData.awards.length-1}`)?.classList.add('open');
-});
-
-// ── Discord ───────────────────────────────────────────────────────────────────
-let discordWebhookUrl = null;
-let discordFile       = null; // compressed File object
-
-async function loadDiscordWebhook() {
-  if (discordWebhookUrl) return discordWebhookUrl;
-  const snap = await getDoc(doc(db, 'config', 'discordPublic'));
-  if (!snap.exists()) throw new Error('config/discordPublic nenalezen ve Firestore');
-  discordWebhookUrl = snap.data().webhookUrl;
-  return discordWebhookUrl;
-}
-
-// Char counter
-document.getElementById('discord-text').addEventListener('input', function() {
-  document.getElementById('discord-char').textContent = this.value.length;
-});
-
-// File drop area
-const fileDrop  = document.getElementById('discord-file-drop');
-const fileInput = document.getElementById('discord-file-input');
-
-fileDrop.addEventListener('click', () => fileInput.click());
-fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.style.borderColor = 'var(--red)'; });
-fileDrop.addEventListener('dragleave', () => { fileDrop.style.borderColor = ''; });
-fileDrop.addEventListener('drop', e => { e.preventDefault(); fileDrop.style.borderColor = ''; if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
-
-document.getElementById('discord-file-remove').addEventListener('click', () => {
-  discordFile = null;
-  fileInput.value = '';
-  document.getElementById('discord-file-preview').classList.remove('show');
-  fileDrop.classList.remove('has-file');
-  fileDrop.style.display = '';
-});
-
-async function handleFile(file) {
-  if (!file.type.startsWith('image/')) { showStatus('Podporovány jsou pouze obrázky.', 'error'); return; }
-
-  const origMB = (file.size / 1024 / 1024).toFixed(1);
-  showStatus(`Kompresuji fotku (${origMB} MB)…`, 'loading');
-
-  try {
-    const compressed = await imageCompression(file, {
-      maxSizeMB: 7,
-      maxWidthOrHeight: 2560,
-      useWebWorker: true,
-    });
-
-    discordFile = compressed;
-    const compMB = (compressed.size / 1024 / 1024).toFixed(1);
-
-    // Thumbnail
-    const reader = new FileReader();
-    reader.onload = e => document.getElementById('discord-file-thumb').src = e.target.result;
-    reader.readAsDataURL(compressed);
-
-    document.getElementById('discord-file-name').textContent = file.name;
-    document.getElementById('discord-file-size').innerHTML =
-      `${origMB} MB → <span class="compressed">${compMB} MB</span>`;
-    document.getElementById('discord-file-preview').classList.add('show');
-    fileDrop.classList.add('has-file');
-    fileDrop.style.display = 'none';
-
-    showStatus(`Fotka připravena (${compMB} MB).`, 'success');
-  } catch (e) {
-    showStatus('Komprese selhala: ' + e.message, 'error');
+  function editItem(kind, i) {
+    const isT = kind === 'tl', arr = isT ? state.timeline : state.awards, it = i >= 0 ? arr[i] : isT ? { year: new Date().getFullYear(), h: {}, p: {} } : { id: '', desc: {} };
+    const F = isT ? [{ key: 'h', label: 'Nadpis', max: 120 }, { key: 'p', label: 'Popis', max: 700, area: true, rows: 3 }] : [{ key: 'desc', label: 'Popis ocenění', max: 400, area: true, rows: 3 }];
+    const m = modal({ title: isT ? 'Událost' : 'Ocenění', body: (isT ? `<label class="l">Rok</label><input type="number" id="it-year" value="${esc(it.year)}">` : `<label class="l">Název soutěže nebo festivalu</label><input type="text" id="it-name" maxlength="80" value="${esc(it.name || '')}"><div class="grid2"><div><label class="l">Roky (např. 2016, 2017, 2024)</label><input type="text" id="it-years" maxlength="60" value="${esc(it.years || '')}"></div><div><label class="l">Identifikátor (malá písmena a pomlčky)</label><input type="text" id="it-id" maxlength="40" value="${esc(it.id)}"></div></div>`) + locBlock('it-loc', F, it), footer: '<button class="btn" data-n>Zrušit</button><button class="btn primary" data-y>Hotovo</button>' });
+    wireLoc($('#it-loc', m.ov), F); $('[data-n]', m.ov).onclick = m.close;
+    $('[data-y]', m.ov).onclick = () => { const l = readLoc($('#it-loc', m.ov), F), n = isT ? { year: +$('#it-year', m.ov).value, ...l } : { id: $('#it-id', m.ov).value.trim(), name: $('#it-name', m.ov).value.trim(), years: $('#it-years', m.ov).value.trim(), ...l }; if (i >= 0) arr[i] = n; else arr.push(n); m.close(); lists(); };
   }
+  $('#tl-add', v).onclick = () => editItem('tl', -1); $('#aw-add', v).onclick = () => editItem('aw', -1); lists();
+  const so = $('#o-save', v); so.onclick = () => guarded(so, async () => {
+    const about = {}; ['lead', 'p1', 'p2', 'p3'].forEach(k => about[k] = readLoc($('#o-' + k, v), [OF[k]])[k]);
+    await call({ action: 'page_save', page: 'o-nas', data: { about, conductor: { name: $('#o-cname', v).value.trim(), bio: readLoc($('#o-bio', v), [OF.bio]).bio }, timeline: state.timeline, awards: state.awards } }); toast('„O nás“ uloženo. Zveřejníte tlačítkem nahoře.');
+  });
+  const ss = $('#s-save', v); ss.onclick = () => guarded(ss, async () => { await call({ action: 'page_save', page: 'site', data: { facts: { founded: +$('#s-founded', v).value, awards: +$('#s-awards', v).value, concerts: readLoc($('#s-conc', v), [{ key: 'concerts' }]).concerts }, email: $('#s-email', v).value.trim() } }); toast('Údaje uloženy.'); });
 }
 
-// Odeslat
-document.getElementById('discord-send').addEventListener('click', async () => {
-  const text = document.getElementById('discord-text').value.trim();
-  if (!text && !discordFile) { alert('Vyplň text nebo přidej fotku.'); return; }
+/* ── Discord ── */
+let dImg = null;
+function compress(file) {
+  return new Promise((res, rej) => { const img = new Image(), u = URL.createObjectURL(file); img.onload = () => { const k = Math.min(1, 2560 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => b ? res(b) : rej(new Error('Komprese selhala.')), 'image/jpeg', 0.86); }; img.onerror = () => rej(new Error('Soubor se nepodařilo načíst jako obrázek.')); img.src = u; });
+}
+function viewDiscord(v) {
+  v.innerHTML = `<div class="card"><h2>Zpráva na Discord</h2><p class="sub">Odešle se do veřejného kanálu skupiny. Nevkládejte interní informace.</p><label class="l">Text <span class="hint" id="d-cnt">0 / 1800</span></label><textarea id="d-text" maxlength="1800" rows="5"></textarea><label class="l">Fotka (nepovinné)</label><div class="drop" id="d-drop">Klepněte nebo přetáhněte obrázek<div id="d-prev"></div></div><input type="file" id="d-file" accept="image/*" class="hidden"><div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px"><button class="btn" id="d-clear">Zrušit</button><button class="btn primary" id="d-send">Odeslat na Discord</button></div></div>`;
+  const t = $('#d-text', v), f = $('#d-file', v);
+  t.oninput = () => $('#d-cnt', v).textContent = `${t.value.length} / 1800`;
+  $('#d-drop', v).onclick = () => f.click();
+  f.onchange = () => f.files[0] && pick(f.files[0]);
+  async function pick(file) { if (!file.type.startsWith('image/')) { toast('Podporované jsou jen obrázky.', true); return; } try { dImg = await compress(file); $('#d-prev', v).innerHTML = `<img alt="Náhled" src="${URL.createObjectURL(dImg)}"><div class="hint">${(dImg.size / 1048576).toFixed(1)} MB</div>`; } catch (e) { toast(e.message, true); } }
+  $('#d-clear', v).onclick = () => { t.value = ''; dImg = null; f.value = ''; $('#d-prev', v).innerHTML = ''; t.oninput(); };
+  const s = $('#d-send', v); s.onclick = () => guarded(s, async () => {
+    if (!t.value.trim() && !dImg) { toast('Vyplňte text nebo přidejte fotku.', true); return; }
+    let b64 = null; if (dImg) b64 = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result.split(',')[1]); fr.readAsDataURL(dImg); });
+    await call({ action: 'discord_send', text: t.value, imageBase64: b64 }); toast('Odesláno na Discord ✓'); $('#d-clear', v).onclick();
+  });
+}
 
-  const btn = document.getElementById('discord-send');
-  btn.disabled = true;
-  showStatus('Odesílám na Discord…', 'loading');
+/* ── historie ── */
+function viewHistory(v) {
+  const h = Object.entries(web().history || {}).sort((a, b) => b[0] - a[0]);
+  v.innerHTML = `<div class="card" style="padding:8px 20px">${h.length ? h.map(([k, x]) => `<div class="row"><div class="info"><div class="t">${esc(fmtWhen(x.at))} · ${esc((x.by || {}).name || '')}</div><div class="m">Zveřejněno akcí: ${esc(x.concerts)}${(x.skipped || []).length ? ` · přeskočeno: ${x.skipped.length}` : ''}${(x.warnings || []).length ? ` · upozornění: ${x.warnings.length}` : ''}</div></div></div>`).join('') : '<div class="empty">Zatím žádné zveřejnění.</div>'}</div>`;
+}
 
-  try {
-    const webhookUrl = await loadDiscordWebhook();
-
-    let res;
-    if (discordFile) {
-      const form = new FormData();
-      form.append('payload_json', JSON.stringify({ content: text || '' }));
-      form.append('files[0]', discordFile, discordFile.name || 'fotka.jpg');
-      res = await fetch(webhookUrl, { method: 'POST', body: form });
-    } else {
-      res = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: text }),
-      });
-    }
-
-    if (res.ok || res.status === 204) {
-      showStatus('Odesláno na Discord! ✓', 'success');
-      resetDiscordForm();
-    } else {
-      const err = await res.json().catch(() => ({}));
-      showStatus(`Discord chyba ${res.status}: ${err.message || ''}`, 'error');
-    }
-  } catch (e) {
-    showStatus('Chyba: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-  }
+/* ── přihlášení a start ── */
+$('#btn-login').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).catch(e => { $('#login-err').textContent = 'Přihlášení se nezdařilo.'; });
+$('#btn-out').onclick = $('#btn-denied-out').onclick = () => signOut(auth);
+let started = false;
+onAuthStateChanged(auth, user => {
+  S.user = user;
+  if (!user) { $('#app').classList.add('hidden'); $('#denied').classList.add('hidden'); $('#login').classList.remove('hidden'); return; }
+  $('#login').classList.add('hidden');
+  $('#who-name').textContent = user.displayName || ''; $('#who-mail').textContent = user.email || '';
+  onValue(ref(db, `/webAccess/${user.uid}`), snap => {
+    if (snap.val() !== true) { $('#app').classList.add('hidden'); $('#denied').classList.remove('hidden'); return; }
+    $('#denied').classList.add('hidden'); $('#app').classList.remove('hidden');
+    if (started) return; started = true;
+    onValue(ref(db, '/web'), s => { S.web = s.val() || {}; render(); }, () => toast('Obsah webu se nepodařilo načíst.', true));
+    loadInbox();
+  }, () => { $('#app').classList.add('hidden'); $('#denied').classList.remove('hidden'); });
 });
-
-// Zrušit
-document.getElementById('discord-cancel').addEventListener('click', resetDiscordForm);
-
-function resetDiscordForm() {
-  document.getElementById('discord-text').value = '';
-  document.getElementById('discord-char').textContent = '0';
-  document.getElementById('discord-file-remove').click();
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function show(id) { document.getElementById(id).style.display = 'block'; }
-function hide(id) { document.getElementById(id).style.display = 'none'; }
-
-let statusTimer;
-function showStatus(msg, type = 'loading') {
-  const bar = document.getElementById('status-bar');
-  const icon = document.getElementById('status-icon');
-  bar.className = 'show' + (type==='error'?' error':type==='success'?' success':'');
-  icon.innerHTML = type==='error'?IC.alert:type==='success'?IC.check:IC.loader;
-  document.getElementById('status-text').textContent = msg;
-  clearTimeout(statusTimer);
-  if (type !== 'loading') statusTimer = setTimeout(() => bar.classList.remove('show'), 4000);
-}
 </script>
 </body>
 </html>

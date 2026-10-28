@@ -1,12 +1,7 @@
 {
   "name": "10men-scripts",
-  "version": "1.0.0",
-  "description": "Generátor statických stránek pro 10men.cz",
-  "scripts": {
-    "generate": "node generate-concerts.js"
-  },
-  "dependencies": {
-    "dotenv": "^16.0.0",
-    "firebase-admin": "^12.0.0"
-  }
+  "version": "2.0.0",
+  "private": true,
+  "description": "Generátor statických stránek 10men.cz ze zveřejněného snímku (bez závislostí)",
+  "scripts": { "build": "node build-site.js", "check": "node build-site.js --check" }
 }
