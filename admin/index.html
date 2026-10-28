@@ -336,16 +336,35 @@ async function openEditor(id) {
 }
 
 /* ── zveřejnění ── */
+// veřejná podoba akce přesně jako ji skládá server (porovnání s posledním zveřejněným snímkem)
+const pubShape = c => { const o = { id: c.id, date: c.date, time: c.time || '', highlight: !!c.highlight }; ['title', 'venue', 'desc'].forEach(k => { if (c[k] && Object.keys(c[k]).length) o[k] = c[k]; }); if (c.dateDisplay && Object.keys(c.dateDisplay).length) o.dateDisplay = c.dateDisplay; ['mapsUrl', 'fbUrl', 'ticketsUrl', 'photosUrl'].forEach(k => { if (c[k]) o[k] = c[k]; }); return o; };
+const same = (a, b) => JSON.stringify(canon(a ?? null)) === JSON.stringify(canon(b ?? null));
+const noMeta = o => { if (!o) return o; const { updatedBy, updatedAt, ...r } = o; return r; };
+async function publishPlan() {
+  const p = web().published || {}, was = Object.fromEntries((Array.isArray(p.concerts) ? p.concerts : Object.values(p.concerts || {})).map(c => [c.id, c]));
+  const ready = [], notReady = [];
+  for (const c of concerts().filter(c => c.status === 'zverejneno')) (await reviewed(c) ? ready : notReady).push(c);
+  const now = Object.fromEntries(ready.map(c => [c.id, pubShape(c)]));
+  const added = ready.filter(c => !was[c.id]), changed = ready.filter(c => was[c.id] && !same(now[c.id], was[c.id])), unchanged = ready.filter(c => was[c.id] && same(now[c.id], was[c.id]));
+  const drafts = concerts().filter(c => c.status === 'koncept' && c.date >= today()).sort((a, b) => a.date.localeCompare(b.date));   // rozpracované, nadcházející
+  const held = notReady.filter(c => was[c.id]), neverPublished = notReady.filter(c => !was[c.id]);   // upravené bez nové kontroly: na webu zůstane předchozí verze
+  const removed = Object.values(was).filter(c => !now[c.id] && !notReady.some(n => n.id === c.id));
+  const pg = (web().pages || {})['o-nas'], pgChanged = !!pg && !same(noMeta(pg), (p.pages || {})['o-nas']), st = web().site, stChanged = !!st && !same(noMeta(st), p.site);
+  return { added, changed, unchanged, removed, held, drafts, notReady: neverPublished, pgChanged, stChanged, any: added.length + changed.length + removed.length > 0 || pgChanged || stChanged };
+}
+const nm = c => esc((c.title || {}).cs || '(bez názvu)') + ' <span class="hint">· ' + esc(c.date) + '</span>';
+function planGroup(title, list, cls = '') { if (!list.length) return ''; const show = list.slice(0, 8); return `<div class="panel"><h3>${esc(title)} (${list.length})</h3>${show.map(c => `<div class="find"><span>${cls}</span><span>${nm(c)}</span></div>`).join('')}${list.length > 8 ? `<div class="hint">… a dalších ${list.length - 8}</div>` : ''}</div>`; }
 $('#btn-publish').onclick = async () => {
-  const list = concerts().filter(c => c.status === 'zverejneno'), ready = [], notReady = [];
-  for (const c of list) (await reviewed(c) ? ready : notReady).push(c);
-  const body = `<p style="margin:6px 0 12px">Na web se dostane <b>${ready.length}</b> ${ready.length === 1 ? 'akce' : 'akcí'} a aktuální stránky „O nás“ a základní údaje.</p>${notReady.length ? `<div class="panel"><h3>Nebudou zveřejněny (chybí kontrola)</h3>${notReady.map(c => `<div class="find"><span>⚠</span><span>${esc((c.title || {}).cs || '(bez názvu)')} · ${esc(c.date)}</span></div>`).join('')}</div>` : ''}<p class="hint" style="margin-top:12px">Stránky se přegenerují během asi minuty.</p>`;
-  const m = modal({ title: 'Zveřejnit změny?', body, footer: '<button class="btn" data-n>Zrušit</button><button class="btn primary" data-y>Zveřejnit</button>' });
+  const pl = await publishPlan(), p = web().published;
+  const body = !pl.any && !pl.notReady.length && !pl.held.length ? `<p style="margin:6px 0 4px">Není co zveřejnit: web odpovídá poslednímu zveřejnění${p ? ' (' + esc(fmtWhen(p.publishedAt)) + ')' : ''}.</p><p class="hint">Beze změny zůstává ${pl.unchanged.length} akcí.</p>${planGroup('Koncepty, které zůstávají nezveřejněné (stav „Koncept“)', pl.drafts, '○')}`
+    : `<p style="margin:6px 0 12px">Po zveřejnění se na webu změní:</p>${planGroup('Nové akce', pl.added, '＋')}${planGroup('Upravené akce', pl.changed, '✎')}${planGroup('Odebrané z webu', pl.removed, '✕')}${pl.pgChanged ? '<div class="find"><span>✎</span><span>Stránka „O nás“ je upravená</span></div>' : ''}${pl.stChanged ? '<div class="find"><span>✎</span><span>Základní údaje webu jsou upravené</span></div>' : ''}${!pl.any ? '<p style="margin:6px 0">Žádná změna obsahu.</p>' : ''}<p class="hint" style="margin-top:10px">Beze změny zůstává ${pl.unchanged.length} akcí.</p>${planGroup('Upravené, čekají na kontrolu (na webu zůstává předchozí verze)', pl.held, '⚠')}${planGroup('Nebudou zveřejněny (chybí kontrola)', pl.notReady, '⚠')}${planGroup('Koncepty, které zůstávají nezveřejněné (stav „Koncept“)', pl.drafts, '○')}<p class="hint" style="margin-top:12px">Stránky se přegenerují během asi minuty.</p>`;
+  const m = modal({ title: pl.any ? 'Zveřejnit změny?' : 'Web je aktuální', body, footer: `<button class="btn" data-n>${pl.any ? 'Zrušit' : 'Zavřít'}</button>${pl.any ? '<button class="btn primary" data-y>Zveřejnit</button>' : ''}` });
   $('[data-n]', m.ov).onclick = m.close;
-  const y = $('[data-y]', m.ov); y.onclick = () => guarded(y, async () => {
+  const y = $('[data-y]', m.ov); if (!y) return;
+  y.onclick = () => guarded(y, async () => {
     const r = await call({ action: 'publish' }); m.close();
-    const lines = [`Zveřejněno akcí: ${r.concerts}.`, r.dispatched ? 'Web se přegeneruje, změny uvidíte asi za minutu.' : (r.dispatchError || ''), ...r.skipped.map(s => `Přeskočeno: ${s.title || '(bez názvu)'} – ${s.reason}`), ...r.warnings.map(w => `Pozor: ${w.title} – ${w.reason}`)].filter(Boolean);
-    modal({ title: 'Hotovo', body: `<p style="margin:6px 0;white-space:pre-line">${esc(lines.join('\n'))}</p>`, footer: '<button class="btn primary" data-y>OK</button>' }); $('.ov:last-child [data-y]').onclick = e => e.target.closest('.ov').remove();
+    const lines = [`Zveřejněno akcí na webu: ${r.concerts}.`, r.dispatched ? 'Web se přegeneruje, změny uvidíte asi za minutu.' : (r.dispatchError || ''), ...r.skipped.map(s => `Přeskočeno: ${s.title || '(bez názvu)'} – ${s.reason}`), ...r.warnings.map(w => `Pozor: ${w.title} – ${w.reason}`)].filter(Boolean);
+    const d = modal({ title: 'Hotovo', body: `<p style="margin:6px 0;white-space:pre-line">${esc(lines.join('\n'))}</p>`, footer: '<button class="btn primary" data-y>OK</button>' }); $('[data-y]', d.ov).onclick = d.close;
   });
 };
 
