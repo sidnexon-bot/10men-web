@@ -40,6 +40,7 @@
       color: var(--gray-mid);
       margin-bottom: 40px;
     }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -220,6 +221,7 @@ Sus datos están anonimizados y no se utilizan con fines publicitarios.
   <p>Cookies jsou malé textové soubory ukládané do vašeho prohlížeče. Slouží různým účelům – od zapamatování vašich preferencí až po měření návštěvnosti webu.</p>
 
   <h2>Jaké cookies tento web používá</h2>
+  <div class="table-scroll">
   <table>
     <tr>
       <th>Název</th>
@@ -245,7 +247,14 @@ Sus datos están anonimizados y no se utilizan con fines publicitarios.
       <td>Analytická – pouze se souhlasem</td>
       <td>2 roky</td>
     </tr>
+    <tr>
+      <td><code>_GRECAPTCHA</code></td>
+      <td>Google reCAPTCHA – ochrana kontaktního formuláře před roboty (jen po souhlasu s analytickými cookies, jen na stránce Kontakt)</td>
+      <td>Bezpečnostní – pouze se souhlasem</td>
+      <td>6 měsíců</td>
+    </tr>
   </table>
+  </div>
 
   <h2>Google Analytics</h2>
   <p>S vaším souhlasem používáme Google Analytics 4 (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irsko). Tato služba nám umožňuje sledovat návštěvnost webu – kolik lidí stránky navštěvuje, odkud přicházejí a jak se na webu pohybují.</p>

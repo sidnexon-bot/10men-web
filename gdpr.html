@@ -40,6 +40,7 @@
       color: var(--gray-mid);
       margin-bottom: 40px;
     }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -193,12 +194,14 @@
   <h2>2. Jaké osobní údaje zpracováváme</h2>
   <p>Zpracováváme pouze osobní údaje, které nám sami poskytnete prostřednictvím kontaktního formuláře na tomto webu:</p>
   <ul>
-    <li>E-mailová adresa</li>
+    <li>E-mailová adresa, předmět zprávy a volitelně jméno</li>
     <li>Obsah vaší zprávy</li>
+    <li>Technické údaje nutné k ochraně před zneužitím (otisk IP adresy, čas odeslání; při použití reCAPTCHA též skóre důvěryhodnosti)</li>
   </ul>
   <p>Jiné osobní údaje (jméno, telefon apod.) zpracováváme pouze tehdy, pokud nám je sami dobrovolně sdělíte.</p>
 
   <h2>3. Účel a právní základ zpracování</h2>
+  <div class="table-scroll">
   <table>
     <tr>
       <th>Účel</th>
@@ -211,16 +214,19 @@
       <td>Do vyřízení dotazu, nejdéle 1 rok</td>
     </tr>
   </table>
+  </div>
 
   <h2>4. Příjemci osobních údajů</h2>
   <p>Vaše osobní údaje předáváme třetím stranám pouze v nezbytném rozsahu:</p>
   <ul>
-    <li><strong>Formspree, Inc.</strong> – zprostředkovatel kontaktního formuláře, sídlem v USA. Formspree zpracovává vaši zprávu a doručuje ji na náš e-mail. Více informací na <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener">formspree.io/legal/privacy-policy</a>.</li>
+    <li><strong>Google Cloud (Firebase) – Google Ireland Ltd.</strong> – náš server v EU (Belgie), který zprávu přijme, zkontroluje a odešle na naši schránku. Obsah zprávy se na serveru neukládá, uchováváme jen anonymní otisky (hash IP adresy) a čítače použité k omezení nadměrného odesílání, nejdéle 2 dny.</li>
+    <li><strong>Poskytovatel naší e-mailové schránky info@10men.cz</strong> – doručená zpráva je uložena v naší schránce.</li>
+    <li><strong>Google reCAPTCHA v3</strong> – ochrana formuláře proti robotům a nevyžádané poště. Používá se <strong>pouze pokud povolíte analytické cookies</strong>; Google při něm vyhodnocuje údaje o zařízení a chování na stránce (viz <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">zásady Google</a>). Bez souhlasu se reCAPTCHA nenačítá a formulář se chrání jinými, přísnějšími prostředky.</li>
   </ul>
   <p>Vaše osobní údaje neprodáváme ani nepředáváme jiným třetím stranám.</p>
 
   <h2>5. Předávání údajů do třetích zemí</h2>
-  <p>Formspree, Inc. sídlí v USA. Předávání probíhá na základě standardních smluvních doložek schválených Evropskou komisí.</p>
+  <p>Zpráva je zpracována na serverech v EU. Služba Google reCAPTCHA (jen se souhlasem) může údaje předávat do USA na základě rozhodnutí Evropské komise o odpovídající ochraně (EU–US Data Privacy Framework) a standardních smluvních doložek.</p>
 
   <h2>6. Vaše práva</h2>
   <p>V souladu s GDPR máte právo:</p>

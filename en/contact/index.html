@@ -172,6 +172,15 @@
     @media (max-width: 720px) {
       .contact-body { grid-template-columns: 1fr; gap: 40px; }
     }
+    .hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    .form-note { font-size: 13px; color: #888; margin: 0 0 12px; }
+    .form-note-small { font-size: 12px; }
+    .form-note a { color: var(--red); }
+    .contact-form-wrap, .contact-body > * { min-width: 0; }
+    .social-row { flex-wrap: wrap; }
+    .contact-info { padding: 28px 24px; }
+    .contact-form-wrap input, .contact-form-wrap textarea { max-width: 100%; }
+    @media (max-width: 720px) { .contact-body { padding-left: 16px; padding-right: 16px; } }
   </style>
   <style>
   #cookie-banner {
@@ -297,25 +306,30 @@ Your data is anonymized and not used for advertising purposes.
     <h2 class="section-title" data-i18n="form_title">Send us a message</h2>
     <div class="accent-line"></div>
     <p data-i18n="form_intro">Interested in a collaboration, booking, or have any question? Write to us – we&#39;ll be happy to reply.</p>
-
-    <!-- Formspree endpoint – nahraďte YOUR_FORM_ID po registraci na formspree.io -->
-    <form id="contact-form" action="https://formspree.io/f/mzdkqvog" method="POST">
+    <form id="contact-form" method="POST">
+      <div class="form-group">
+        <label for="name" data-i18n="label_name">Name (optional)</label>
+        <input type="text" id="name" name="name" maxlength="80" autocomplete="name">
+      </div>
+      <div class="hp-field" aria-hidden="true"><label for="website">Website</label><input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></div>
       <div class="form-group">
         <label for="email" data-i18n="label_email">Your e-mail</label>
-        <input type="email" id="email" name="email" placeholder="jmeno@email.com" required>
+        <input type="email" id="email" name="email" placeholder="jmeno@email.com" maxlength="120" required>
       </div>
       <div class="form-group">
         <label for="subject" data-i18n="label_subject">Subject</label>
-        <input type="text" id="subject" name="subject" placeholder="" required>
+        <input type="text" id="subject" name="subject" maxlength="120" required>
       </div>
       <div class="form-group">
         <label for="message" data-i18n="label_message">Message</label>
-        <textarea id="message" name="message" required></textarea>
+        <textarea id="message" name="message" minlength="10" maxlength="3000" required></textarea>
       </div>
       <div class="checkbox-wrap">
         <input type="checkbox" id="gdpr" name="gdpr" required>
         <label for="gdpr" data-i18n="label_gdpr">I consent to my data being used for the stated purpose and retained for as long as necessary to handle my enquiry.</label>
       </div>
+      <p class="form-note"><a href="/gdpr.html" target="_blank" rel="noopener" data-i18n="gdpr_link">Privacy policy</a></p>
+      <p class="form-note form-note-small" data-i18n-html="rc_note">The form is protected against bots by Google reCAPTCHA (only if you allow analytics cookies); Google's <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">terms</a> apply.</p>
       <button type="submit" class="btn btn-red" data-i18n="btn_send">Send message</button>
     </form>
 
@@ -457,34 +471,7 @@ Your data is anonymized and not used for advertising purposes.
   document.addEventListener('DOMContentLoaded', () => {
     window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');
   });
-
-  // Form submission via Formspree (AJAX)
-  const form = document.getElementById('contact-form');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    const origText = btn.textContent;
-    btn.textContent = '…';
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { Accept: 'application/json' }
-      });
-      if (res.ok) {
-        form.style.display = 'none';
-        document.getElementById('form-success').style.display = 'block';
-      } else {
-        throw new Error();
-      }
-    } catch {
-      document.getElementById('form-error').style.display = 'block';
-      btn.textContent = origText;
-      btn.disabled = false;
-    }
-  });
 </script>
+<script src="/contact-form.js"></script>
 </body>
 </html>
