@@ -9,7 +9,7 @@
  *   --today RRRR-MM-DD  „dnešek“ pro rozdělení na nadcházející a proběhlé (testy)
  *   --check             nic nezapisuje; skončí chybou, když by se něco změnilo
  *
- * Co generuje: akce (nadcházející i archiv + strukturovaná data), stránku „O nás“, čísla na úvodní stránce a ve všech 16 stránkách
+ * Co generuje: úvodní stránku (celé tělo; texty z pages.home, jinak výchozí z home-defaults.json), akce (nadcházející i archiv + strukturovaná data), stránku „O nás“, čísla na úvodní stránce a ve všech 16 stránkách
  * jazyk dokumentu, titulek, popis, canonical, hreflang a Open Graph; texty se předvykreslí do HTML (funguje i bez JavaScriptu)
  * a nakonec se přegeneruje sitemap.xml. Všechny texty z dat se escapují. Běh je idempotentní.
  */
@@ -123,6 +123,101 @@ function buildI18nBlock(d) {
   return `<script>\n  const i18n = {\n${langBlocks}\n  };\n\n  window.applyI18n = function(lang) {\n    Object.keys(i18n[lang]).forEach(key => {\n      document.querySelectorAll('[data-i18n="' + key + '"]').forEach(el => {\n        el.textContent = i18n[lang][key];\n      });\n    });\n  };\n  document.addEventListener('DOMContentLoaded', () => {\n    window.applyI18n(window.getCurrentLang ? window.getCurrentLang() : 'cs');\n  });\n</script>`;
 }
 
+// ── úvodní stránka ──
+const HOME_DEFAULTS = JSON.parse(fs.readFileSync(path.join(__dirname, "home-defaults.json"), "utf8"));
+const HOME_UI = {   // pevné popisky, které se v admin portálu needitují
+  cs: { next: "Nejbližší koncert", detail: "Detail", events_label: "Program", alt_hero: "Skupina 10men", alt_who: "Skupina 10men na pódiu", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella logo" },
+  en: { next: "Next concert", detail: "Details", events_label: "Programme", alt_hero: "The 10men group", alt_who: "10men on stage", lamen_label: "LAMEN project", lamen_alt: "LAMEN Acappella logo" },
+  de: { next: "Nächstes Konzert", detail: "Details", events_label: "Programm", alt_hero: "Die Gruppe 10men", alt_who: "10men auf der Bühne", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella Logo" },
+  es: { next: "Próximo concierto", detail: "Detalles", events_label: "Programa", alt_hero: "El grupo 10men", alt_who: "10men en el escenario", lamen_label: "Proyecto LAMEN", lamen_alt: "Logotipo de LAMEN Acappella" },
+};
+const GALLERY = ["foto_02.jpg", "foto_04.jpg", "foto_05.jpg", "foto_06.jpg"];
+function dateShort(date, lang) {
+  const { m, d } = dayParts(date);
+  return lang === "en" ? `${MONTH_LONG.en[m]} ${d}` : lang === "es" ? `${d} de ${MONTH_LONG.es[m]}` : `${d}. ${MONTH_LONG[lang][m]}`;
+}
+// Zveřejněná data mají přednost; co v nich chybí, doplní výchozí texty (web tak funguje i bez úprav v admin portálu).
+function mergeHome(data) {
+  const h = (data && typeof data === "object") ? data : {}, out = {};
+  for (const [block, def] of Object.entries(HOME_DEFAULTS)) {
+    const src = h[block] && typeof h[block] === "object" ? h[block] : {};
+    out[block] = { ...def };
+    for (const [k, v] of Object.entries(src)) if (Array.isArray(v) ? v.length : v && typeof v === "object" && !Array.isArray(v) ? Object.keys(v).length : v) out[block][k] = v;
+  }
+  return out;
+}
+function buildHome(home, lang, upcoming, site) {
+  const H = mergeHome(home), ui = HOME_UI[lang], t = (o) => esc(L(o, lang)), P = PATHS, facts = (site && site.facts) || { founded: 2015, awards: 9, concerts: {} };
+  const nextC = upcoming[0];
+  const next = nextC ? `
+    <div class="next" data-block="next">
+      <div class="d"><b>${dayParts(nextC.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(nextC.date).m])}</small></div>
+      <div class="t"><small>${esc(ui.next)}</small><strong>${t(nextC.title)}</strong><span>${esc([L(nextC.venue, lang), nextC.time || TIME_TBC[lang]].filter(Boolean).join(" · "))}</span></div>
+      <a href="${P.events[lang]}">${esc(ui.detail)} →</a>
+    </div>` : "";
+  const cards = upcoming.slice(0, 3).map((c) => `    <div class="card"><div class="k">${esc(dateShort(c.date, lang))}</div><h3>${t(c.title)}</h3><p>${esc([L(c.venue, lang), c.time || TIME_TBC[lang]].filter(Boolean).join(" · "))}</p></div>`).join("\n");
+  const stats = [[facts.founded, H.stats.founded], [facts.awards, H.stats.awards], [L(facts.concerts, lang) || "50+", H.stats.concerts]];
+  return `<section class="hero2" data-block="hero">
+  <div class="hero2-photo" role="img" aria-label="${esc(ui.alt_hero)}"></div>
+  <div class="hero2-in">
+    <div class="hero2-text">
+      <p class="hero-eyebrow">${t(H.hero.eyebrow)}</p>
+      <h1>${t(H.hero.title)} <em>10men</em></h1>
+      <p class="lead">${t(H.hero.lead)}</p>
+      <div class="hero-cta"><a href="${P.events[lang]}" class="btn btn-red">${t(H.hero.ctaEvents)}</a><a href="${P.contact[lang]}" class="btn btn-outline hero-book">${t(H.hero.ctaBook)}</a></div>
+    </div>${next}
+  </div>
+</section>
+
+<section class="stats" data-block="stats"><div class="stats-in">
+  ${stats.map(([n, lab]) => `<div><b>${esc(n)}</b><span>${t(lab)}</span></div>`).join("")}
+</div></section>
+
+<section class="sec" data-block="who"><div class="sec-in who">
+  <div>
+    <div class="head"><p class="section-label">${t(H.who.label)}</p><h2 class="section-title">${t(H.who.title)}</h2></div>
+    <p><strong>${t(H.who.bold)}</strong></p>
+    <p>${t(H.who.p1)}</p>
+    <p>${t(H.who.p2)}</p>
+    <a href="${P.about[lang]}" class="btn btn-outline more">${t(H.who.cta)}</a>
+  </div>
+  <img src="/images/foto_03.jpg" alt="${esc(ui.alt_who)}" loading="lazy">
+</div></section>
+
+<section class="sec alt" data-block="proof"><div class="sec-in">
+  <div class="head"><p class="section-label">${t(H.proof.label)}</p><h2 class="section-title">${t(H.proof.title)}</h2></div>
+  <div class="cards">
+${H.proof.items.map((i) => `    <div class="card"><b>${esc(i.name)}</b><span>${t(i.desc)}</span></div>`).join("\n")}
+  </div>
+  <ul class="plain">${H.proof.lines.map((x) => `<li>${t(x)}</li>`).join("")}</ul>
+</div></section>
+
+<section class="sec" data-block="events"><div class="sec-in">
+  <div class="head"><p class="section-label">${esc(ui.events_label)}</p><h2 class="section-title">${t(H.events.title)}</h2></div>
+${cards ? `  <div class="cards">\n${cards}\n  </div>` : `  <p class="empty">${esc(NO_UPCOMING[lang])}</p>`}
+  <a href="${P.events[lang]}" class="btn btn-outline more">${t(H.events.cta)}</a>
+</div></section>
+
+<section class="sec dark" data-block="repertoire"><div class="sec-in">
+  <div class="head"><p class="section-label">${t(H.genres.label)}</p><h2 class="section-title">${t(H.genres.title)}</h2></div>
+  <div class="genre-list">${H.genres.tags.map((g) => `<span class="genre-tag${g.hl ? " highlight" : ""}">${t(g.text)}</span>`).join("")}</div>
+  <div class="gal" data-block="gallery">${GALLERY.map((f) => `<img src="/images/${f}" alt="" loading="lazy">`).join("")}</div>
+</div></section>
+
+<section class="book" data-block="booking"><div class="book-in">
+  <div><p class="section-label">${t(H.booking.label)}</p><h2>${t(H.booking.title)}</h2><p>${t(H.booking.lead)}</p></div>
+  <div><ul>${H.booking.items.map((x) => `<li>${t(x)}</li>`).join("")}</ul><a href="${P.contact[lang]}" class="btn">${t(H.booking.cta)}</a></div>
+</div></section>
+
+<section class="sec" data-block="lamen"><div class="sec-in lamen">
+  <img src="/images/logo-lamen.png" alt="${esc(ui.lamen_alt)}" loading="lazy">
+  <div><div class="head"><p class="section-label">${esc(ui.lamen_label)}</p><h2 class="section-title">${t(H.lamen.title)}</h2></div>
+  <p>${t(H.lamen.p)}</p>
+  <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">${t(H.lamen.cta)}</a></div>
+</div></section>
+`;
+}
+
 // ── práce s HTML ──
 function replaceSection(html, marker, content, file) {
   const start = `<!-- GEN:${marker}:START -->`, end = `<!-- GEN:${marker}:END -->`, i = html.indexOf(start), j = html.indexOf(end);
@@ -194,10 +289,7 @@ async function main() {
     const f = files[lang]; let html = read(f);
     if (page === "events" && concerts.length) { html = replaceSection(html, "UPCOMING", buildUpcoming(upcoming, lang), f); html = replaceSection(html, "PAST", buildPast(past, lang), f); }
     if (page === "about" && onas) { html = replaceSection(html, "ONAS-I18N", buildI18nBlock(onas), f); html = replaceSection(html, "ONAS-TIMELINE", buildTimeline(onas.timeline), f); html = replaceSection(html, "ONAS-AWARDS", buildAwards(onas.awards), f); }
-    if (page === "home" && site) {
-      let i = 0; const vals = [String(site.facts.founded), String(site.facts.awards), L(site.facts.concerts, lang) || "50+"];
-      html = html.replace(/(<div class="fact-num">)([^<]*)(<\/div>)/g, (m, a, v, c) => (i < 3 ? `${a}${esc(vals[i++])}${c}` : m));
-    }
+    if (page === "home") html = replaceSection(html, "HOME", buildHome(data.pages && data.pages.home, lang, upcoming, site), f);
     html = applyHead(html, page, lang, f);
     const r = prerender(html, lang); pre += r.n; html = r.html;
     if (lang !== "cs") { const d = (loadI18nObject(html) || {})[lang] || {}; const miss = [...html.matchAll(/<\w+[^>]*\sdata-i18n="([\w-]+)"[^>]*>([^<]*)</g)].filter((x) => x[2].trim() && !(typeof d[x[1]] === "string" && d[x[1]].trim())).map((x) => x[1]); if (miss.length) untranslated.push(`${f}: ${miss.length} (${miss.slice(0, 4).join(", ")}${miss.length > 4 ? ", …" : ""})`); }

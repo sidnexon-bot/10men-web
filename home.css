@@ -1,0 +1,79 @@
+/* Úvodní stránka 10men.cz (sekce generuje scripts/build-site.js) */
+:root{--sec:52px;--gap:14px;--line:#E4E2DD}
+.sec{padding:var(--sec) 24px}.sec-in{max-width:var(--max-w);margin:0 auto}
+.sec.alt{background:var(--gray-light)}.sec.dark{background:var(--black);color:var(--white)}
+.head{margin-bottom:22px}
+.head .section-label{margin-bottom:6px;color:var(--red);font-size:12px;letter-spacing:.16em}
+.head .section-title{font-size:clamp(1.5rem,4vw,2rem);line-height:1.15;margin:0}
+.dark .section-label{color:var(--red)}.dark .section-title{color:#fff}
+
+/* Hero: text na plné černé, fotka vpravo, nikdy pod textem */
+.hero2{background:var(--black);color:var(--white);position:relative;overflow:hidden}
+.hero2-photo{position:absolute;top:0;right:0;bottom:0;width:58%;background:url(/images/foto_01.jpg) center 25%/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 38%);mask-image:linear-gradient(90deg,transparent 0,#000 38%)}
+.hero2-in{position:relative;max-width:var(--max-w);margin:0 auto;padding:56px 24px 28px}
+.hero2-text{max-width:400px}
+.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:14px}
+.hero2 h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin:0 0 16px}
+.hero2 h1 em{font-style:normal;color:var(--red)}
+.hero2 .lead{font-size:16px;line-height:1.6;color:#c4c4c4;margin-bottom:24px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.next{display:flex;align-items:center;gap:16px;margin-top:40px;padding:14px 18px;background:#1b1b1b;border:1px solid #2c2c2c;border-left:3px solid var(--red);max-width:560px}
+.next .d{text-align:center;min-width:46px;line-height:1}.next .d b{display:block;font-size:28px;font-weight:900}.next .d small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#aaa}
+.next .t{flex:1;min-width:0}.next .t small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:700}
+.next .t strong{display:block;font-size:16px;line-height:1.3}.next .t span{font-size:13px;color:#aaa}
+.next a{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border-bottom:2px solid var(--red);padding-bottom:2px}
+
+/* čísla */
+.stats{background:var(--black);border-top:1px solid #222}
+.stats-in{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);padding:0 24px}
+.stats-in div{padding:18px 0;text-align:center;border-left:1px solid #222}.stats-in div:first-child{border-left:0}
+.stats-in b{display:block;font-size:1.7rem;font-weight:900;line-height:1.1;color:#fff}.stats-in span{font-size:12px;color:#999}
+
+/* sjednocená karta */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+.card{background:#fff;border:1px solid var(--line);border-top:2px solid var(--red);padding:16px 18px}
+.card .k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.card b,.card h3{display:block;font-size:16px;line-height:1.3;margin:0 0 3px;font-weight:700}
+.card span,.card p{font-size:14px;color:var(--gray-text);line-height:1.45;margin:0}
+.more{margin-top:18px}
+
+.who{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
+.who img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.who p{color:var(--gray-text);margin-bottom:12px;font-size:15px;line-height:1.65}.who p strong{color:var(--black)}
+.plain{list-style:none;margin-top:16px;display:grid;gap:6px}
+.plain li{font-size:14px;color:var(--gray-text);padding-left:16px;position:relative}
+.plain li::before{content:"";position:absolute;left:0;top:.7em;width:6px;height:2px;background:var(--red)}
+
+.genre-list{display:flex;flex-wrap:wrap;gap:8px}
+.genre-tag{border:1px solid #333;padding:8px 16px;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:2px;color:var(--gray-mid)}
+.genre-tag.highlight{border-color:var(--red);color:#fff}
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:22px}
+.gal img{width:100%;height:130px;object-fit:cover}
+
+.book{background:var(--red);color:#fff;padding:var(--sec) 24px}
+.book-in{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.book .section-label{color:#ffd5cf;margin-bottom:6px;font-size:12px;letter-spacing:.16em}.book h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:900;line-height:1.15;margin:0 0 10px;letter-spacing:-.02em}
+.book p{color:#ffe9e6;font-size:15px;margin:0}
+.book ul{list-style:none;display:grid;gap:6px;margin-bottom:18px}.book li{font-size:14px;color:#fff;padding-left:16px;position:relative}
+.book li::before{content:"";position:absolute;left:0;top:.7em;width:6px;height:2px;background:#fff}
+.book .btn{background:#fff;color:var(--red);border-color:#fff}
+
+.lamen{display:flex;gap:20px;align-items:center}
+.lamen img{width:72px;height:72px;border-radius:50%;flex:none}
+.lamen p{color:var(--gray-text);font-size:15px;margin:0 0 10px}
+
+@media(max-width:680px){
+  :root{--sec:40px}
+  .sec,.book{padding-left:20px;padding-right:20px}
+  .hero2-photo{position:relative;width:100%;height:230px;mask-image:linear-gradient(180deg,#000 55%,transparent);-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent)}
+  .hero2-in{padding:8px 20px 24px}.hero2-text{max-width:none}
+  .hero2{display:flex;flex-direction:column}
+  .next{margin-top:28px}
+  .who,.book-in,.cards{grid-template-columns:1fr}.who{gap:22px}
+  .gal{grid-template-columns:1fr 1fr}.gal img{height:110px}
+  .lamen{align-items:flex-start}
+}
+.hero-book{color:#fff;border-color:#fff}
+.hero-book:hover{background:#fff;color:var(--black)}
+.empty{color:var(--gray-text);font-size:15px}

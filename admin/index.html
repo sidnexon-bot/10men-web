@@ -62,6 +62,8 @@ label.l{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:1
 input[type=text],input[type=date],input[type=time],input[type=url],input[type=number],textarea,select{width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;outline:none}
 input:focus,textarea:focus,select:focus{border-color:var(--red)}
 textarea{resize:vertical;min-height:84px}
+/* iPhone zoomuje pole s písmem pod 16 px */
+input,textarea,select{font-family:inherit;font-size:16px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .lang-tabs{display:flex;gap:6px;margin:14px 0 4px;align-items:center;flex-wrap:wrap}
 .lang-tabs button.lt{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:4px 14px;font-weight:700;font-size:12px;color:var(--muted)}.lang-tabs button.lt.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
@@ -349,15 +351,15 @@ async function publishPlan() {
   const drafts = concerts().filter(c => c.status === 'koncept' && c.date >= today()).sort((a, b) => a.date.localeCompare(b.date));   // rozpracované, nadcházející
   const held = notReady.filter(c => was[c.id]), neverPublished = notReady.filter(c => !was[c.id]);   // upravené bez nové kontroly: na webu zůstane předchozí verze
   const removed = Object.values(was).filter(c => !now[c.id] && !notReady.some(n => n.id === c.id));
-  const pg = (web().pages || {})['o-nas'], pgChanged = !!pg && !same(noMeta(pg), (p.pages || {})['o-nas']), st = web().site, stChanged = !!st && !same(noMeta(st), p.site);
-  return { added, changed, unchanged, removed, held, drafts, notReady: neverPublished, pgChanged, stChanged, any: added.length + changed.length + removed.length > 0 || pgChanged || stChanged };
+  const pg = (web().pages || {})['o-nas'], pgChanged = !!pg && !same(noMeta(pg), (p.pages || {})['o-nas']), st = web().site, stChanged = !!st && !same(noMeta(st), p.site), hm = (web().pages || {}).home, hmChanged = !!hm && !same(noMeta(hm), (p.pages || {}).home);
+  return { added, changed, unchanged, removed, held, drafts, notReady: neverPublished, pgChanged, stChanged, hmChanged, any: added.length + changed.length + removed.length > 0 || pgChanged || stChanged || hmChanged };
 }
 const nm = c => esc((c.title || {}).cs || '(bez názvu)') + ' <span class="hint">· ' + esc(c.date) + '</span>';
 function planGroup(title, list, cls = '') { if (!list.length) return ''; const show = list.slice(0, 8); return `<div class="panel"><h3>${esc(title)} (${list.length})</h3>${show.map(c => `<div class="find"><span>${cls}</span><span>${nm(c)}</span></div>`).join('')}${list.length > 8 ? `<div class="hint">… a dalších ${list.length - 8}</div>` : ''}</div>`; }
 $('#btn-publish').onclick = async () => {
   const pl = await publishPlan(), p = web().published;
   const body = !pl.any && !pl.notReady.length && !pl.held.length ? `<p style="margin:6px 0 4px">Není co zveřejnit: web odpovídá poslednímu zveřejnění${p ? ' (' + esc(fmtWhen(p.publishedAt)) + ')' : ''}.</p><p class="hint">Beze změny zůstává ${pl.unchanged.length} akcí.</p>${planGroup('Koncepty, které zůstávají nezveřejněné (stav „Koncept“)', pl.drafts, '○')}`
-    : `<p style="margin:6px 0 12px">Po zveřejnění se na webu změní:</p>${planGroup('Nové akce', pl.added, '＋')}${planGroup('Upravené akce', pl.changed, '✎')}${planGroup('Odebrané z webu', pl.removed, '✕')}${pl.pgChanged ? '<div class="find"><span>✎</span><span>Stránka „O nás“ je upravená</span></div>' : ''}${pl.stChanged ? '<div class="find"><span>✎</span><span>Základní údaje webu jsou upravené</span></div>' : ''}${!pl.any ? '<p style="margin:6px 0">Žádná změna obsahu.</p>' : ''}<p class="hint" style="margin-top:10px">Beze změny zůstává ${pl.unchanged.length} akcí.</p>${planGroup('Upravené, čekají na kontrolu (na webu zůstává předchozí verze)', pl.held, '⚠')}${planGroup('Nebudou zveřejněny (chybí kontrola)', pl.notReady, '⚠')}${planGroup('Koncepty, které zůstávají nezveřejněné (stav „Koncept“)', pl.drafts, '○')}<p class="hint" style="margin-top:12px">Stránky se přegenerují během asi minuty.</p>`;
+    : `<p style="margin:6px 0 12px">Po zveřejnění se na webu změní:</p>${planGroup('Nové akce', pl.added, '＋')}${planGroup('Upravené akce', pl.changed, '✎')}${planGroup('Odebrané z webu', pl.removed, '✕')}${pl.pgChanged ? '<div class="find"><span>✎</span><span>Stránka „O nás“ je upravená</span></div>' : ''}${pl.hmChanged ? '<div class="find"><span>✎</span><span>Úvodní stránka je upravená</span></div>' : ''}${pl.stChanged ? '<div class="find"><span>✎</span><span>Základní údaje webu jsou upravené</span></div>' : ''}${!pl.any ? '<p style="margin:6px 0">Žádná změna obsahu.</p>' : ''}<p class="hint" style="margin-top:10px">Beze změny zůstává ${pl.unchanged.length} akcí.</p>${planGroup('Upravené, čekají na kontrolu (na webu zůstává předchozí verze)', pl.held, '⚠')}${planGroup('Nebudou zveřejněny (chybí kontrola)', pl.notReady, '⚠')}${planGroup('Koncepty, které zůstávají nezveřejněné (stav „Koncept“)', pl.drafts, '○')}<p class="hint" style="margin-top:12px">Stránky se přegenerují během asi minuty.</p>`;
   const m = modal({ title: pl.any ? 'Zveřejnit změny?' : 'Web je aktuální', body, footer: `<button class="btn" data-n>${pl.any ? 'Zrušit' : 'Zavřít'}</button>${pl.any ? '<button class="btn primary" data-y>Zveřejnit</button>' : ''}` });
   $('[data-n]', m.ov).onclick = m.close;
   const y = $('[data-y]', m.ov); if (!y) return;
@@ -370,7 +372,73 @@ $('#btn-publish').onclick = async () => {
 
 /* ── stránky ── */
 const OF = { lead: { key: 'lead', label: 'Perex', max: 600, area: true, rows: 3 }, p1: { key: 'p1', label: 'Odstavec 1', max: 1500, area: true, rows: 4 }, p2: { key: 'p2', label: 'Odstavec 2', max: 1500, area: true, rows: 4 }, p3: { key: 'p3', label: 'Odstavec 3', max: 1500, area: true, rows: 4 }, bio: { key: 'bio', label: 'Biografie', max: 1500, area: true, rows: 4 } };
-function viewPages(v) {
+/* ── úvodní stránka ── */
+const HOME_BLOCKS = [
+  { id: 'hero', title: 'Úvod stránky (nahoře)', fields: [{ key: 'eyebrow', label: 'Řádek nad titulkem', max: 60 }, { key: 'title', label: 'Titulek (za ním je vždy „10men“)', max: 80 }, { key: 'lead', label: 'Úvodní věta', max: 300, area: true, rows: 3 }, { key: 'ctaEvents', label: 'Tlačítko – koncerty', max: 30 }, { key: 'ctaBook', label: 'Tlačítko – objednat vystoupení', max: 40 }] },
+  { id: 'who', title: 'Kdo jsme', fields: [{ key: 'label', label: 'Malý popisek', max: 40 }, { key: 'title', label: 'Nadpis', max: 80 }, { key: 'bold', label: 'Tučný úvod', max: 400, area: true, rows: 3 }, { key: 'p1', label: 'Odstavec 1', max: 900, area: true, rows: 5 }, { key: 'p2', label: 'Odstavec 2', max: 600, area: true, rows: 3 }, { key: 'cta', label: 'Tlačítko', max: 40 }] },
+  { id: 'proof', title: 'Kde jsme vystupovali', fields: [{ key: 'label', label: 'Malý popisek', max: 60 }, { key: 'title', label: 'Nadpis', max: 100 }], lists: [{ key: 'items', title: 'Festivaly a soutěže (karty)', max: 6, name: true, loc: [{ key: 'desc', label: 'Popis (např. zlaté pásmo)', max: 120 }] }, { key: 'lines', title: 'Řádky pod kartami', max: 6, loc: [{ key: 'text', label: 'Text', max: 200 }] }] },
+  { id: 'events', title: 'Nadcházející koncerty', note: 'Koncerty se berou automaticky ze záložky Akce (nejbližší tři). Tady jde upravit jen nadpis a tlačítko.', fields: [{ key: 'title', label: 'Nadpis', max: 80 }, { key: 'cta', label: 'Tlačítko', max: 40 }] },
+  { id: 'genres', title: 'Repertoár', fields: [{ key: 'label', label: 'Malý popisek', max: 40 }, { key: 'title', label: 'Nadpis', max: 80 }], lists: [{ key: 'tags', title: 'Žánry', max: 12, check: 'Zvýraznit (červený rámeček)', loc: [{ key: 'text', label: 'Žánr', max: 50 }] }] },
+  { id: 'booking', title: 'Pro pořadatele', fields: [{ key: 'label', label: 'Malý popisek', max: 40 }, { key: 'title', label: 'Nadpis', max: 80 }, { key: 'lead', label: 'Úvod', max: 400, area: true, rows: 3 }, { key: 'cta', label: 'Tlačítko', max: 50 }], lists: [{ key: 'items', title: 'Odrážky', max: 6, loc: [{ key: 'text', label: 'Text', max: 100 }] }] },
+  { id: 'lamen', title: 'Projekt LAMEN', fields: [{ key: 'title', label: 'Nadpis', max: 80 }, { key: 'p', label: 'Text', max: 500, area: true, rows: 4 }, { key: 'cta', label: 'Tlačítko', max: 40 }] },
+];
+const hasVal = x => Array.isArray(x) ? x.length > 0 : x && typeof x === 'object' ? Object.keys(x).length > 0 : !!x;
+async function homeValues() {
+  let def = {}; try { const r = await fetch('/scripts/home-defaults.json', { cache: 'no-store' }); if (r.ok) def = await r.json(); } catch (e) { /* bez výchozích textů se pole jen nepředvyplní */ }
+  const saved = (web().pages || {}).home || {}, out = {};
+  HOME_BLOCKS.forEach(b => { out[b.id] = { ...(def[b.id] || {}) }; Object.entries(saved[b.id] || {}).forEach(([k, x]) => { if (hasVal(x)) out[b.id][k] = x; }); });
+  return out;
+}
+// seznamové položky v jednotném tvaru: { name?, hl?, <loc pole> }; textové řádky v datech jsou přímo objekt jazyků
+const listIn = (spec, raw) => (raw || []).map(it => spec.loc.length === 1 && spec.loc[0].key === 'text' && !spec.name && !spec.check ? { text: it } : it);
+const listOut = (spec, items) => items.map(it => spec.loc.length === 1 && spec.loc[0].key === 'text' && !spec.name && !spec.check ? it.text || {} : it);
+async function viewLanding(v) {
+  v.innerHTML = '<div class="empty">Načítám…</div>';
+  const vals = await homeValues(), lists = {};
+  v.innerHTML = `<div class="card"><h2>Úvodní stránka</h2><p class="sub">Texty ve čtyřech jazycích. Fotografie a pořadí sekcí se tady nemění. Změny se na web dostanou po kliknutí na „Zveřejnit změny“.</p>
+    ${HOME_BLOCKS.map((b, bi) => `<details ${bi === 0 ? 'open' : ''} style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer;font-weight:600">${esc(b.title)}</summary>${b.note ? `<p class="hint" style="margin-top:8px">${esc(b.note)}</p>` : ''}${locBlock('h-' + b.id, b.fields, vals[b.id])}${(b.lists || []).map(sp => `<h3 style="margin:16px 0 6px;font-size:13px">${esc(sp.title)}</h3><div id="hl-${b.id}-${sp.key}"></div><button class="btn sm" id="hl-${b.id}-${sp.key}-add" style="margin-top:8px">+ Přidat</button>`).join('')}</details>`).join('')}
+    <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" id="h-save">Uložit úvodní stránku</button></div></div>`;
+  HOME_BLOCKS.forEach(b => {
+    wireLoc($('#h-' + b.id, v), b.fields);
+    (b.lists || []).forEach(sp => {
+      const id = `${b.id}-${sp.key}`; lists[id] = JSON.parse(JSON.stringify(listIn(sp, vals[b.id][sp.key])));
+      const name = it => sp.name ? it.name : (it.text || {}).cs || (it.desc || {}).cs || '';
+      const draw = () => {
+        $('#hl-' + id, v).innerHTML = lists[id].map((it, i) => `<div class="tl-row"><span class="t">${esc(name(it) || '(bez textu)')}</span><button class="btn sm" data-le="${i}">Upravit</button><button class="btn sm danger" data-ld="${i}">✕</button></div>`).join('') || '<div class="empty">Zatím nic. Na webu se použijí výchozí texty.</div>';
+        $$('[data-le]', $('#hl-' + id, v)).forEach(x => x.onclick = () => edit(+x.dataset.le));
+        $$('[data-ld]', $('#hl-' + id, v)).forEach(x => x.onclick = async () => { if (await ask('Smazat položku?', 'Odstraní se z konceptu stránky.', 'Smazat', true)) { lists[id].splice(+x.dataset.ld, 1); draw(); } });
+        $('#hl-' + id + '-add', v).disabled = lists[id].length >= sp.max;
+      };
+      function edit(i) {
+        const it = i >= 0 ? lists[id][i] : { name: '', hl: false };
+        const m = modal({ title: sp.title, body: `${sp.name ? `<label class="l">Název</label><input type="text" id="li-name" maxlength="80" value="${esc(it.name || '')}">` : ''}${locBlock('li-loc', sp.loc, it)}${sp.check ? `<label class="l"><input type="checkbox" id="li-hl" ${it.hl ? 'checked' : ''} style="width:auto;margin-right:8px">${esc(sp.check)}</label>` : ''}`, footer: '<button class="btn" data-n>Zrušit</button><button class="btn primary" data-y>Hotovo</button>' });
+        wireLoc($('#li-loc', m.ov), sp.loc); $('[data-n]', m.ov).onclick = m.close;
+        $('[data-y]', m.ov).onclick = () => {
+          const l = readLoc($('#li-loc', m.ov), sp.loc), n = { ...l }; if (sp.name) n.name = $('#li-name', m.ov).value.trim(); if (sp.check) n.hl = $('#li-hl', m.ov).checked;
+          if (sp.name && !n.name) { toast('Vyplň název.', true); return; } if (!sp.name && !Object.values(l)[0].cs) { toast('Vyplň český text.', true); return; }
+          if (i >= 0) lists[id][i] = n; else lists[id].push(n); m.close(); draw();
+        };
+      }
+      $('#hl-' + id + '-add', v).onclick = () => edit(-1); draw();
+    });
+  });
+  const sv = $('#h-save', v); sv.onclick = () => guarded(sv, async () => {
+    const data = {};
+    HOME_BLOCKS.forEach(b => { data[b.id] = readLoc($('#h-' + b.id, v), b.fields); (b.lists || []).forEach(sp => { data[b.id][sp.key] = listOut(sp, lists[`${b.id}-${sp.key}`]); }); });
+    await call({ action: 'page_save', page: 'home', data }); toast('Úvodní stránka uložena. Zveřejníte tlačítkem nahoře.');
+  });
+}
+
+async function viewPages(v) {
+  const sec = S.pageSec || 'about';
+  const seg = `<div class="seg" role="tablist" style="margin-bottom:14px">${[['about', 'O nás a údaje'], ['landing', 'Úvodní stránka']].map(([k, n]) => `<button class="${sec === k ? 'on' : ''}" data-sec="${k}">${n}</button>`).join('')}</div>`;
+  const host = document.createElement('div');
+  v.innerHTML = seg; v.appendChild(host);
+  $$('[data-sec]', v).forEach(b => b.onclick = () => { S.pageSec = b.dataset.sec; viewPages(v); });
+  if (sec === 'landing') return viewLanding(host);
+  return viewAbout(host);
+}
+function viewAbout(v) {
   const o = (web().pages || {})['o-nas'] || { about: {}, conductor: {}, timeline: [], awards: [] }, s = web().site || { facts: { founded: 2015, awards: 0, concerts: {} }, email: 'info@10men.cz' };
   v.innerHTML = `
   <div class="card"><h2>O nás</h2><p class="sub">Úvodní text stránky. Změny se na web dostanou po kliknutí na „Zveřejnit změny“.</p>

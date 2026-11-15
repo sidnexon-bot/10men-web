@@ -25,209 +25,7 @@
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/images/favicon-180.png">
 <script src="/shared.js"></script>
-  <style>
-    /* ── Hero ── */
-    .hero {
-      background: var(--black);
-      color: var(--white);
-      padding: 80px 24px 72px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '10';
-      position: absolute;
-      right: -20px; top: -40px;
-      font-family: var(--font-display);
-      font-size: clamp(200px, 30vw, 320px);
-      font-weight: 900;
-      color: rgba(255,255,255,0.03);
-      line-height: 1;
-      pointer-events: none;
-      user-select: none;
-    }
-    .hero-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      position: relative;
-    }
-    .hero-eyebrow {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 20px;
-    }
-    .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      font-weight: 900;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      margin-bottom: 28px;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--red);
-    }
-    .hero-lead {
-      font-size: 17px;
-      line-height: 1.7;
-      color: #BBBBBB;
-      max-width: 580px;
-      margin-bottom: 40px;
-    }
-    .hero-cta {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-     /* ── Band photo slideshow ── */
-    .photo-strip {
-      position: relative;
-      height: 460px;
-      background: var(--black);
-      overflow: hidden;
-    }
-    .photo-strip img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-    .photo-strip img.active {
-      opacity: 1;
-    }
-    .slideshow-dots {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      z-index: 2;
-    }
-    .slideshow-dots button {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(255,255,255,0.35);
-      cursor: pointer;
-      padding: 0;
-      transition: background var(--transition);
-    }
-    .slideshow-dots button.active {
-      background: var(--red);
-    }
-
-    /* ── Intro section ── */
-    .intro {
-      padding: 72px 24px;
-    }
-    .intro-grid {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: start;
-    }
-    .intro-text p {
-      color: var(--gray-text);
-      margin-bottom: 16px;
-    }
-    .intro-text p strong {
-      color: var(--black);
-      font-weight: 600;
-    }
-    .intro-facts {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .fact-card {
-      background: var(--gray-light);
-      padding: 24px;
-      border-left: 3px solid var(--red);
-    }
-    .fact-num {
-      font-family: var(--font-display);
-      font-size: 2.4rem;
-      font-weight: 900;
-      color: var(--black);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .fact-label {
-      font-size: 13px;
-      color: var(--gray-text);
-      font-weight: 400;
-    }
-
-    /* ── Genres ── */
-    .genres {
-      background: var(--black);
-      color: var(--white);
-      padding: 72px 24px;
-    }
-    .genres-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-    }
-    .genres-inner .section-label { color: var(--red); }
-    .genre-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 32px;
-    }
-    .genre-tag {
-      border: 1px solid #333;
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      border-radius: 2px;
-      transition: var(--transition);
-      color: var(--gray-mid);
-    }
-    .genre-tag:hover, .genre-tag.highlight {
-      border-color: var(--red);
-      color: var(--white);
-    }
-
-    /* ── LAMEN teaser ── */
-    .lamen-teaser {
-      padding: 72px 24px;
-      border-top: 1px solid var(--gray-light);
-    }
-    .lamen-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 48px;
-    }
-    .lamen-logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      object-fit: cover;
-    }
-    .lamen-text p { color: var(--gray-text); margin-bottom: 16px; }
-
-    @media (max-width: 680px) {
-      .intro-grid { grid-template-columns: 1fr; gap: 40px; }
-      .lamen-inner { flex-direction: column; gap: 24px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/home.css">
   <style>
   #cookie-banner {
     position: fixed;
@@ -340,313 +138,78 @@ Your data is anonymized and not used for advertising purposes.
 
 <div id="nav-placeholder"></div>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-inner">
-<p class="hero-eyebrow fade-up" data-i18n="hero_eyebrow">Prague · Since 2015</p>
-<h1 class="fade-up delay-1">
-  <span data-i18n="hero_title">Vocal group</span> <em>10men</em>
-</h1>
-<p class="hero-lead fade-up delay-2" data-i18n="hero_lead_main">A male a cappella group from Prague. Pop, jazz and swing – on stage and at your event.</p>
-<div class="hero-cta fade-up delay-3">
-  <a href="/en/events/" class="btn btn-red" data-i18n="cta_events_btn">Concerts</a>
-  <a href="/en/contact/" class="btn btn-outline" data-i18n="cta_book">Book a Performance</a>
-</div>
-  </div>
-</section>
-
-<!-- Band photo -->
-<div class="photo-strip">
-  <img src="/images/foto_01.jpg" class="active">
-  <img src="/images/foto_02.jpg">
-  <img src="/images/foto_03.jpg">
-  <img src="/images/foto_04.jpg">
-  <img src="/images/foto_05.jpg">
-  <img src="/images/foto_06.jpg">
-</div>
-
-<!-- Intro / Co jsme zač -->
-<section class="intro">
-  <div class="intro-grid">
-    <div class="intro-text fade-up">
-      <p class="section-label" data-i18n="who_label">Who we are</p>
-      <h2 class="section-title" data-i18n="who_title">We are 10men</h2>
-      <div class="accent-line"></div>
-      <p><strong data-i18n="who_bold">A Prague-based vocal group that has been captivating audiences since 2015, both in the Czech vocal scene and beyond.</strong></p>
-      <p data-i18n="who_p1">Our name refers to the number of founding members, while the number of active members has evolved over time. We offer a wide-ranging repertoire from pop hits and jazz to swing, and on special occasions, we also perform classical music.</p>
-      <p data-i18n="who_p2">We perform at concerts, festivals, and private events.</p>
-      <br>
-      <a href="/en/about/" class="btn btn-outline" data-i18n="cta_more">More About Us</a>
+<!-- GEN:HOME:START -->
+<section class="hero2" data-block="hero">
+  <div class="hero2-photo" role="img" aria-label="The 10men group"></div>
+  <div class="hero2-in">
+    <div class="hero2-text">
+      <p class="hero-eyebrow">Prague · Since 2015</p>
+      <h1>Vocal group <em>10men</em></h1>
+      <p class="lead">A male a cappella group from Prague. Pop, jazz and swing – on stage and at your event.</p>
+      <div class="hero-cta"><a href="/en/events/" class="btn btn-red">Concerts</a><a href="/en/contact/" class="btn btn-outline hero-book">Book a Performance</a></div>
     </div>
-    <div class="intro-facts fade-up delay-2">
-      <div class="fact-card">
-        <div class="fact-num">2015</div>
-        <div class="fact-label" data-i18n="fact_founded">Year founded</div>
-      </div>
-      <div class="fact-card">
-        <div class="fact-num">9</div>
-        <div class="fact-label" data-i18n="fact_concerts">Competition awards</div>
-      </div>
-      <div class="fact-card">
-        <div class="fact-num">50+</div>
-        <div class="fact-label" data-i18n="fact_genres">Concerts and performances</div>
-      </div>
+    <div class="next" data-block="next">
+      <div class="d"><b>27</b><small>Nov</small></div>
+      <div class="t"><small>Next concert</small><strong>Performance at the Christmas Market in Lužná</strong><span>Lužná · 18:00</span></div>
+      <a href="/en/events/">Details →</a>
     </div>
   </div>
 </section>
 
-<section class="proof">
-  <div class="proof-inner">
-    <p class="section-label" data-i18n="proof_label">Where we&#39;ve performed</p>
-<h2 class="section-title" data-i18n="proof_title">Dozens of concerts behind us</h2>
-<ul class="proof-list">
-  <li><strong>HARMONIE Festival (DE)</strong> – <span data-i18n="proof_harmonie">gold and silver award</span></li>
-  <li><strong>Jirkovský Písňovar</strong> – <span data-i18n="proof_jirkovsky">repeated gold award placements</span></li>
-  <li><strong>Musica Orbis Gloria</strong> – <span data-i18n="proof_musica">silver award</span></li>
-  <li data-i18n="proof_venues">Concerts at Atrium Žižkov, Kasárny Karlín, Prague towers and other venues</li>
-  <li data-i18n="proof_collab">Collaborations with choirs from the USA and Germany</li>
-</ul>
-  </div>
-</section>
+<section class="stats" data-block="stats"><div class="stats-in">
+  <div><b>2015</b><span>Year founded</span></div><div><b>9</b><span>Competition awards</span></div><div><b>50+</b><span>Concerts and performances</span></div>
+</div></section>
 
-<!-- Genres -->
-<section class="genres">
-  <div class="genres-inner">
-    <p class="section-label" data-i18n="genre_label">Repertoire</p>
-    <h2 class="section-title" style="color:var(--white)" data-i18n="genre_title">What we sing</h2>
-    <div class="genre-list">
-      <span class="genre-tag highlight">Pop</span>
-<span class="genre-tag highlight">Jazz / swing / barbershop</span>
-<span class="genre-tag" data-i18n="genre_classical">Classical music</span>
-<span class="genre-tag" data-i18n="genre_folk">Folk music</span>
-<span class="genre-tag" data-i18n="genre_carols">Carols and Christmas hits</span>
-    </div>
+<section class="sec" data-block="who"><div class="sec-in who">
+  <div>
+    <div class="head"><p class="section-label">Who we are</p><h2 class="section-title">We are 10men</h2></div>
+    <p><strong>A Prague-based vocal group that has been captivating audiences since 2015, both in the Czech vocal scene and beyond.</strong></p>
+    <p>Our name refers to the number of founding members, while the number of active members has evolved over time. We offer a wide-ranging repertoire from pop hits and jazz to swing, and on special occasions, we also perform classical music.</p>
+    <p>We perform at concerts, festivals, and private events.</p>
+    <a href="/en/about/" class="btn btn-outline more">More About Us</a>
   </div>
-</section>
+  <img src="/images/foto_03.jpg" alt="10men on stage" loading="lazy">
+</div></section>
 
-  <section class="booking">
-  <div class="booking-inner">
-    <p class="section-label" data-i18n="booking_label">For event organisers</p>
-<h2 class="section-title" data-i18n="booking_title">Looking for music at your event?</h2>
-<p data-i18n="booking_lead">Looking for music that captivates and sets the mood? 10men delivers a cappella performances that work both on stage and among the crowd.</p>
-<ul class="booking-list">
-  <li data-i18n="booking_li1">Custom a cappella performance</li>
-  <li data-i18n="booking_li2">Pop, jazz, swing</li>
-  <li data-i18n="booking_li3">Prague and across the Czech Republic</li>
-</ul>
-<a href="/en/contact/" class="btn btn-red" data-i18n="booking_cta">Enquire about a date</a>
+<section class="sec alt" data-block="proof"><div class="sec-in">
+  <div class="head"><p class="section-label">Where we&#39;ve performed</p><h2 class="section-title">Dozens of concerts behind us</h2></div>
+  <div class="cards">
+    <div class="card"><b>HARMONIE Festival (DE)</b><span>gold and silver award</span></div>
+    <div class="card"><b>Jirkovský Písňovar</b><span>repeated gold award placements</span></div>
+    <div class="card"><b>Musica Orbis Gloria</b><span>silver award</span></div>
   </div>
-</section>
+  <ul class="plain"><li>Concerts at Atrium Žižkov, Kasárny Karlín, Prague towers and other venues</li><li>Collaborations with choirs from the USA and Germany</li></ul>
+</div></section>
 
-<!-- LAMEN teaser -->
-<section class="lamen-teaser">
-  <div class="lamen-inner">
-    <img src="/images/logo-lamen.png" alt="LAMEN Acappella logo" class="lamen-logo">
-    <div class="lamen-text">
-      <p class="section-label">Projekt LAMEN</p>
-      <h2 class="section-title" style="font-size:1.5rem" data-i18n="lamen_title">Do you know our LAMEN project?</h2>
-      <p data-i18n="lamen_p">In December 2021 we joined forces with the female group Lamas to create the mixed a cappella project LAMEN. Together we sing pop and perform at selected events.</p>
-      <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline" style="margin-top:8px" data-i18n="lamen_cta">LAMEN on Facebook</a>
-    </div>
+<section class="sec" data-block="events"><div class="sec-in">
+  <div class="head"><p class="section-label">Programme</p><h2 class="section-title">Upcoming Concerts</h2></div>
+  <div class="cards">
+    <div class="card"><div class="k">November 27</div><h3>Performance at the Christmas Market in Lužná</h3><p>Lužná · 18:00</p></div>
   </div>
-</section>
+  <a href="/en/events/" class="btn btn-outline more">Concerts</a>
+</div></section>
+
+<section class="sec dark" data-block="repertoire"><div class="sec-in">
+  <div class="head"><p class="section-label">Repertoire</p><h2 class="section-title">What we sing</h2></div>
+  <div class="genre-list"><span class="genre-tag highlight">Pop</span><span class="genre-tag highlight">Jazz / swing / barbershop</span><span class="genre-tag">Classical music</span><span class="genre-tag">Folk music</span><span class="genre-tag">Carols and Christmas hits</span></div>
+  <div class="gal" data-block="gallery"><img src="/images/foto_02.jpg" alt="" loading="lazy"><img src="/images/foto_04.jpg" alt="" loading="lazy"><img src="/images/foto_05.jpg" alt="" loading="lazy"><img src="/images/foto_06.jpg" alt="" loading="lazy"></div>
+</div></section>
+
+<section class="book" data-block="booking"><div class="book-in">
+  <div><p class="section-label">For event organisers</p><h2>Looking for music at your event?</h2><p>Looking for music that captivates and sets the mood? 10men delivers a cappella performances that work both on stage and among the crowd.</p></div>
+  <div><ul><li>Custom a cappella performance</li><li>Pop, jazz, swing</li><li>Prague and across the Czech Republic</li></ul><a href="/en/contact/" class="btn">Enquire about a date</a></div>
+</div></section>
+
+<section class="sec" data-block="lamen"><div class="sec-in lamen">
+  <img src="/images/logo-lamen.png" alt="LAMEN Acappella logo" loading="lazy">
+  <div><div class="head"><p class="section-label">LAMEN project</p><h2 class="section-title">Do you know our LAMEN project?</h2></div>
+  <p>In December 2021 we joined forces with the female group Lamas to create the mixed a cappella project LAMEN. Together we sing pop and perform at selected events.</p>
+  <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">LAMEN on Facebook</a></div>
+</div></section>
+
+  <!-- GEN:HOME:END -->
 
 <div id="footer-placeholder"></div>
 
-<script src="shared.js"></script>
-<script>
-  // Page-specific translations
-  const i18n = {
-    cs: {
-      hero_lead: 'Čistě mužský hlas má svou sílu. My ji přinášíme na pódium – s radostí, precizností a repertoárem, který překvapí.',
-      hero_eyebrow: 'Praha · Od roku 2015',
-      hero_title: 'Vokální skupina',
-      hero_lead_main: 'Mužská a cappella skupina z Prahy. Pop, jazz i swing – na pódiu i na vaší akci.',
-      cta_events_btn: 'Koncerty',
-      cta_book: 'Objednat vystoupení',
-      proof_label: 'Kde jsme vystupovali',
-      proof_title: 'Máme za sebou desítky koncertů',
-      proof_harmonie: 'zlaté a stříbrné pásmo',
-      proof_jirkovsky: 'opakovaná umístění ve zlatém pásmu',
-      proof_musica: 'stříbrné pásmo',
-      proof_venues: 'Koncerty v Atriu Žižkov, Kasárnách Karlín, pražských věžích a dalších sálech',
-      proof_collab: 'Spolupráce se sbory z USA a Německa',
-      booking_label: 'Pro pořadatele',
-      booking_title: 'Hledáte hudbu na akci?',
-      booking_lead: 'Hledáte hudbu, která zaujme a vytvoří atmosféru? 10men přináší a cappella vystoupení, které funguje na pódiu i mezi lidmi.',
-      booking_li1: 'A cappella vystoupení na míru',
-      booking_li2: 'Pop, jazz, swing',
-      booking_li3: 'Praha i celá ČR',
-      booking_cta: 'Nezávazně poptat termín',
-      genre_classical: 'Klasická hudba',
-      genre_folk: 'Lidová tvorba',
-      genre_carols: 'Koledy a vánoční hity',
-      cta_events: 'Nadcházející koncerty',
-      cta_about: 'O skupině',
-      who_label: 'Kdo jsme',
-      who_title: 'Jsme 10men',
-      who_bold: 'Pražská vokální skupina, která od roku 2015 okouzluje posluchače nejen na české vokální a sborové scéně.',
-      who_p1: 'Náš název odkazuje na počet zakladatelů skupiny, počet aktivních členů se v průběhu let mění. Nabízíme široký repertoár od popových hitů a jazzu až po swing, a při zvláštních příležitostech i hudbu z klasického žánru.',
-      who_p2: 'Vystupujeme na koncertech, festivalech i soukromých akcích.',
-      cta_more: 'Více o nás',
-      fact_founded: 'Rok založení',
-      fact_concerts: 'Soutěžních ocenění',
-      fact_genres: 'Koncertů a vystoupení',
-      genre_label: 'Repertoár',
-      genre_title: 'Co zpíváme',
-      lamen_title: 'Znáte náš projekt LAMEN?',
-      lamen_p: 'V prosinci 2021 jsme se spojili se ženskou skupinou Lamas a vznikl smíšený a cappella projekt LAMEN. Společně zpíváme pop a vystupujeme na vybraných akcích.',
-      lamen_cta: 'LAMEN na Facebooku',
-    },
-    en: {
-      hero_lead: 'Pure male voices have a power of their own. We bring that power to the stage – with joy, precision, and a repertoire that surprises.',
-      hero_eyebrow: 'Prague · Since 2015',
-      hero_title: 'Vocal group',
-      hero_lead_main: 'A male a cappella group from Prague. Pop, jazz and swing – on stage and at your event.',
-      cta_events_btn: 'Concerts',
-      cta_book: 'Book a Performance',
-      proof_label: 'Where we\'ve performed',
-      proof_title: 'Dozens of concerts behind us',
-      proof_harmonie: 'gold and silver award',
-      proof_jirkovsky: 'repeated gold award placements',
-      proof_musica: 'silver award',
-      proof_venues: 'Concerts at Atrium Žižkov, Kasárny Karlín, Prague towers and other venues',
-      proof_collab: 'Collaborations with choirs from the USA and Germany',
-      booking_label: 'For event organisers',
-      booking_title: 'Looking for music at your event?',
-      booking_lead: 'Looking for music that captivates and sets the mood? 10men delivers a cappella performances that work both on stage and among the crowd.',
-      booking_li1: 'Custom a cappella performance',
-      booking_li2: 'Pop, jazz, swing',
-      booking_li3: 'Prague and across the Czech Republic',
-      booking_cta: 'Enquire about a date',
-      genre_classical: 'Classical music',
-      genre_folk: 'Folk music',
-      genre_carols: 'Carols and Christmas hits',
-      cta_events: 'Upcoming Concerts',
-      cta_about: 'About Us',
-      who_label: 'Who we are',
-      who_title: 'We are 10men',
-      who_bold: 'A Prague-based vocal group that has been captivating audiences since 2015, both in the Czech vocal scene and beyond.',
-      who_p1: 'Our name refers to the number of founding members, while the number of active members has evolved over time. We offer a wide-ranging repertoire from pop hits and jazz to swing, and on special occasions, we also perform classical music.',
-      who_p2: 'We perform at concerts, festivals, and private events.',
-      cta_more: 'More About Us',
-      fact_founded: 'Year founded',
-      fact_concerts: 'Competition awards',
-      fact_genres: 'Concerts and performances',
-      genre_label: 'Repertoire',
-      genre_title: 'What we sing',
-      lamen_title: 'Do you know our LAMEN project?',
-      lamen_p: 'In December 2021 we joined forces with the female group Lamas to create the mixed a cappella project LAMEN. Together we sing pop and perform at selected events.',
-      lamen_cta: 'LAMEN on Facebook',
-    },
-    de: {
-  hero_lead: 'Reine Männerstimmen haben ihre eigene Kraft. Wir bringen sie auf die Bühne – mit Freude, Präzision und einem Repertoire, das überrascht.',
-  hero_eyebrow: 'Prag · Seit 2015',
-  hero_title: 'Vokalgruppe',
-  hero_lead_main: 'Männliche A-cappella-Gruppe aus Prag. Pop, Jazz und Swing – auf der Bühne und bei Ihrer Veranstaltung.',
-  cta_events_btn: 'Konzerte',
-  cta_book: 'Auftritt anfragen',
-  proof_label: 'Wo wir aufgetreten sind',
-  proof_title: 'Dutzende Konzerte hinter uns',
-  proof_harmonie: 'Gold- und Silberauszeichnungen',
-  proof_jirkovsky: 'mehrfache Platzierungen im Goldbereich',
-  proof_musica: 'Silberauszeichnung',
-  proof_venues: 'Konzerte im Atrium Žižkov, in den Kasárna Karlín, Prager Türmen und weiteren Sälen',
-  proof_collab: 'Zusammenarbeit mit Chören aus den USA und Deutschland',
-  booking_label: 'Für Veranstalter',
-  booking_title: 'Suchen Sie Musik für Ihre Veranstaltung?',
-  booking_lead: 'Suchen Sie Musik, die begeistert und Atmosphäre schafft? 10men bringt A-cappella-Auftritte, die auf der Bühne und mitten im Publikum funktionieren.',
-  booking_li1: 'Maßgeschneiderte A-cappella-Auftritte',
-  booking_li2: 'Pop, Jazz, Swing',
-  booking_li3: 'Prag und ganz Tschechien',
-  booking_cta: 'Unverbindlich Termin anfragen',
-  genre_classical: 'Klassische Musik',
-  genre_folk: 'Volksmusik',
-  genre_carols: 'Weihnachtslieder und -hits',
-  cta_events: 'Kommende Konzerte',
-  cta_about: 'Über uns',
-  who_label: 'Wer wir sind',
-  who_title: 'Wir sind 10men',
-  who_bold: 'Eine Prager Vokalgruppe, die seit 2015 ihr Publikum begeistert – auf der tschechischen Chorszene und darüber hinaus.',
-  who_p1: 'Unser Name bezieht sich auf die Anzahl der Gründer. Die Zahl der aktiven Mitglieder hat sich im Laufe der Zeit verändert. Wir bieten ein breites Repertoire von Pop-Hits und Jazz bis hin zu Swing und gelegentlich auch klassischer Musik.',
-  who_p2: 'Wir treten bei Konzerten, Festivals und privaten Veranstaltungen auf.',
-  cta_more: 'Mehr über uns',
-  fact_founded: 'Gründungsjahr',
-  fact_concerts: 'Wettbewerbsauszeichnungen',
-  fact_genres: 'Konzerte und Auftritte',
-  genre_label: 'Repertoire',
-  genre_title: 'Was wir singen',
-  lamen_title: 'Kennen Sie unser Projekt LAMEN?',
-  lamen_p: 'Im Dezember 2021 haben wir uns mit der Frauengruppe Lamas zusammengeschlossen und das gemischte A-cappella-Projekt LAMEN gegründet. Gemeinsam singen wir Pop und treten bei ausgewählten Veranstaltungen auf.',
-  lamen_cta: 'LAMEN auf Facebook',
-},
-    es: {
-  hero_lead: 'Las voces masculinas tienen una fuerza única. Nosotros la llevamos al escenario – con energía, precisión y un repertorio que sorprende.',
-  hero_eyebrow: 'Praga · Desde 2015',
-  hero_title: 'Grupo vocal',
-  hero_lead_main: 'Grupo masculino de a cappella de Praga. Pop, jazz y swing – en el escenario y en tu evento.',
-  cta_events_btn: 'Conciertos',
-  cta_book: 'Contratar actuación',
-  proof_label: 'Dónde hemos actuado',
-  proof_title: 'Decenas de conciertos a nuestras espaldas',
-  proof_harmonie: 'premios de oro y plata',
-  proof_jirkovsky: 'repetidos premios en categoría oro',
-  proof_musica: 'premio de plata',
-  proof_venues: 'Conciertos en Atrium Žižkov, Kasárny Karlín, torres de Praga y otros espacios',
-  proof_collab: 'Colaboraciones con coros de EE. UU. y Alemania',
-  booking_label: 'Para organizadores',
-  booking_title: '¿Buscas música para tu evento?',
-  booking_lead: '¿Quieres música que atrape y cree ambiente? 10men ofrece actuaciones a cappella que funcionan tanto en el escenario como entre el público.',
-  booking_li1: 'Actuaciones a cappella a medida',
-  booking_li2: 'Pop, jazz, swing',
-  booking_li3: 'Praga y toda la República Checa',
-  booking_cta: 'Consultar disponibilidad',
-  genre_classical: 'Música clásica',
-  genre_folk: 'Música tradicional',
-  genre_carols: 'Villancicos y éxitos navideños',
-  cta_events: 'Próximos conciertos',
-  cta_about: 'Sobre nosotros',
-  who_label: 'Quiénes somos',
-  who_title: 'Somos 10men',
-  who_bold: 'Un grupo vocal de Praga que desde 2015 cautiva al público dentro y fuera de la escena coral checa.',
-  who_p1: 'Nuestro nombre hace referencia al número de fundadores, mientras que el número de miembros activos ha ido cambiando con el tiempo. Ofrecemos un repertorio variado que abarca desde pop y jazz hasta swing, y en ocasiones también música clásica.',
-  who_p2: 'Actuamos en conciertos, festivales y eventos privados.',
-  cta_more: 'Más sobre nosotros',
-  fact_founded: 'Año de fundación',
-  fact_concerts: 'Premios en concursos',
-  fact_genres: 'Conciertos y actuaciones',
-  genre_label: 'Repertorio',
-  genre_title: 'Qué cantamos',
-  lamen_title: '¿Conoces nuestro proyecto LAMEN?',
-  lamen_p: 'En diciembre de 2021 nos unimos con el grupo femenino Lamas para crear el proyecto a cappella mixto LAMEN. Juntos interpretamos pop y actuamos en eventos seleccionados.',
-  lamen_cta: 'LAMEN en Facebook',
-}
-  };
-
-  window.applyI18n = function(lang) {
-    Object.keys(i18n[lang]).forEach(key => {
-      document.querySelectorAll(`[data-i18n="${key}"]`).forEach(el => {
-        el.textContent = i18n[lang][key];
-      });
-    });
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const lang = window.getCurrentLang ? window.getCurrentLang() : 'cs';
-    window.applyI18n(lang);
-  });
-</script>
-   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const imgs = document.querySelectorAll('.photo-strip img');
-    if (!imgs.length) return;
-    let idx = 0;
-    setInterval(() => {
-      imgs[idx].classList.remove('active');
-      idx = (idx + 1) % imgs.length;
-      imgs[idx].classList.add('active');
-    }, 4000);
-  });
-</script>
 </body>
 </html>
