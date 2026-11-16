@@ -3,7 +3,7 @@
 .hero2-in, .stats-in, .sec-in { max-width: var(--max-w); margin: 0 auto; }
 .hero-eyebrow { font-size: 14px; font-weight: 600; color: var(--accent-text); margin-bottom: 10px; }
 .hero2 h1 { font-size: clamp(2.3rem, 7vw, 4.6rem); font-weight: 700; line-height: 1.04; letter-spacing: -.045em; margin: 0 auto 16px; max-width: 12em; }
-.hero2 h1 em { font-style: normal; color: var(--accent); }
+.hero2 h1 em { font-style: normal; color: var(--accent); display: block; }
 .hero2-sub { display: flex; flex-direction: column; align-items: center; gap: 22px; margin-bottom: 44px; }
 .hero2 .lead { font-size: clamp(1.05rem, 1.8vw, 1.25rem); line-height: 1.35; font-weight: 400; letter-spacing: -.015em; color: var(--ink-2); max-width: 26em; }
 .hero-cta { display: flex; gap: 12px 28px; flex-wrap: wrap; justify-content: center; align-items: center; }
