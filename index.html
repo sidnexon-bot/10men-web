@@ -21,7 +21,8 @@
     <meta property="og:image" content="https://10men.cz/images/foto_01.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <!-- GEN:HEAD:END -->
-  <link rel="stylesheet" href="style.css">
+  <script src="/theme.js"></script>
+  <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/images/favicon-180.png">  
   <link rel="stylesheet" href="/home.css">
@@ -60,9 +61,9 @@
     transition: 0.2s ease;
   }
   .cookie-btn-accept {
-    background: #EE220C;
+    background: #E21F0B;
     color: #fff;
-    border-color: #EE220C;
+    border-color: #E21F0B;
   }
   .cookie-btn-accept:hover { background: #9a1e23; border-color: #9a1e23; }
   .cookie-btn-decline {
@@ -139,72 +140,90 @@
 <div id="nav-placeholder"></div>
 
 <!-- GEN:HOME:START -->
-<section class="hero2" data-block="hero">
-  <div class="hero2-photo" role="img" aria-label="Skupina 10men"></div>
-  <div class="hero2-in">
-    <div class="hero2-text">
-      <p class="hero-eyebrow">Praha · Od roku 2015</p>
-      <h1>Vokální skupina <em>10men</em></h1>
-      <p class="lead">Mužská a cappella skupina z Prahy. Pop, jazz i swing – na pódiu i na vaší akci.</p>
-      <div class="hero-cta"><a href="/koncerty/" class="btn btn-red">Koncerty</a><a href="/kontakt/" class="btn btn-outline hero-book">Objednat vystoupení</a></div>
-    </div>
-    <div class="next" data-block="next">
-      <div class="d"><b>27</b><small>Lis</small></div>
-      <div class="t"><small>Nejbližší koncert</small><strong>Vystoupení na adventních trzích v Lužné u Rakovníka</strong><span>Lužná · 18:00</span></div>
-      <a href="/koncerty/">Detail →</a>
-    </div>
+<section class="hero2" data-block="hero"><div class="hero2-in">
+  <p class="hero-eyebrow">Praha · Od roku 2015</p>
+  <h1>Vokální skupina <em>10men</em></h1>
+  <div class="hero2-sub">
+    <p class="lead">Mužská a cappella skupina z Prahy. Pop, jazz i swing – na pódiu i na vaší akci.</p>
+    <div class="hero-cta"><a href="/koncerty/" class="btn btn-red">Koncerty</a><a href="/kontakt/" class="btn btn-outline">Objednat vystoupení</a></div>
   </div>
-</section>
+  <figure class="hero2-media">
+    <img class="hero2-photo" src="/images/foto_01.jpg" alt="Skupina 10men" width="1600" height="1067" fetchpriority="high">
+      <a class="next" data-block="next" href="/koncerty/">
+        <span class="d"><b>27</b><small>Lis</small></span>
+        <span class="t"><small>Nejbližší koncert</small><strong>Vystoupení na adventních trzích v Lužné u Rakovníka</strong><span>Lužná · 18:00</span></span>
+        <span class="go">Detail →</span>
+      </a>
+  </figure>
+</div></section>
 
 <section class="stats" data-block="stats"><div class="stats-in">
-  <div><b>2015</b><span>Rok založení</span></div><div><b>9</b><span>Soutěžních ocenění</span></div><div><b>50+</b><span>Koncertů a vystoupení</span></div>
+  <div><b>2015</b><span>Rok založení</span></div><div><b>9</b><span>Soutěžních ocenění</span></div><div><b>50+</b><span>Koncertů a vystoupení</span></div>
 </div></section>
 
-<section class="sec" data-block="who"><div class="sec-in who">
-  <div>
-    <div class="head"><p class="section-label">Kdo jsme</p><h2 class="section-title">Jsme 10men</h2></div>
-    <p><strong>Pražská vokální skupina, která od roku 2015 okouzluje posluchače nejen na české vokální a sborové scéně.</strong></p>
-    <p>Náš název odkazuje na počet zakladatelů skupiny, počet aktivních členů se v průběhu let mění. Nabízíme široký repertoár od popových hitů a jazzu až po swing, a při zvláštních příležitostech i hudbu z klasického žánru.</p>
-    <p>Vystupujeme na koncertech, festivalech i soukromých akcích.</p>
-    <a href="/o-nas/" class="btn btn-outline more">Více o nás</a>
+<section class="sec" data-block="who"><div class="sec-in">
+  <p class="section-label">Kdo jsme</p>
+  <div class="sec-main who">
+    <div>
+      <h2 class="section-title">Jsme 10men</h2>
+      <p class="big">Pražská vokální skupina, která od roku 2015 okouzluje posluchače nejen na české vokální a sborové scéně.</p>
+      <p>Náš název odkazuje na počet zakladatelů skupiny, počet aktivních členů se v průběhu let mění. Nabízíme široký repertoár od popových hitů a jazzu až po swing, a při zvláštních příležitostech i hudbu z klasického žánru.</p>
+      <p>Vystupujeme na koncertech, festivalech i soukromých akcích.</p>
+      <a href="/o-nas/" class="btn btn-outline more">Více o nás</a>
+    </div>
+    <img class="photo" src="/images/foto_03.jpg" alt="Skupina 10men na pódiu" width="1600" height="1067" loading="lazy">
   </div>
-  <img src="/images/foto_03.jpg" alt="Skupina 10men na pódiu" loading="lazy">
 </div></section>
 
-<section class="sec alt" data-block="proof"><div class="sec-in">
-  <div class="head"><p class="section-label">Kde jsme vystupovali</p><h2 class="section-title">Máme za sebou desítky koncertů</h2></div>
-  <div class="cards">
-    <div class="card"><b>HARMONIE Festival (DE)</b><span>zlaté a stříbrné pásmo</span></div>
-    <div class="card"><b>Jirkovský Písňovar</b><span>opakovaná umístění ve zlatém pásmu</span></div>
-    <div class="card"><b>Musica Orbis Gloria</b><span>stříbrné pásmo</span></div>
+<section class="sec" data-block="proof"><div class="sec-in">
+  <p class="section-label">Kde jsme vystupovali</p>
+  <div class="sec-main">
+    <h2 class="section-title">Máme za sebou desítky koncertů</h2>
+    <ul class="rows proof">
+      <li><b>HARMONIE Festival (DE)</b><span>zlaté a stříbrné pásmo</span></li>
+      <li><b>Jirkovský Písňovar</b><span>opakovaná umístění ve zlatém pásmu</span></li>
+      <li><b>Musica Orbis Gloria</b><span>stříbrné pásmo</span></li>
+    </ul>
+    <ul class="plain"><li>Koncerty v Atriu Žižkov, Kasárnách Karlín, pražských věžích a dalších sálech</li><li>Spolupráce se sbory z USA a Německa</li></ul>
   </div>
-  <ul class="plain"><li>Koncerty v Atriu Žižkov, Kasárnách Karlín, pražských věžích a dalších sálech</li><li>Spolupráce se sbory z USA a Německa</li></ul>
 </div></section>
 
 <section class="sec" data-block="events"><div class="sec-in">
-  <div class="head"><p class="section-label">Program</p><h2 class="section-title">Nadcházející koncerty</h2></div>
-  <div class="cards">
-    <div class="card"><div class="k">27. listopadu</div><h3>Vystoupení na adventních trzích v Lužné u Rakovníka</h3><p>Lužná · 18:00</p></div>
+  <p class="section-label">Program</p>
+  <div class="sec-main">
+    <h2 class="section-title">Nadcházející koncerty</h2>
+    <ul class="rows ev">
+      <li><a href="/koncerty/"><span class="d"><b>27</b><small>Lis</small></span><span class="t"><b>Vystoupení na adventních trzích v Lužné u Rakovníka</b><span>Lužná · 18:00</span></span><span class="go" aria-hidden="true">→</span></a></li>
+    </ul>
+    <a href="/koncerty/" class="btn btn-outline more">Koncerty</a>
   </div>
-  <a href="/koncerty/" class="btn btn-outline more">Koncerty</a>
 </div></section>
 
-<section class="sec dark" data-block="repertoire"><div class="sec-in">
-  <div class="head"><p class="section-label">Repertoár</p><h2 class="section-title">Co zpíváme</h2></div>
-  <div class="genre-list"><span class="genre-tag highlight">Pop</span><span class="genre-tag highlight">Jazz / swing / barbershop</span><span class="genre-tag">Klasická hudba</span><span class="genre-tag">Lidová tvorba</span><span class="genre-tag">Koledy a vánoční hity</span></div>
-  <div class="gal" data-block="gallery"><img src="/images/foto_02.jpg" alt="" loading="lazy"><img src="/images/foto_04.jpg" alt="" loading="lazy"><img src="/images/foto_05.jpg" alt="" loading="lazy"><img src="/images/foto_06.jpg" alt="" loading="lazy"></div>
+<section class="sec" data-block="repertoire"><div class="sec-in">
+  <p class="section-label">Repertoár</p>
+  <div class="sec-main">
+    <h2 class="section-title">Co zpíváme</h2>
+    <p class="genre-list"><span class="genre-tag highlight">Pop</span><span class="genre-tag highlight">Jazz / swing / barbershop</span><span class="genre-tag">Klasická hudba</span><span class="genre-tag">Lidová tvorba</span><span class="genre-tag">Koledy a vánoční hity</span></p>
+    <div class="gal" data-block="gallery"><img src="/images/foto_02.jpg" alt="Fotografie z vystoupení 10men 1" width="1600" height="1067" loading="lazy"><img src="/images/foto_04.jpg" alt="Fotografie z vystoupení 10men 2" width="1600" height="1067" loading="lazy"><img src="/images/foto_05.jpg" alt="Fotografie z vystoupení 10men 3" width="1600" height="1067" loading="lazy"><img src="/images/foto_06.jpg" alt="Fotografie z vystoupení 10men 4" width="1600" height="1067" loading="lazy"></div>
+  </div>
 </div></section>
 
-<section class="book" data-block="booking"><div class="book-in">
-  <div><p class="section-label">Pro pořadatele</p><h2>Hledáte hudbu na akci?</h2><p>Hledáte hudbu, která zaujme a vytvoří atmosféru? 10men přináší a cappella vystoupení, které funguje na pódiu i mezi lidmi.</p></div>
-  <div><ul><li>A cappella vystoupení na míru</li><li>Pop, jazz, swing</li><li>Praha i celá ČR</li></ul><a href="/kontakt/" class="btn">Nezávazně poptat termín</a></div>
+<section class="sec" data-block="booking"><div class="sec-in">
+  <p class="section-label">Pro pořadatele</p>
+  <div class="sec-main book-in">
+    <div><h2 class="section-title">Hledáte hudbu na akci?</h2><p class="lead-p">Hledáte hudbu, která zaujme a vytvoří atmosféru? 10men přináší a cappella vystoupení, které funguje na pódiu i mezi lidmi.</p></div>
+    <div><ul><li>A cappella vystoupení na míru</li><li>Pop, jazz, swing</li><li>Praha i celá ČR</li></ul><a href="/kontakt/" class="btn btn-red">Nezávazně poptat termín</a></div>
+  </div>
 </div></section>
 
-<section class="sec" data-block="lamen"><div class="sec-in lamen">
-  <img src="/images/logo-lamen.png" alt="LAMEN Acappella logo" loading="lazy">
-  <div><div class="head"><p class="section-label">Projekt LAMEN</p><h2 class="section-title">Znáte náš projekt LAMEN?</h2></div>
-  <p>V prosinci 2021 jsme se spojili se ženskou skupinou Lamas a vznikl smíšený a cappella projekt LAMEN. Společně zpíváme pop a vystupujeme na vybraných akcích.</p>
-  <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">LAMEN na Facebooku</a></div>
+<section class="sec" data-block="lamen"><div class="sec-in">
+  <p class="section-label">Projekt LAMEN</p>
+  <div class="sec-main lamen">
+    <img src="/images/logo-lamen.png" alt="LAMEN Acappella logo" width="88" height="88" loading="lazy">
+    <div><h2 class="section-title">Znáte náš projekt LAMEN?</h2>
+    <p>V prosinci 2021 jsme se spojili se ženskou skupinou Lamas a vznikl smíšený a cappella projekt LAMEN. Společně zpíváme pop a vystupujeme na vybraných akcích.</p>
+    <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">LAMEN na Facebooku</a></div>
+  </div>
 </div></section>
 
   <!-- GEN:HOME:END -->

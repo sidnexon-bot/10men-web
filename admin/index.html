@@ -265,8 +265,8 @@ async function viewEvents(v) {
 }
 
 /* ── editor akce ── */
-let siteCss = null;   // styl karty akce je na webu vložený přímo ve stránce koncertů, proto se stáhne odtud (zůstane v souladu s webem)
-async function loadSiteCss() { if (siteCss !== null) return siteCss; try { const h = await (await fetch('/koncerty/')).text(); siteCss = (h.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || []).map(x => x.replace(/<\/?style[^>]*>/gi, '')).join('\n'); } catch (e) { siteCss = ''; } return siteCss; }
+let siteCss = null;   // styl webu je ve sdíleném /style.css (náhled ho načítá odtud); proměnná zůstává kvůli šabloně náhledu
+async function loadSiteCss() { siteCss = ''; return siteCss; }
 const CF = [{ key: 'title', label: 'Název', max: 120, req: true }, { key: 'venue', label: 'Místo', max: 160 }, { key: 'desc', label: 'Popis', max: 700, area: true, rows: 4 }];
 async function openEditor(id) {
   const cur = id ? (web().concerts || {})[id] : null;
@@ -298,7 +298,7 @@ async function openEditor(id) {
   };
   const preview = () => {
     const c = read(), d = new Date((c.date || today()) + 'T00:00:00'), t = esc(c.title.cs || 'Název akce'), mo = ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'][d.getMonth()];
-    $('#e-pv', ov).srcdoc = `<!doctype html><meta charset=utf-8><link rel=stylesheet href="/style.css"><style>${siteCss || ''}</style><body style="background:#fafaf8;padding:12px"><div class="event-card open" style="max-width:none"><div class="event-header"><div class="event-date"><div class="day">${d.getDate()}</div><div class="month">${mo}</div></div><div class="event-info"><h3>${t}</h3><div class="event-meta"><span>${esc(c.venue.cs || 'Místo konání')}</span> <span>${esc(c.time || 'čas bude upřesněn')}</span></div></div></div><div class="event-body" style="display:block"><p class="event-desc">${esc(c.desc.cs || '')}</p></div></div>`;
+    $('#e-pv', ov).srcdoc = `<!doctype html><meta charset=utf-8><link rel=stylesheet href="/style.css"><style>${siteCss || ''}</style><body style="background:var(--bg);padding:12px"><div class="event-card open" style="max-width:none"><div class="event-header"><div class="event-date"><div class="day">${d.getDate()}</div><div class="month">${mo}</div></div><div class="event-info"><h3>${t}</h3><div class="event-meta"><span>${esc(c.venue.cs || 'Místo konání')}</span> <span>${esc(c.time || 'čas bude upřesněn')}</span></div></div></div><div class="event-body" style="display:block"><p class="event-desc">${esc(c.desc.cs || '')}</p></div></div>`;
   };
   const markDirty = () => { dirty = true; preview(); revState(); };
   wireLoc($('#e-loc', ov), CF, markDirty); wireLoc($('#e-dd', ov), [{ key: 'dateDisplay' }], markDirty);

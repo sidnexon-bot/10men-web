@@ -21,149 +21,11 @@
     <meta property="og:image" content="https://10men.cz/images/foto_01.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <!-- GEN:HEAD:END -->
+  <script src="/theme.js"></script>
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/images/favicon-180.png">
-  <style>
-    .about-body {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 64px 24px 80px;
-    }
-    .about-lead {
-      font-size: 18px;
-      font-weight: 500;
-      line-height: 1.7;
-      color: var(--black);
-      margin-bottom: 20px;
-      border-left: 3px solid var(--red);
-      padding-left: 20px;
-    }
-    .about-body p {
-      color: var(--gray-text);
-      margin-bottom: 18px;
-    }
-
-    /* Timeline */
-    .history-section {
-      background: var(--gray-light);
-      padding: 72px 24px;
-    }
-    .history-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-    }
-    .timeline {
-      margin-top: 48px;
-      position: relative;
-    }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 80px;
-      top: 0; bottom: 0;
-      width: 1px;
-      background: var(--gray-mid);
-    }
-    .tl-item {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 0 32px;
-      margin-bottom: 40px;
-      position: relative;
-    }
-    .tl-year {
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--red);
-      text-align: right;
-      padding-top: 2px;
-      padding-right: 32px;
-    }
-    .tl-content {
-      padding-left: 24px;
-      position: relative;
-    }
-    .tl-content::before {
-      content: '';
-      position: absolute;
-      left: -5px; top: 8px;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--red);
-      border: 2px solid var(--white);
-      box-shadow: 0 0 0 1px var(--red);
-    }
-    .tl-content h3 {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .tl-content p {
-      font-size: 14px;
-      color: var(--gray-text);
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    /* Awards */
-    .awards-section {
-      padding: 72px 24px;
-    }
-    .awards-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-    }
-    .awards-grid {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 20px;
-    }
-    .award-card {
-      padding: 24px;
-      border: 1px solid var(--gray-light);
-      border-top: 3px solid var(--red);
-    }
-    .award-year {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 8px;
-    }
-    .award-card h3 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .award-card p {
-      font-size: 13px;
-      color: var(--gray-text);
-    }
-
-    /* Conductor */
-    .conductor-section {
-      background: var(--black);
-      color: var(--white);
-      padding: 72px 24px;
-    }
-    .conductor-inner {
-      max-width: var(--max-w);
-      margin: 0 auto;
-    }
-    .conductor-inner .section-label { color: var(--red); }
-    .conductor-inner p { color: #BBB; margin-top: 16px; max-width: 600px; }
-
-    @media (max-width: 520px) {
-      .timeline::before { left: 52px; }
-      .tl-item { grid-template-columns: 52px 1fr; gap: 0 16px; }
-      .tl-year { font-size: 12px; padding-right: 16px; }
-    }
-  </style>
+  
   <style>
   #cookie-banner {
     position: fixed;
@@ -199,9 +61,9 @@
     transition: 0.2s ease;
   }
   .cookie-btn-accept {
-    background: #EE220C;
+    background: #E21F0B;
     color: #fff;
-    border-color: #EE220C;
+    border-color: #E21F0B;
   }
   .cookie-btn-accept:hover { background: #9a1e23; border-color: #9a1e23; }
   .cookie-btn-decline {
@@ -283,9 +145,10 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
 
 <!-- Intro text -->
 <div class="about-body">
+  <img class="about-photo" src="/images/foto_04.jpg" alt="Die Gruppe 10men bei einem Auftritt" width="1600" height="1067" fetchpriority="high">
   <p class="about-lead" data-i18n="about_lead">Wir sind 10men – eine Prager Männer-Vokalgruppe, die seit 2015 ihr Publikum begeistert, sowohl auf der tschechischen Chorszene als auch darüber hinaus.</p>
   <p data-i18n="about_p1">Unser Name verweist auf die Anzahl der Gründer – zehn ehemalige Schüler und Chorsänger, die beschlossen haben, ihren eigenen Weg zu gehen. Die Zahl der aktiven Mitglieder hat sich im Laufe der Jahre verändert, doch Energie und Leidenschaft für Musik sind geblieben.</p>
-  <p data-i18n="about_p2">Unser Repertoire reicht von Pop-Hits und Jazz bis hin zu Swing, und bei besonderen Anlässen auch zu klassischer Musik. Wir singen überwiegend a cappella – nur mit unseren Stimmen, ohne instrumentale Begleitung.</p>
+  <p data-i18n="about_p2">Unser Repertoire reicht von Pop-Hits und Jazz bis hin zu Swing, und bei besonderen Anlässen auch zu klassischer Musik. Wir singen überwiegend a cappella – nur mit unseren Stimmen, ohne instrumentale Begleitung.</p>
   <p data-i18n="about_p3">Die Gruppe arbeitet regelmäßig unter der Leitung des künstlerischen Leiters Karel Špinka. Unter seiner Führung haben wir an renommierten Wettbewerben und Auftritten im In- und Ausland teilgenommen.</p>
 </div>
 
@@ -384,7 +247,7 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
 <section class="conductor-section">
   <div class="conductor-inner">
     <p class="section-label" data-i18n="conductor_label">Künstlerischer Leiter</p>
-    <h2 class="section-title" style="color:var(--white)" data-i18n="conductor_name">Karel Špinka</h2>
+    <h2 class="section-title" data-i18n="conductor_name">Karel Špinka</h2>
     <p data-i18n="conductor_p">Karel Špinka ist der künstlerische Leiter von 10men. Unter seiner Leitung entwickelt die Gruppe ihr Repertoire und bereitet sich auf Konzerte, Wettbewerbe und weitere Auftritte vor.</p>
   </div>
 </section>
@@ -403,29 +266,29 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
       awards_label: "Úspěchy",
       awards_title: "Ocenění \u0026 soutěže",
       conductor_label: "Umělecký vedoucí",
-      about_lead: "Jsme 10men – pražská mužská vokální skupina, která od roku 2015 ohromuje publikum na české i světové sborové scéně.",
-      about_p1: "Název skupiny odkazuje na počet zakládajících členů – deset gymnaziálních nadšenců do sborového zpěvu, kteří se rozhodli vydat vlastní cestou. Počet aktivních členů se v průběhu let proměňoval, energie a vášeň pro hudbu však zůstávají.",
-      about_p2: "Repertoár skupiny sahá od popových hitů a jazzu přes swing až po klasickou hudbu. Zpíváme převážně a cappella – tedy pouze lidskými hlasy, bez instrumentálního doprovodu.",
-      about_p3: "Skupina pravidelně pracuje pod vedením uměleckého vedoucího Karla Špinky. Pod jeho taktovkou jsme se zúčastnili prestižních soutěží a vystoupení v ČR i zahraničí.",
+      about_lead: "Jsme 10men – pražská mužská vokální skupina, která od roku 2015 ohromuje publikum na české i světové sborové scéně.",
+      about_p1: "Název skupiny odkazuje na počet zakládajících členů – deset gymnaziálních nadšenců do sborového zpěvu, kteří se rozhodli vydat vlastní cestou. Počet aktivních členů se v průběhu let proměňoval, energie a vášeň pro hudbu však zůstávají.",
+      about_p2: "Repertoár skupiny sahá od popových hitů a jazzu přes swing až po klasickou hudbu. Zpíváme převážně a cappella – tedy pouze lidskými hlasy, bez instrumentálního doprovodu.",
+      about_p3: "Skupina pravidelně pracuje pod vedením uměleckého vedoucího Karla Špinky. Pod jeho taktovkou jsme se zúčastnili prestižních soutěží a vystoupení v ČR i zahraničí.",
       conductor_name: "Karel Špinka",
-      conductor_p: "Karel Špinka je uměleckým vedoucím skupiny 10men. Pod jeho vedením skupina rozvíjí repertoár a připravuje se na koncerty, soutěžní i jiná vystoupení.",
+      conductor_p: "Karel Špinka je uměleckým vedoucím skupiny 10men. Pod jeho vedením skupina rozvíjí repertoár a připravuje se na koncerty, soutěžní i jiná vystoupení.",
       tl_2015_h: "Vznik skupiny",
-      tl_2015_p: "10men vznikli z iniciativy deseti členů sboru Pueri gaudentes. Proběhly první zkoušky a debutové vystoupení.",
-      tl_2016_h: "První soutěž a zlaté pásmo",
+      tl_2015_p: "10men vznikli z iniciativy deseti členů sboru Pueri gaudentes. Proběhly první zkoušky a debutové vystoupení.",
+      tl_2016_h: "První soutěž a zlaté pásmo",
       tl_2016_p: "První účast na soutěži Jirkovský Písňovar, odkud si skupina odváží své první zlaté pásmo.",
-      tl_2020_h: "Povstání z popela",
-      tl_2020_p: "Obnovení koncertní činnosti a zisk zlatého pásma na Jirkovském Písňovaru s postupem do Grand Prix.",
+      tl_2020_h: "Povstání z popela",
+      tl_2020_p: "Obnovení koncertní činnosti a zisk zlatého pásma na Jirkovském Písňovaru s postupem do Grand Prix.",
       tl_2022_h: "Vznik projektu LAMEN",
-      tl_2022_p: "Spojení se skupinou Lamas a vznik projektu LAMEN, představeného na koncertech v Praze a Rokycanech. Zároveň zisk stříbrného pásma na Musica Orbis Gloria.",
+      tl_2022_p: "Spojení se skupinou Lamas a vznik projektu LAMEN, představeného na koncertech v Praze a Rokycanech. Zároveň zisk stříbrného pásma na Musica Orbis Gloria.",
       tl_2023_h: "První zahraniční vystoupení",
-      tl_2023_p: "Hostování na adventním koncertě v německém Zschopau a další zlaté pásmo na Jirkovském Písňovaru.",
+      tl_2023_p: "Hostování na adventním koncertě v německém Zschopau a další zlaté pásmo na Jirkovském Písňovaru.",
       tl_2024_h: "Mezinárodní úspěch",
-      tl_2024_p: "Účast na HARMONIE Festivalu v Německu – zlaté i stříbrné pásmo. Rozvoj projektu LAMEN a celovečerní koncerty.",
+      tl_2024_p: "Účast na HARMONIE Festivalu v Německu – zlaté i stříbrné pásmo. Rozvoj projektu LAMEN a celovečerní koncerty.",
       tl_2025_h: "10 let 10men",
-      tl_2025_p: "Výroční koncert k 10 letům existence skupiny a další koncertní činnost doma i v zahraničí.",
-      award_jirkov: "Jedno z nejprestižnějších sborových klání v ČR. Opakovaná účast a ocenění.",
-      award_mog: "Mezinárodně uznávaná soutěž sborového a vokálního umění.",
-      award_harmonie: "Mezinárodní festival v Německu – ocenění od zahraniční poroty."
+      tl_2025_p: "Výroční koncert k 10 letům existence skupiny a další koncertní činnost doma i v zahraničí.",
+      award_jirkov: "Jedno z nejprestižnějších sborových klání v ČR. Opakovaná účast a ocenění.",
+      award_mog: "Mezinárodně uznávaná soutěž sborového a vokálního umění.",
+      award_harmonie: "Mezinárodní festival v Německu – ocenění od zahraniční poroty."
   },
   en: {
       about_subtitle: "Our story",
@@ -435,9 +298,9 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
       awards_label: "Achievements",
       awards_title: "Awards \u0026 competitions",
       conductor_label: "Artistic director",
-      about_lead: "We are 10men, a Prague-based male vocal group that has been captivating audiences since 2015, both in the Czech vocal scene and beyond.",
+      about_lead: "We are 10men, a Prague-based male vocal group that has been captivating audiences since 2015, both in the Czech vocal scene and beyond.",
       about_p1: "Our name refers to the number of founding members – ten high school choir enthusiasts who decided to create their own ensemble. While the number of active members has evolved over time, the energy and passion for music have remained constant.",
-      about_p2: "Our repertoire ranges from pop hits and jazz to swing, and on special occasions, we also perform classical music. We primarily sing a cappella – using only the human voice, without instrumental accompaniment.",
+      about_p2: "Our repertoire ranges from pop hits and jazz to swing, and on special occasions, we also perform classical music. We primarily sing a cappella – using only the human voice, without instrumental accompaniment.",
       about_p3: "The group is regularly prepared under the direction of artistic director Karel Špinka. Under his leadership, we have taken part in prestigious competitions and performances both in the Czech Republic and abroad.",
       conductor_name: "Karel Špinka",
       conductor_p: "Karel Špinka is the artistic director of 10men. Under his leadership, the group develops its repertoire and prepares for concerts, competitions, and other performances.",
@@ -446,9 +309,9 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
       tl_2016_h: "First competition and gold award",
       tl_2016_p: "First participation in the Jirkovský Písňovar competition, where the group received its first gold award.",
       tl_2020_h: "Rise from the ashes",
-      tl_2020_p: "Concert activity resumed, bringing a gold award at Jirkovský Písňovar and qualification for the Grand Prix.",
+      tl_2020_p: "Concert activity resumed, bringing a gold award at Jirkovský Písňovar and qualification for the Grand Prix.",
       tl_2022_h: "LAMEN project launched",
-      tl_2022_p: "Collaboration with the female group Lamas led to the creation of the LAMEN project, introduced in concerts in Prague and Rokycany. 10men also received a silver award at Musica Orbis Gloria.",
+      tl_2022_p: "Collaboration with the female group Lamas led to the creation of the LAMEN project, introduced in concerts in Prague and Rokycany. 10men also received a silver award at Musica Orbis Gloria.",
       tl_2023_h: "First international performance",
       tl_2023_p: "Guest performance at an Advent concert in Zschopau, Germany, along with another gold award at Jirkovský Písňovar.",
       tl_2024_h: "International success",
@@ -469,7 +332,7 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
       conductor_label: "Künstlerischer Leiter",
       about_lead: "Wir sind 10men – eine Prager Männer-Vokalgruppe, die seit 2015 ihr Publikum begeistert, sowohl auf der tschechischen Chorszene als auch darüber hinaus.",
       about_p1: "Unser Name verweist auf die Anzahl der Gründer – zehn ehemalige Schüler und Chorsänger, die beschlossen haben, ihren eigenen Weg zu gehen. Die Zahl der aktiven Mitglieder hat sich im Laufe der Jahre verändert, doch Energie und Leidenschaft für Musik sind geblieben.",
-      about_p2: "Unser Repertoire reicht von Pop-Hits und Jazz bis hin zu Swing, und bei besonderen Anlässen auch zu klassischer Musik. Wir singen überwiegend a cappella – nur mit unseren Stimmen, ohne instrumentale Begleitung.",
+      about_p2: "Unser Repertoire reicht von Pop-Hits und Jazz bis hin zu Swing, und bei besonderen Anlässen auch zu klassischer Musik. Wir singen überwiegend a cappella – nur mit unseren Stimmen, ohne instrumentale Begleitung.",
       about_p3: "Die Gruppe arbeitet regelmäßig unter der Leitung des künstlerischen Leiters Karel Špinka. Unter seiner Führung haben wir an renommierten Wettbewerben und Auftritten im In- und Ausland teilgenommen.",
       conductor_name: "Karel Špinka",
       conductor_p: "Karel Špinka ist der künstlerische Leiter von 10men. Unter seiner Leitung entwickelt die Gruppe ihr Repertoire und bereitet sich auf Konzerte, Wettbewerbe und weitere Auftritte vor.",
@@ -499,28 +362,28 @@ Ihre Daten werden anonymisiert und nicht für Werbezwecke verwendet.
       awards_label: "Logros",
       awards_title: "Premios y concursos",
       conductor_label: "Director artístico",
-      about_lead: "Somos 10men, un grupo vocal masculino de Praga que desde 2015 cautiva al público dentro y fuera de la escena coral checa.",
-      about_p1: "Nuestro nombre hace referencia al número de fundadores: diez jóvenes cantantes de coro que decidieron crear su propio camino musical. El número de miembros activos ha ido cambiando con los años, pero la energía y la pasión por la música siguen intactas.",
-      about_p2: "Nuestro repertorio abarca desde pop y jazz hasta swing, y en ocasiones especiales también música clásica. Cantamos principalmente a cappella, es decir, solo con nuestras voces, sin acompañamiento instrumental.",
-      about_p3: "El grupo trabaja regularmente bajo la dirección artística de Karel Špinka. Bajo su liderazgo, hemos participado en prestigiosos concursos y actuaciones tanto en la República Checa como en el extranjero.",
+      about_lead: "Somos 10men, un grupo vocal masculino de Praga que desde 2015 cautiva al público dentro y fuera de la escena coral checa.",
+      about_p1: "Nuestro nombre hace referencia al número de fundadores: diez jóvenes cantantes de coro que decidieron crear su propio camino musical. El número de miembros activos ha ido cambiando con los años, pero la energía y la pasión por la música siguen intactas.",
+      about_p2: "Nuestro repertorio abarca desde pop y jazz hasta swing, y en ocasiones especiales también música clásica. Cantamos principalmente a cappella, es decir, solo con nuestras voces, sin acompañamiento instrumental.",
+      about_p3: "El grupo trabaja regularmente bajo la dirección artística de Karel Špinka. Bajo su liderazgo, hemos participado en prestigiosos concursos y actuaciones tanto en la República Checa como en el extranjero.",
       conductor_name: "Karel Špinka",
-      conductor_p: "Karel Špinka es el director artístico de 10men. Bajo su dirección, el grupo desarrolla su repertorio y se prepara para conciertos, concursos y otros proyectos.",
+      conductor_p: "Karel Špinka es el director artístico de 10men. Bajo su dirección, el grupo desarrolla su repertorio y se prepara para conciertos, concursos y otros proyectos.",
       tl_2015_h: "Fundación del grupo",
-      tl_2015_p: "10men nació de la iniciativa de diez miembros del coro Pueri gaudentes. Poco después llegaron los primeros ensayos y el debut en concierto.",
-      tl_2016_h: "Primer concurso y premio de oro",
+      tl_2015_p: "10men nació de la iniciativa de diez miembros del coro Pueri gaudentes. Poco después llegaron los primeros ensayos y el debut en concierto.",
+      tl_2016_h: "Primer concurso y premio de oro",
       tl_2016_p: "Primera participación en el concurso Jirkovský Písňovar, donde el grupo obtuvo su primer premio de oro.",
       tl_2020_h: "Renacer",
-      tl_2020_p: "Regreso a la actividad concertística y obtención de un premio de oro en Jirkovský Písňovar con clasificación para el Grand Prix.",
+      tl_2020_p: "Regreso a la actividad concertística y obtención de un premio de oro en Jirkovský Písňovar con clasificación para el Grand Prix.",
       tl_2022_h: "Nacimiento del proyecto LAMEN",
-      tl_2022_p: "Colaboración con el grupo femenino Lamas y creación del proyecto a cappella mixto LAMEN. Además, premio de plata en Musica Orbis Gloria.",
+      tl_2022_p: "Colaboración con el grupo femenino Lamas y creación del proyecto a cappella mixto LAMEN. Además, premio de plata en Musica Orbis Gloria.",
       tl_2023_h: "Primera actuación internacional",
-      tl_2023_p: "Participación como invitados en un concierto de Adviento en Zschopau (Alemania) y otro premio de oro en Jirkovský Písňovar.",
+      tl_2023_p: "Participación como invitados en un concierto de Adviento en Zschopau (Alemania) y otro premio de oro en Jirkovský Písňovar.",
       tl_2024_h: "Éxito internacional",
-      tl_2024_p: "Participación en el HARMONIE Festival en Alemania, con premios de oro y plata. Desarrollo continuo del proyecto LAMEN y conciertos completos.",
+      tl_2024_p: "Participación en el HARMONIE Festival en Alemania, con premios de oro y plata. Desarrollo continuo del proyecto LAMEN y conciertos completos.",
       tl_2025_h: "10 años de 10men",
-      tl_2025_p: "Concierto aniversario celebrando los 10 años del grupo y nuevas actuaciones en la República Checa y en el extranjero.",
-      award_jirkov: "Uno de los concursos corales más prestigiosos de la República Checa, con participaciones y premios repetidos.",
-      award_mog: "Concurso internacional reconocido de música coral y vocal.",
+      tl_2025_p: "Concierto aniversario celebrando los 10 años del grupo y nuevas actuaciones en la República Checa y en el extranjero.",
+      award_jirkov: "Uno de los concursos corales más prestigiosos de la República Checa, con participaciones y premios repetidos.",
+      award_mog: "Concurso internacional reconocido de música coral y vocal.",
       award_harmonie: "Festival internacional en Alemania con premios otorgados por un jurado internacional."
   }
   };

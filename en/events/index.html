@@ -21,200 +21,11 @@
     <meta property="og:image" content="https://10men.cz/images/foto_01.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <!-- GEN:HEAD:END -->
+  <script src="/theme.js"></script>
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/images/favicon-180.png">
-  <style>
-    .events-body {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 64px 24px 80px;
-    }
-
-    /* ── Nadcházející akce ── */
-    .upcoming-section { margin-bottom: 64px; }
-
-    .event-card {
-      border-bottom: 1px solid var(--gray-light);
-      overflow: hidden;
-    }
-    .event-card:first-of-type { border-top: 1px solid var(--gray-light); }
-
-    .event-header {
-      display: grid;
-      grid-template-columns: 72px 1fr auto;
-      gap: 0 20px;
-      align-items: center;
-      padding: 24px 0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .event-header:hover .event-info h3 { color: var(--red); }
-
-    .event-date {
-      text-align: center;
-      background: var(--red);
-      color: var(--white);
-      padding: 10px 8px;
-      border-radius: 2px;
-      align-self: start;
-      margin-top: 2px;
-    }
-    .event-date .day {
-      font-family: var(--font-display);
-      font-size: 1.8rem;
-      font-weight: 900;
-      line-height: 1;
-    }
-    .event-date .month {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    .event-info h3 {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-      transition: color var(--transition);
-    }
-    .event-meta {
-      font-size: 13px;
-      color: var(--gray-text);
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .event-meta span { display: flex; align-items: center; gap: 5px; }
-    .event-meta svg { width: 14px; height: 14px; opacity: 0.6; flex-shrink: 0; }
-
-    .event-toggle {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--gray-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background var(--transition);
-    }
-    .event-toggle svg {
-      width: 16px; height: 16px;
-      stroke: currentColor; fill: none; stroke-width: 2;
-      transition: transform var(--transition);
-    }
-    .event-card.open .event-toggle { background: var(--red); color: var(--white); }
-    .event-card.open .event-toggle svg { transform: rotate(180deg); }
-
-    .event-body {
-      display: none;
-      padding: 0 0 28px 92px;
-    }
-    .event-card.open .event-body { display: block; }
-
-    .event-desc {
-      font-size: 14px;
-      color: var(--gray-text);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .event-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .event-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 16px;
-      border: 1.5px solid var(--gray-mid);
-      border-radius: 2px;
-      color: var(--black);
-      transition: var(--transition);
-    }
-    .event-link:hover { border-color: var(--red); color: var(--red); }
-    .event-link.primary {
-      background: var(--red); border-color: var(--red); color: var(--white);
-    }
-    .event-link.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
-
-    /* ── Proběhlé akce ── */
-    .past-section { margin-top: 0; }
-
-    .past-year-group { margin-bottom: 8px; }
-
-    .past-year-label {
-      width: 100%;
-      background: none;
-      border: none;
-      border-bottom: 2px solid var(--gray-light);
-      text-align: left;
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--red);
-      padding: 12px 0 8px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: color var(--transition);
-    }
-    .past-year-label:hover { color: var(--black); }
-    .past-year-label::after {
-      content: '+';
-      font-size: 1.6rem;
-      font-weight: 300;
-      color: var(--gray-mid);
-      transition: transform var(--transition);
-      line-height: 1;
-    }
-    .past-year-group.open .past-year-label::after {
-      transform: rotate(45deg);
-    }
-
-    .past-year-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-    }
-    .past-year-group.open .past-year-content {
-      max-height: 9999px;
-    }
-
-    .past-event {
-      display: flex;
-      gap: 16px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--gray-light);
-      align-items: baseline;
-    }
-    .past-event-date {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--black);
-      min-width: 160px;
-      flex-shrink: 0;
-    }
-    .past-event-name { font-size: 14px; color: var(--gray-text); line-height: 1.5; }
-    .past-event-name strong { color: var(--black); }
-
-    .fb-links { margin-top: 40px; display: flex; gap: 16px; flex-wrap: wrap; }
-
-    @media (max-width: 560px) {
-      .event-header { grid-template-columns: 60px 1fr auto; gap: 0 12px; }
-      .event-body { padding-left: 72px; }
-      .past-event { flex-direction: column; gap: 4px; }
-      .past-event-date { min-width: unset; }
-    }
-  </style>
+  
   <style>
   #cookie-banner {
     position: fixed;
@@ -250,9 +61,9 @@
     transition: 0.2s ease;
   }
   .cookie-btn-accept {
-    background: #EE220C;
+    background: #E21F0B;
     color: #fff;
-    border-color: #EE220C;
+    border-color: #E21F0B;
   }
   .cookie-btn-accept:hover { background: #9a1e23; border-color: #9a1e23; }
   .cookie-btn-decline {
@@ -357,11 +168,11 @@ Your data is anonymized and not used for advertising purposes.
         <div class="event-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
       <div class="event-body">
-        <p class="event-desc">Once again, you can hear us in Lužná after a year, where we will perform at the lighting of the Christmas tree as part of the Christmas Fair in Masaryk Square.</p>
+        <p class="event-desc">Once again, you can hear us in Lužná after a year, where we will perform at the lighting of the Christmas tree as part of the Christmas Fair in Masaryk Square.</p>
         <div class="event-links"></div>
       </div>
     </div>
-    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"MusicEvent","name":"Performance at the Christmas Market in Lužná","startDate":"2026-11-27T18:00","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Lužná","address":"Lužná"},"performer":{"@type":"MusicGroup","name":"10men","url":"https://10men.cz/"},"description":"Once again, you can hear us in Lužná after a year, where we will perform at the lighting of the Christmas tree as part of the Christmas Fair in Masaryk Square."}]</script>
+    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"MusicEvent","name":"Performance at the Christmas Market in Lužná","startDate":"2026-11-27T18:00","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Lužná","address":"Lužná"},"performer":{"@type":"MusicGroup","name":"10men","url":"https://10men.cz/"},"description":"Once again, you can hear us in Lužná after a year, where we will perform at the lighting of the Christmas tree as part of the Christmas Fair in Masaryk Square."}]</script>
   <!-- GEN:UPCOMING:END -->
 
   </section>
@@ -392,12 +203,12 @@ Your data is anonymized and not used for advertising purposes.
   <div class="past-year-group">
     <button class="past-year-label">2025</button>
     <div class="past-year-content">
-      <div class="past-event"><div class="past-event-date">November 28, 2025</div><div class="past-event-name">Vystoupení na adventních trzích v Lužné u Rakovníka</div></div>
-      <div class="past-event"><div class="past-event-date">November 8, 2025</div><div class="past-event-name">Účast na akci 10. Řepské sousedské zpívání</div></div>
+      <div class="past-event"><div class="past-event-date">November 28, 2025</div><div class="past-event-name">Vystoupení na adventních trzích v Lužné u Rakovníka</div></div>
+      <div class="past-event"><div class="past-event-date">November 8, 2025</div><div class="past-event-name">Účast na akci 10. Řepské sousedské zpívání</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/jj2j3uKJQJjZEFDY6"><div class="past-event-date">October 10, 2025</div><div class="past-event-name"><strong>Výroční koncert – 10 let 10men</strong></div></div>
       <div class="past-event"><div class="past-event-date">October 4, 2025</div><div class="past-event-name">Účast na výročním koncertě 35 let Pueri gaudentes</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/g5jz2vcCmxHTEkfVA"><div class="past-event-date">May 23, 2025</div><div class="past-event-name">Noc kostelů</div></div>
-      <div class="past-event"><div class="past-event-date">March 22, 2025</div><div class="past-event-name">Koncert se sbory z americké Huron High School</div></div>
+      <div class="past-event"><div class="past-event-date">March 22, 2025</div><div class="past-event-name">Koncert se sbory z americké Huron High School</div></div>
     </div>
   </div>
 
@@ -405,18 +216,18 @@ Your data is anonymized and not used for advertising purposes.
     <button class="past-year-label">2024</button>
     <div class="past-year-content">
       <div class="past-event" data-photos="https://photos.app.goo.gl/3qJAL7Aybuk6h58P6"><div class="past-event-date">December 19, 2024</div><div class="past-event-name">Společný adventní koncert – 10men &amp; Vokalion</div></div>
-      <div class="past-event" data-photos="https://photos.app.goo.gl/UZCJNTCp4MCWJqpf6"><div class="past-event-date">November 30, 2024</div><div class="past-event-name">Vystoupení na adventních trzích v Chýni</div></div>
+      <div class="past-event" data-photos="https://photos.app.goo.gl/UZCJNTCp4MCWJqpf6"><div class="past-event-date">November 30, 2024</div><div class="past-event-name">Vystoupení na adventních trzích v Chýni</div></div>
       <div class="past-event"><div class="past-event-date">October 4–6, 2024</div><div class="past-event-name"><strong>Jirkovský Písňovar 2024 – zlaté pásmo (26,90 bodů), postup do Grand Prix</strong></div></div>
-      <div class="past-event" data-photos="https://photos.app.goo.gl/e3VhRUmZ2hzcUwsz9"><div class="past-event-date">September 28, 2024</div><div class="past-event-name">Koncert v Libštátu</div></div>
+      <div class="past-event" data-photos="https://photos.app.goo.gl/e3VhRUmZ2hzcUwsz9"><div class="past-event-date">September 28, 2024</div><div class="past-event-name">Koncert v Libštátu</div></div>
       <div class="past-event"><div class="past-event-date">September 27, 2024</div><div class="past-event-name">Svatováclavský koncert na Zbraslavi – hostování + společné provedení Vivaldiho Gloria</div></div>
       <div class="past-event"><div class="past-event-date">July 6, 2024</div><div class="past-event-name">Festival IFAS – Pardubice</div></div>
-      <div class="past-event"><div class="past-event-date">June 21, 2024</div><div class="past-event-name">Koncert se sborem z University of La Verne (USA)</div></div>
+      <div class="past-event"><div class="past-event-date">June 21, 2024</div><div class="past-event-name">Koncert se sborem z University of La Verne (USA)</div></div>
       <div class="past-event"><div class="past-event-date">June 7, 2024</div><div class="past-event-name">Noc kostelů</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/7eRi2G38Rts1kv2P6"><div class="past-event-date">May 25, 2024</div><div class="past-event-name">Hostivické Sborobraní</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/Cft6t4WB3nge7F3e8"><div class="past-event-date">May 18, 2024</div><div class="past-event-name">Singende Gärten – Chemnitz (Německo)</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/A2UmFvYSefuHwWi26"><div class="past-event-date">May 10–12, 2024</div><div class="past-event-name"><strong>HARMONIE FESTIVAL – zlaté pásmo (23 bodů) + stříbrné pásmo (21,33 bodů)</strong></div></div>
-      <div class="past-event"><div class="past-event-date">April 6, 2024</div><div class="past-event-name">LAMEN – koncert v Rokycanech</div></div>
-      <div class="past-event"><div class="past-event-date">April 5, 2024</div><div class="past-event-name">LAMEN – koncert v Praze</div></div>
+      <div class="past-event"><div class="past-event-date">April 6, 2024</div><div class="past-event-name">LAMEN – koncert v Rokycanech</div></div>
+      <div class="past-event"><div class="past-event-date">April 5, 2024</div><div class="past-event-name">LAMEN – koncert v Praze</div></div>
     </div>
   </div>
 
@@ -424,7 +235,7 @@ Your data is anonymized and not used for advertising purposes.
     <button class="past-year-label">2023</button>
     <div class="past-year-content">
       <div class="past-event" data-photos="https://photos.app.goo.gl/bZfJwd2W3JYRWKud6"><div class="past-event-date">December 17, 2023</div><div class="past-event-name">Adventní koncert Červeno-žluté Vánoce – se sborem Dábrlíbap</div></div>
-      <div class="past-event"><div class="past-event-date">December 16, 2023</div><div class="past-event-name">Adventní koncert v Zschopau (Německo) – první zahraniční vystoupení</div></div>
+      <div class="past-event"><div class="past-event-date">December 16, 2023</div><div class="past-event-name">Adventní koncert v Zschopau (Německo) – první zahraniční vystoupení</div></div>
       <div class="past-event"><div class="past-event-date">December 1, 2023</div><div class="past-event-name">Benefiční vystoupení pro Alzheimer Home (Bohnice)</div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/czKhA9Hdppo8Q1p48"><div class="past-event-date">October 6–8, 2023</div><div class="past-event-name"><strong>Jirkovský Písňovar 2023 – zlaté pásmo (25,08 bodů)</strong></div></div>
       <div class="past-event" data-photos="https://photos.app.goo.gl/Q3WvvkoUG1kTkENB8"><div class="past-event-date">June 2, 2023</div><div class="past-event-name">Noc kostelů</div></div>
@@ -434,7 +245,7 @@ Your data is anonymized and not used for advertising purposes.
   <div class="past-year-group">
     <button class="past-year-label">2022</button>
     <div class="past-year-content">
-      <div class="past-event"><div class="past-event-date">December 16, 2022</div><div class="past-event-name">Advent s 10meny – kostel Všech svatých (Pražský hrad)</div></div>
+      <div class="past-event"><div class="past-event-date">December 16, 2022</div><div class="past-event-name">Advent s 10meny – kostel Všech svatých (Pražský hrad)</div></div>
       <div class="past-event"><div class="past-event-date">December 9, 2022</div><div class="past-event-name">Benefiční vystoupení pro Alzheimer Home (Bohnice)</div></div>
       <div class="past-event"><div class="past-event-date">November 19, 2022</div><div class="past-event-name">Koncert Nalaďme se společně – Rokycany</div></div>
       <div class="past-event"><div class="past-event-date">November 18, 2022</div><div class="past-event-name">Koncert Nalaďme se společně – Atrium Žižkov</div></div>
@@ -478,7 +289,7 @@ Your data is anonymized and not used for advertising purposes.
       <div class="past-event"><div class="past-event-date">October 28, 2017</div><div class="past-event-name">Benefiční koncert – Smržovka</div></div>
       <div class="past-event"><div class="past-event-date">October 6–8, 2017</div><div class="past-event-name"><strong>Jirkovský Písňovar 2017 – stříbrné pásmo (23,38 bodů)</strong></div></div>
       <div class="past-event"><div class="past-event-date">June 24, 2017</div><div class="past-event-name">Letní koncert – kostel sv. Vavřince (Petřín)</div></div>
-      <div class="past-event"><div class="past-event-date">June 17, 2017</div><div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div></div>
+      <div class="past-event"><div class="past-event-date">June 17, 2017</div><div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div></div>
       <div class="past-event"><div class="past-event-date">June 9, 2017</div><div class="past-event-name">Noc kostelů – kostel sv. Anežky České na Spořilově</div></div>
       <div class="past-event"><div class="past-event-date">January 13, 2017</div><div class="past-event-name">Novoroční koncert – klub Lávka (Matha &amp; Tena Elefteriadu)</div></div>
     </div>
@@ -490,10 +301,10 @@ Your data is anonymized and not used for advertising purposes.
       <div class="past-event"><div class="past-event-date">December 15, 2016</div><div class="past-event-name">Vánoční koncert – Muzeum hudby (se sborem Sangvis Novus)</div></div>
       <div class="past-event"><div class="past-event-date">December 6, 2016</div><div class="past-event-name">Koncert 10men – kostel sv. Anežky České na Spořilově</div></div>
       <div class="past-event"><div class="past-event-date">September 30 – October 2, 2016</div><div class="past-event-name"><strong>Jirkovský Písňovar 2016 – zlaté pásmo (25 bodů)</strong></div></div>
-      <div class="past-event"><div class="past-event-date">June 18, 2016</div><div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div></div>
+      <div class="past-event"><div class="past-event-date">June 18, 2016</div><div class="past-event-name">Festival chrámových a komorních sborů – Choltice</div></div>
       <div class="past-event"><div class="past-event-date">June 10, 2016</div><div class="past-event-name">Noc kostelů – kostel sv. Anežky České na Spořilově</div></div>
       <div class="past-event"><div class="past-event-date">May 28–29, 2016</div><div class="past-event-name"><strong>Speed festival – první honorované akce</strong></div></div>
-      <div class="past-event"><div class="past-event-date">May 27, 2016</div><div class="past-event-name">Koncert 10men – kostel sv. Petra a Pavla (Bohnice)</div></div>
+      <div class="past-event"><div class="past-event-date">May 27, 2016</div><div class="past-event-name">Koncert 10men – kostel sv. Petra a Pavla (Bohnice)</div></div>
     </div>
   </div>
 

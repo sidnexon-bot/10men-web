@@ -60,7 +60,10 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const safeUrl = (u) => { try { const x = new URL(String(u)); return x.protocol === "https:" ? x.toString() : ""; } catch { return ""; } };
 const jsStr = (s) => JSON.stringify(String(s ?? "")).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 const ldJson = (o) => JSON.stringify(o).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026");
-const L = (obj, lang) => (obj && (obj[lang] || obj.cs)) || "";
+// Typografie: jednopísmenná slova (v, k, s, z, o, u, a, i, e, y) a dny v datech se pevnou mezerou spojí s následujícím slovem, aby nezůstala na konci řádku.
+const nb = (s) => String(s).replace(/(?<=^|[\s(\u201e\u201c"'])([KkSsVvZzOoUuAaIiEeYy])[ \t]+(?=\S)/gu, "$1\u00a0").replace(/(?<![\p{L}\p{N}])(\d{1,2}\.)[ \t]+(?=\p{L})/gu, "$1\u00a0");
+const Lraw = (obj, lang) => (obj && (obj[lang] || obj.cs)) || "";
+const L = (obj, lang) => nb(Lraw(obj, lang));
 
 // ── obsah akcí ──
 function dayParts(date) { const [y, m, d] = date.split("-").map(Number); return { y, m: m - 1, d }; }
@@ -70,7 +73,7 @@ function formatDatePast(c, lang) {
   return lang === "en" ? `${MONTH_LONG.en[m]} ${d}, ${y}` : lang === "es" ? `${d} de ${MONTH_LONG.es[m]} de ${y}` : `${d}. ${MONTH_LONG[lang][m]} ${y}`;
 }
 function buildUpcoming(list, lang) {
-  if (!list.length) return `    <p class="event-desc" style="color:var(--gray-text)">${esc(NO_UPCOMING[lang])}</p>`;
+  if (!list.length) return `    <div class="empty-state"><span>${esc(NO_UPCOMING[lang].replace(/\s*[^.]*Facebook[^.]*\.$/i, "").trim() || NO_UPCOMING[lang])}</span><a class="btn btn-outline" href="https://www.facebook.com/band10men" target="_blank" rel="noopener">Facebook</a></div>`;
   const delays = ["delay-1", "delay-2", "delay-3"];
   const cards = list.map((c, i) => {
     const { m, d } = dayParts(c.date), maps = safeUrl(c.mapsUrl), fb = safeUrl(c.fbUrl), tix = safeUrl(c.ticketsUrl);
@@ -96,7 +99,7 @@ function buildUpcoming(list, lang) {
       </div>
     </div>`;
   }).join("\n\n");
-  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: L(c.title, lang), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: "https://schema.org/EventScheduled", location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
+  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: Lraw(c.title, lang), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: "https://schema.org/EventScheduled", location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
   return `${cards}\n    <script type="application/ld+json">${ldJson(ld)}</script>`;
 }
 function buildPast(list, lang) {
@@ -104,7 +107,7 @@ function buildPast(list, lang) {
   return Object.keys(byYear).sort((a, b) => b - a).map((year, yi) => {
     const rows = byYear[year].map((c) => {
       const photos = safeUrl(c.photosUrl), title = esc(L(c.title, lang));
-      return `      <div class="past-event"${photos ? ` data-photos="${esc(photos)}"` : ""}><div class="past-event-date">${esc(formatDatePast(c, lang))}</div><div class="past-event-name">${c.highlight ? `<strong>${title}</strong>` : title}</div></div>`;
+      return `      <div class="past-event"${photos ? ` data-photos="${esc(photos)}"` : ""}><div class="past-event-date">${esc(nb(formatDatePast(c, lang)))}</div><div class="past-event-name">${c.highlight ? `<strong>${title}</strong>` : title}</div></div>`;
     }).join("\n");
     return `  <div class="past-year-group${yi === 0 ? " open" : ""}">\n    <button class="past-year-label">${esc(year)}</button>\n    <div class="past-year-content">\n${rows}\n    </div>\n  </div>`;
   }).join("\n\n");
@@ -126,10 +129,10 @@ function buildI18nBlock(d) {
 // ── úvodní stránka ──
 const HOME_DEFAULTS = JSON.parse(fs.readFileSync(path.join(__dirname, "home-defaults.json"), "utf8"));
 const HOME_UI = {   // pevné popisky, které se v admin portálu needitují
-  cs: { next: "Nejbližší koncert", detail: "Detail", events_label: "Program", alt_hero: "Skupina 10men", alt_who: "Skupina 10men na pódiu", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella logo" },
-  en: { next: "Next concert", detail: "Details", events_label: "Programme", alt_hero: "The 10men group", alt_who: "10men on stage", lamen_label: "LAMEN project", lamen_alt: "LAMEN Acappella logo" },
-  de: { next: "Nächstes Konzert", detail: "Details", events_label: "Programm", alt_hero: "Die Gruppe 10men", alt_who: "10men auf der Bühne", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella Logo" },
-  es: { next: "Próximo concierto", detail: "Detalles", events_label: "Programa", alt_hero: "El grupo 10men", alt_who: "10men en el escenario", lamen_label: "Proyecto LAMEN", lamen_alt: "Logotipo de LAMEN Acappella" },
+  cs: { alt_gallery: "Fotografie z vystoupení 10men", next: "Nejbližší koncert", detail: "Detail", events_label: "Program", alt_hero: "Skupina 10men", alt_who: "Skupina 10men na pódiu", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella logo" },
+  en: { alt_gallery: "Photo from a 10men performance", next: "Next concert", detail: "Details", events_label: "Programme", alt_hero: "The 10men group", alt_who: "10men on stage", lamen_label: "LAMEN project", lamen_alt: "LAMEN Acappella logo" },
+  de: { alt_gallery: "Foto von einem Auftritt von 10men", next: "Nächstes Konzert", detail: "Details", events_label: "Programm", alt_hero: "Die Gruppe 10men", alt_who: "10men auf der Bühne", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella Logo" },
+  es: { alt_gallery: "Foto de una actuación de 10men", next: "Próximo concierto", detail: "Detalles", events_label: "Programa", alt_hero: "El grupo 10men", alt_who: "10men en el escenario", lamen_label: "Proyecto LAMEN", lamen_alt: "Logotipo de LAMEN Acappella" },
 };
 const GALLERY = ["foto_02.jpg", "foto_04.jpg", "foto_05.jpg", "foto_06.jpg"];
 function dateShort(date, lang) {
@@ -148,72 +151,90 @@ function mergeHome(data) {
 }
 function buildHome(home, lang, upcoming, site) {
   const H = mergeHome(home), ui = HOME_UI[lang], t = (o) => esc(L(o, lang)), P = PATHS, facts = (site && site.facts) || { founded: 2015, awards: 9, concerts: {} };
-  const nextC = upcoming[0];
+  const nextC = upcoming[0], meta = (c) => esc([L(c.venue, lang), c.time || TIME_TBC[lang]].filter(Boolean).join(" · "));
   const next = nextC ? `
-    <div class="next" data-block="next">
-      <div class="d"><b>${dayParts(nextC.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(nextC.date).m])}</small></div>
-      <div class="t"><small>${esc(ui.next)}</small><strong>${t(nextC.title)}</strong><span>${esc([L(nextC.venue, lang), nextC.time || TIME_TBC[lang]].filter(Boolean).join(" · "))}</span></div>
-      <a href="${P.events[lang]}">${esc(ui.detail)} →</a>
-    </div>` : "";
-  const cards = upcoming.slice(0, 3).map((c) => `    <div class="card"><div class="k">${esc(dateShort(c.date, lang))}</div><h3>${t(c.title)}</h3><p>${esc([L(c.venue, lang), c.time || TIME_TBC[lang]].filter(Boolean).join(" · "))}</p></div>`).join("\n");
+      <a class="next" data-block="next" href="${P.events[lang]}">
+        <span class="d"><b>${dayParts(nextC.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(nextC.date).m])}</small></span>
+        <span class="t"><small>${esc(ui.next)}</small><strong>${t(nextC.title)}</strong><span>${meta(nextC)}</span></span>
+        <span class="go">${esc(ui.detail)} →</span>
+      </a>` : "";
+  const rows = upcoming.slice(0, 3).map((c) => `      <li><a href="${P.events[lang]}"><span class="d"><b>${dayParts(c.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(c.date).m])}</small></span><span class="t"><b>${t(c.title)}</b><span>${meta(c)}</span></span><span class="go" aria-hidden="true">→</span></a></li>`).join("\n");
   const stats = [[facts.founded, H.stats.founded], [facts.awards, H.stats.awards], [L(facts.concerts, lang) || "50+", H.stats.concerts]];
-  return `<section class="hero2" data-block="hero">
-  <div class="hero2-photo" role="img" aria-label="${esc(ui.alt_hero)}"></div>
-  <div class="hero2-in">
-    <div class="hero2-text">
-      <p class="hero-eyebrow">${t(H.hero.eyebrow)}</p>
-      <h1>${t(H.hero.title)} <em>10men</em></h1>
-      <p class="lead">${t(H.hero.lead)}</p>
-      <div class="hero-cta"><a href="${P.events[lang]}" class="btn btn-red">${t(H.hero.ctaEvents)}</a><a href="${P.contact[lang]}" class="btn btn-outline hero-book">${t(H.hero.ctaBook)}</a></div>
-    </div>${next}
+  return `<section class="hero2" data-block="hero"><div class="hero2-in">
+  <p class="hero-eyebrow">${t(H.hero.eyebrow)}</p>
+  <h1>${t(H.hero.title)} <em>10men</em></h1>
+  <div class="hero2-sub">
+    <p class="lead">${t(H.hero.lead)}</p>
+    <div class="hero-cta"><a href="${P.events[lang]}" class="btn btn-red">${t(H.hero.ctaEvents)}</a><a href="${P.contact[lang]}" class="btn btn-outline">${t(H.hero.ctaBook)}</a></div>
   </div>
-</section>
+  <figure class="hero2-media">
+    <img class="hero2-photo" src="/images/foto_01.jpg" alt="${esc(ui.alt_hero)}" width="1600" height="1067" fetchpriority="high">${next}
+  </figure>
+</div></section>
 
 <section class="stats" data-block="stats"><div class="stats-in">
   ${stats.map(([n, lab]) => `<div><b>${esc(n)}</b><span>${t(lab)}</span></div>`).join("")}
 </div></section>
 
-<section class="sec" data-block="who"><div class="sec-in who">
-  <div>
-    <div class="head"><p class="section-label">${t(H.who.label)}</p><h2 class="section-title">${t(H.who.title)}</h2></div>
-    <p><strong>${t(H.who.bold)}</strong></p>
-    <p>${t(H.who.p1)}</p>
-    <p>${t(H.who.p2)}</p>
-    <a href="${P.about[lang]}" class="btn btn-outline more">${t(H.who.cta)}</a>
+<section class="sec" data-block="who"><div class="sec-in">
+  <p class="section-label">${t(H.who.label)}</p>
+  <div class="sec-main who">
+    <div>
+      <h2 class="section-title">${t(H.who.title)}</h2>
+      <p class="big">${t(H.who.bold)}</p>
+      <p>${t(H.who.p1)}</p>
+      <p>${t(H.who.p2)}</p>
+      <a href="${P.about[lang]}" class="btn btn-outline more">${t(H.who.cta)}</a>
+    </div>
+    <img class="photo" src="/images/foto_03.jpg" alt="${esc(ui.alt_who)}" width="1600" height="1067" loading="lazy">
   </div>
-  <img src="/images/foto_03.jpg" alt="${esc(ui.alt_who)}" loading="lazy">
 </div></section>
 
-<section class="sec alt" data-block="proof"><div class="sec-in">
-  <div class="head"><p class="section-label">${t(H.proof.label)}</p><h2 class="section-title">${t(H.proof.title)}</h2></div>
-  <div class="cards">
-${H.proof.items.map((i) => `    <div class="card"><b>${esc(i.name)}</b><span>${t(i.desc)}</span></div>`).join("\n")}
+<section class="sec" data-block="proof"><div class="sec-in">
+  <p class="section-label">${t(H.proof.label)}</p>
+  <div class="sec-main">
+    <h2 class="section-title">${t(H.proof.title)}</h2>
+    <ul class="rows proof">
+${H.proof.items.map((i) => `      <li><b>${esc(i.name)}</b><span>${t(i.desc)}</span></li>`).join("\n")}
+    </ul>
+    <ul class="plain">${H.proof.lines.map((x) => `<li>${t(x)}</li>`).join("")}</ul>
   </div>
-  <ul class="plain">${H.proof.lines.map((x) => `<li>${t(x)}</li>`).join("")}</ul>
 </div></section>
 
 <section class="sec" data-block="events"><div class="sec-in">
-  <div class="head"><p class="section-label">${esc(ui.events_label)}</p><h2 class="section-title">${t(H.events.title)}</h2></div>
-${cards ? `  <div class="cards">\n${cards}\n  </div>` : `  <p class="empty">${esc(NO_UPCOMING[lang])}</p>`}
-  <a href="${P.events[lang]}" class="btn btn-outline more">${t(H.events.cta)}</a>
+  <p class="section-label">${esc(ui.events_label)}</p>
+  <div class="sec-main">
+    <h2 class="section-title">${t(H.events.title)}</h2>
+${rows ? `    <ul class="rows ev">\n${rows}\n    </ul>` : `    <p class="empty">${esc(NO_UPCOMING[lang])}</p>`}
+    <a href="${P.events[lang]}" class="btn btn-outline more">${t(H.events.cta)}</a>
+  </div>
 </div></section>
 
-<section class="sec dark" data-block="repertoire"><div class="sec-in">
-  <div class="head"><p class="section-label">${t(H.genres.label)}</p><h2 class="section-title">${t(H.genres.title)}</h2></div>
-  <div class="genre-list">${H.genres.tags.map((g) => `<span class="genre-tag${g.hl ? " highlight" : ""}">${t(g.text)}</span>`).join("")}</div>
-  <div class="gal" data-block="gallery">${GALLERY.map((f) => `<img src="/images/${f}" alt="" loading="lazy">`).join("")}</div>
+<section class="sec" data-block="repertoire"><div class="sec-in">
+  <p class="section-label">${t(H.genres.label)}</p>
+  <div class="sec-main">
+    <h2 class="section-title">${t(H.genres.title)}</h2>
+    <p class="genre-list">${H.genres.tags.map((g) => `<span class="genre-tag${g.hl ? " highlight" : ""}">${t(g.text)}</span>`).join("")}</p>
+    <div class="gal" data-block="gallery">${GALLERY.map((f, i) => `<img src="/images/${f}" alt="${esc(ui.alt_gallery)} ${i + 1}" width="1600" height="1067" loading="lazy">`).join("")}</div>
+  </div>
 </div></section>
 
-<section class="book" data-block="booking"><div class="book-in">
-  <div><p class="section-label">${t(H.booking.label)}</p><h2>${t(H.booking.title)}</h2><p>${t(H.booking.lead)}</p></div>
-  <div><ul>${H.booking.items.map((x) => `<li>${t(x)}</li>`).join("")}</ul><a href="${P.contact[lang]}" class="btn">${t(H.booking.cta)}</a></div>
+<section class="sec" data-block="booking"><div class="sec-in">
+  <p class="section-label">${t(H.booking.label)}</p>
+  <div class="sec-main book-in">
+    <div><h2 class="section-title">${t(H.booking.title)}</h2><p class="lead-p">${t(H.booking.lead)}</p></div>
+    <div><ul>${H.booking.items.map((x) => `<li>${t(x)}</li>`).join("")}</ul><a href="${P.contact[lang]}" class="btn btn-red">${t(H.booking.cta)}</a></div>
+  </div>
 </div></section>
 
-<section class="sec" data-block="lamen"><div class="sec-in lamen">
-  <img src="/images/logo-lamen.png" alt="${esc(ui.lamen_alt)}" loading="lazy">
-  <div><div class="head"><p class="section-label">${esc(ui.lamen_label)}</p><h2 class="section-title">${t(H.lamen.title)}</h2></div>
-  <p>${t(H.lamen.p)}</p>
-  <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">${t(H.lamen.cta)}</a></div>
+<section class="sec" data-block="lamen"><div class="sec-in">
+  <p class="section-label">${esc(ui.lamen_label)}</p>
+  <div class="sec-main lamen">
+    <img src="/images/logo-lamen.png" alt="${esc(ui.lamen_alt)}" width="88" height="88" loading="lazy">
+    <div><h2 class="section-title">${t(H.lamen.title)}</h2>
+    <p>${t(H.lamen.p)}</p>
+    <a href="https://www.facebook.com/lamenacappella" target="_blank" rel="noopener" class="btn btn-outline">${t(H.lamen.cta)}</a></div>
+  </div>
 </div></section>
 `;
 }
