@@ -121,6 +121,21 @@ h2.section-title { font-family: var(--font-display); font-size: clamp(1.6rem, 3.
 .event-body { display: none; padding: 0 24px 24px 108px; }
 .event-card.open .event-body { display: block; }
 .event-desc { font-size: 14.5px; color: var(--ink-2); line-height: 1.65; margin-bottom: 16px; }
+/* plakát akce: miniatura v hlavičce, velký obrázek v rozbalené kartě, okno s plakátem (úvodní stránka a zvětšení) */
+.event-header.has-poster { grid-template-columns: 64px 1fr auto auto; }
+.event-thumb { height: 52px; width: auto; max-width: 44px; object-fit: cover; border-radius: 6px; box-shadow: 0 0 0 1px var(--line, rgba(128,128,128,.25)); }
+.event-card.open .event-body.has-poster { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 24px; align-items: start; }
+.event-poster { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 12px; overflow: hidden; }
+.event-poster img { display: block; width: 100%; height: auto; }
+.poster-pop { position: fixed; margin: auto; border: 0; padding: 0; background: var(--bg); color: var(--ink); border-radius: 20px; width: min(92vw, 520px); max-height: 94vh; overflow: auto; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.poster-pop::backdrop { background: rgba(0,0,0,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.poster-pop img { display: block; width: 100%; height: auto; max-height: calc(94vh - 84px); object-fit: contain; background: var(--tile); }
+.poster-pop.plain img { max-height: 94vh; }
+.poster-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; z-index: 1; }
+.poster-cap { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 18px; font-size: 13.5px; color: var(--ink-2); }
+.poster-cap .btn { white-space: nowrap; flex: none; }
+.poster-cap b { display: block; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
+@media (prefers-reduced-motion: no-preference) { .poster-pop[open] { animation: poster-in .35s cubic-bezier(.2,.7,.2,1); } @keyframes poster-in { from { opacity: 0; transform: translateY(14px) scale(.97); } } }
 .event-links { display: flex; flex-wrap: wrap; gap: 10px; }
 .event-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; padding: 9px 18px; border-radius: 980px; background: var(--bg); transition: var(--transition); }
 .event-link:hover { color: var(--accent-text); }
@@ -242,6 +257,11 @@ html[data-page="contact"] .footer-bottom { margin-top: 0; border-top: 0; padding
   .event-header { grid-template-columns: 52px 1fr auto; gap: 0 14px; padding: 16px 18px; }
   .event-date .day { font-size: 1.55rem; }
   .event-body { padding: 0 18px 20px 18px; }
+  .event-header.has-poster { grid-template-columns: 52px 1fr auto auto; gap: 0 12px; }
+  .event-thumb { height: 44px; max-width: 36px; }
+  .event-card.open .event-body.has-poster { grid-template-columns: 1fr; gap: 16px; }
+  .event-poster { order: -1; max-width: 240px; }
+  .poster-cap { flex-direction: column; align-items: stretch; text-align: center; }
   .past-event { flex-direction: column; gap: 4px; }
   .past-event-date { min-width: unset; }
   .history-section, .awards-section, .conductor-section { padding-top: 52px; }

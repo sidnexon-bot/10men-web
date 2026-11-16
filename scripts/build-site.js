@@ -64,6 +64,14 @@ const ldJson = (o) => JSON.stringify(o).replace(/</g, "\\u003c").replace(/>/g, "
 const nb = (s) => String(s).replace(/(?<=^|[\s(\u201e\u201c"'])([KkSsVvZzOoUuAaIiEeYy])[ \t]+(?=\S)/gu, "$1\u00a0").replace(/(?<![\p{L}\p{N}])(\d{1,2}\.)[ \t]+(?=\p{L})/gu, "$1\u00a0");
 const Lraw = (obj, lang) => (obj && (obj[lang] || obj.cs)) || "";
 const L = (obj, lang) => nb(Lraw(obj, lang));
+// Plakát akce: {hash, w, h}; soubor images/plakaty/{hash}.jpg nahrává admin portál při zveřejnění. Bez souboru v repozitáři se plakát nepoužije.
+const POSTER_ALT = { cs: "Plakát", en: "Poster", de: "Plakat", es: "Cartel" }, POSTER_CLOSE = { cs: "Zavřít", en: "Close", de: "Schließen", es: "Cerrar" };
+function posterOf(c) {
+  const p = c && c.poster;
+  if (!p || !/^[0-9a-f]{16}$/.test(p.hash) || !(p.w > 0 && p.h > 0 && p.w <= 8000 && p.h <= 8000)) return null;
+  if (!fs.existsSync(path.join(ROOT, "images", "plakaty", `${p.hash}.jpg`))) return null;
+  return { src: `/images/plakaty/${p.hash}.jpg`, w: p.w, h: p.h, hash: p.hash };
+}
 
 // ── obsah akcí ──
 function dayParts(date) { const [y, m, d] = date.split("-").map(Number); return { y, m: m - 1, d }; }
@@ -77,9 +85,10 @@ function buildUpcoming(list, lang) {
   const delays = ["delay-1", "delay-2", "delay-3"];
   const cards = list.map((c, i) => {
     const { m, d } = dayParts(c.date), maps = safeUrl(c.mapsUrl), fb = safeUrl(c.fbUrl), tix = safeUrl(c.ticketsUrl);
+    const po = posterOf(c), alt = esc(`${POSTER_ALT[lang]}: ${Lraw(c.title, lang)}`);
     const attrs = `${maps ? ` data-maps="${esc(maps)}"` : ""} data-fb="${esc(fb)}" data-tickets="${esc(tix)}"`;
     return `    <div class="event-card fade-up ${delays[i] || ""}"${attrs}>
-      <div class="event-header">
+      <div class="event-header${po ? " has-poster" : ""}">
         <div class="event-date">
           <div class="day">${d}</div>
           <div class="month">${MONTH_SHORT[lang][m]}</div>
@@ -91,15 +100,18 @@ function buildUpcoming(list, lang) {
             <span>${SVG_CLOCK} ${esc(c.time || TIME_TBC[lang])}</span>
           </div>
         </div>
-        <div class="event-toggle">${SVG_CHEVRON}</div>
+        ${po ? `<img class="event-thumb" src="${po.src}" alt="" width="${po.w}" height="${po.h}" loading="lazy">\n        ` : ""}<div class="event-toggle">${SVG_CHEVRON}</div>
       </div>
-      <div class="event-body">
-        <p class="event-desc">${esc(L(c.desc, lang))}</p>
-        <div class="event-links"></div>
+      <div class="event-body${po ? " has-poster" : ""}">
+        <div class="event-text">
+          <p class="event-desc">${esc(L(c.desc, lang))}</p>
+          <div class="event-links"></div>
+        </div>${po ? `
+        <button type="button" class="event-poster" data-poster="${po.src}" data-w="${po.w}" data-h="${po.h}" data-alt="${alt}" aria-label="${alt}"><img src="${po.src}" alt="${alt}" width="${po.w}" height="${po.h}" loading="lazy"></button>` : ""}
       </div>
     </div>`;
   }).join("\n\n");
-  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: Lraw(c.title, lang), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: "https://schema.org/EventScheduled", location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
+  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: Lraw(c.title, lang), ...(posterOf(c) ? { image: SITE + posterOf(c).src } : {}), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: "https://schema.org/EventScheduled", location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
   return `${cards}\n    <script type="application/ld+json">${ldJson(ld)}</script>`;
 }
 function buildPast(list, lang) {
@@ -129,10 +141,10 @@ function buildI18nBlock(d) {
 // ── úvodní stránka ──
 const HOME_DEFAULTS = JSON.parse(fs.readFileSync(path.join(__dirname, "home-defaults.json"), "utf8"));
 const HOME_UI = {   // pevné popisky, které se v admin portálu needitují
-  cs: { alt_gallery: "Fotografie z vystoupení 10men", next: "Nejbližší koncert", detail: "Detail", events_label: "Program", alt_hero: "Skupina 10men", alt_who: "Skupina 10men na pódiu", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella logo" },
-  en: { alt_gallery: "Photo from a 10men performance", next: "Next concert", detail: "Details", events_label: "Programme", alt_hero: "The 10men group", alt_who: "10men on stage", lamen_label: "LAMEN project", lamen_alt: "LAMEN Acappella logo" },
-  de: { alt_gallery: "Foto von einem Auftritt von 10men", next: "Nächstes Konzert", detail: "Details", events_label: "Programm", alt_hero: "Die Gruppe 10men", alt_who: "10men auf der Bühne", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella Logo" },
-  es: { alt_gallery: "Foto de una actuación de 10men", next: "Próximo concierto", detail: "Detalles", events_label: "Programa", alt_hero: "El grupo 10men", alt_who: "10men en el escenario", lamen_label: "Proyecto LAMEN", lamen_alt: "Logotipo de LAMEN Acappella" },
+  cs: { poster_more: "Více o akci", alt_gallery: "Fotografie z vystoupení 10men", next: "Nejbližší koncert", detail: "Detail", events_label: "Program", alt_hero: "Skupina 10men", alt_who: "Skupina 10men na pódiu", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella logo" },
+  en: { poster_more: "Event details", alt_gallery: "Photo from a 10men performance", next: "Next concert", detail: "Details", events_label: "Programme", alt_hero: "The 10men group", alt_who: "10men on stage", lamen_label: "LAMEN project", lamen_alt: "LAMEN Acappella logo" },
+  de: { poster_more: "Zur Veranstaltung", alt_gallery: "Foto von einem Auftritt von 10men", next: "Nächstes Konzert", detail: "Details", events_label: "Programm", alt_hero: "Die Gruppe 10men", alt_who: "10men auf der Bühne", lamen_label: "Projekt LAMEN", lamen_alt: "LAMEN Acappella Logo" },
+  es: { poster_more: "Más sobre el evento", alt_gallery: "Foto de una actuación de 10men", next: "Próximo concierto", detail: "Detalles", events_label: "Programa", alt_hero: "El grupo 10men", alt_who: "10men en el escenario", lamen_label: "Proyecto LAMEN", lamen_alt: "Logotipo de LAMEN Acappella" },
 };
 const GALLERY = ["foto_02.jpg", "foto_04.jpg", "foto_05.jpg", "foto_06.jpg"];
 function dateShort(date, lang) {
@@ -159,8 +171,16 @@ function buildHome(home, lang, upcoming, site) {
         <span class="go">${esc(ui.detail)} →</span>
       </a>` : "";
   const rows = upcoming.slice(0, 3).map((c) => `      <li><a href="${P.events[lang]}"><span class="d"><b>${dayParts(c.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(c.date).m])}</small></span><span class="t"><b>${t(c.title)}</b><span>${meta(c)}</span></span><span class="go" aria-hidden="true">→</span></a></li>`).join("\n");
+  const np = posterOf(nextC), pAlt = nextC ? esc(`${POSTER_ALT[lang]}: ${Lraw(nextC.title, lang)}`) : "";
+  // Plakát nejbližší akce: při prvním načtení webu v prohlížeči se ukáže jednou (shared.js si hash zapamatuje)
+  const pop = np ? `<dialog class="poster-pop" id="poster-pop" data-poster="${np.hash}" aria-label="${pAlt}">
+  <button type="button" class="poster-x" data-close aria-label="${esc(POSTER_CLOSE[lang])}">×</button>
+  <img src="${np.src}" alt="${pAlt}" width="${np.w}" height="${np.h}">
+  <div class="poster-cap"><span><b>${t(nextC.title)}</b>${esc(dateShort(nextC.date, lang))} · ${meta(nextC)}</span><a class="btn btn-red" href="${P.events[lang]}">${esc(ui.poster_more)}</a></div>
+</dialog>
+` : "";
   const stats = [[facts.founded, H.stats.founded], [facts.awards, H.stats.awards], [L(facts.concerts, lang) || "50+", H.stats.concerts]];
-  return `<section class="hero2" data-block="hero"><div class="hero2-in">
+  return `${pop}<section class="hero2" data-block="hero"><div class="hero2-in">
   <p class="hero-eyebrow">${t(H.hero.eyebrow)}</p>
   <h1>${t(H.hero.title)} <em>10men</em></h1>
   <div class="hero2-sub">

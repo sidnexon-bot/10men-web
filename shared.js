@@ -131,6 +131,25 @@ if (navEl) navEl.outerHTML = renderNav();
 if (footerEl) footerEl.outerHTML = renderFooter();
 document.addEventListener('click', (e) => { const d = document.querySelector('.lang[open]'); if (d && !d.contains(e.target)) d.removeAttribute('open'); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const d = document.querySelector('.lang[open]'); if (d) d.removeAttribute('open'); } });
+// plakát nejbližší akce: při prvním načtení úvodní stránky se ukáže jednou (pro každý plakát zvlášť)
+const pop = document.getElementById('poster-pop');
+if (pop && typeof pop.showModal === 'function') {
+  const key = '10men-poster', hash = pop.dataset.poster;
+  const store = (fn) => { try { return fn(localStorage); } catch (e) { try { return fn(sessionStorage); } catch (e2) { return null; } } };
+  if (store((st) => st.getItem(key)) !== hash) setTimeout(() => { try { pop.showModal(); store((st) => st.setItem(key, hash)); } catch (e) { } }, 700);
+  pop.addEventListener('click', (e) => { if (e.target === pop || e.target.closest('[data-close]')) pop.close(); });
+}
+// zvětšení plakátu v kartě akce
+document.addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('.event-poster'); if (!b || typeof HTMLDialogElement === 'undefined') return;
+  const d = document.createElement('dialog'), close = { cs: 'Zavřít', en: 'Close', de: 'Schließen', es: 'Cerrar' }[document.documentElement.lang] || 'Close';
+  d.className = 'poster-pop plain'; d.setAttribute('aria-label', b.dataset.alt || '');
+  const x = document.createElement('button'); x.type = 'button'; x.className = 'poster-x'; x.textContent = '×'; x.setAttribute('aria-label', close);
+  const im = document.createElement('img'); im.src = b.dataset.poster; im.alt = b.dataset.alt || ''; im.width = +b.dataset.w; im.height = +b.dataset.h;
+  d.append(x, im); document.body.appendChild(d);
+  d.addEventListener('click', (ev) => { if (ev.target === d || ev.target === x) d.close(); }); d.addEventListener('close', () => d.remove());
+  d.showModal();
+});
 // plynulé objevování sekcí
 const targets = document.querySelectorAll('.sec-in > *, .hero2-text, .next, .stats-in, .cards > *, .event-card, .past-year-group, .tl-item, .award-card, .about-body > *, .contact-body > *, .book-in');
 if ('IntersectionObserver' in window && targets.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {

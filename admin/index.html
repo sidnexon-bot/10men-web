@@ -164,7 +164,7 @@ async function call(body) {
 }
 const canon = v => Array.isArray(v) ? v.map(canon) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
 async function sha256(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
-const hashOf = c => sha256(JSON.stringify(canon([c.date, c.time || '', !!c.highlight, c.title || {}, c.venue || {}, c.desc || {}, c.dateDisplay || {}, c.mapsUrl || '', c.fbUrl || '', c.ticketsUrl || '', c.photosUrl || ''])));
+const hashOf = c => sha256(JSON.stringify(canon([c.date, c.time || '', !!c.highlight, c.title || {}, c.venue || {}, c.desc || {}, c.dateDisplay || {}, c.mapsUrl || '', c.fbUrl || '', c.ticketsUrl || '', c.photosUrl || '', ...(c.poster ? [c.poster.hash] : [])])));
 async function reviewed(c) { return !!(c.review && c.review.hash === await hashOf(c)); }
 const fmtWhen = ts => ts ? new Date(ts).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
 const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Prague' });
@@ -279,6 +279,8 @@ async function openEditor(id) {
     ${working ? `<div class="panel" style="margin-top:6px"><span class="work">Pracovní název v 10base: <b>${esc(working)}</b></span><div class="hint">Na web se nepřenáší. Veřejný název napište níže.</div></div>` : ''}
     <div class="grid2"><div><label class="l">Datum</label><input type="date" id="e-date" value="${esc(c0.date)}"></div><div><label class="l">Čas</label><input type="time" id="e-time" value="${esc(c0.time || '')}"></div></div>
     <label class="l">Stav na webu</label><select id="e-status"><option value="koncept">Koncept (zatím nezveřejňovat)</option><option value="zverejneno">Zveřejnit na webu</option><option value="skryto">Skryto</option></select>
+    <label class="l">Plakát akce</label>
+    <div class="panel" id="e-poster" style="margin-top:4px"></div>
     ${locBlock('e-loc', CF, c0)}
     <label class="l">Odkaz na mapu</label><input type="url" id="e-maps" value="${esc(c0.mapsUrl || '')}" placeholder="https://maps.app.goo.gl/…">
     <label class="l">Facebooková událost</label><input type="url" id="e-fb" value="${esc(c0.fbUrl || '')}" placeholder="https://facebook.com/events/…">
@@ -307,6 +309,29 @@ async function openEditor(id) {
     const payload = read(); const r = await call({ action: 'concert_save', id: rec.id || undefined, baseVersion: rec.id ? rec.version : undefined, concert: payload });
     rec = r.concert; dirty = false; await waitFor(() => ((web().concerts || {})[rec.id] || {}).version >= rec.version); revState(); return rec;
   };
+  /* plakát: ukáže se návštěvníkům při prvním načtení úvodní stránky (jen u nejbližší akce) a slouží jako úvodní fotografie akce */
+  const posterBox = $('#e-poster', ov); let posterImg = null;
+  async function posterView() {
+    const p = rec.poster, others = concerts().filter(c => c.id !== rec.id && c.poster && (!p || c.poster.hash !== p.hash));
+    const seen = new Set(), opts = others.filter(c => !seen.has(c.poster.hash) && seen.add(c.poster.hash)).map(c => `<option value="${esc(c.id)}">${esc((c.title && c.title.cs) || 'Bez názvu')} (${esc(c.date)})</option>`).join('');
+    posterBox.innerHTML = `${p ? `<div style="display:flex;gap:14px;align-items:flex-start"><div id="e-pimg" style="width:96px;flex:none;aspect-ratio:${p.w}/${p.h};background:var(--bg-soft,#eee);border-radius:8px;overflow:hidden"></div><div class="hint" style="flex:1">Plakát je přiřazen (${p.w}×${p.h} px). Návštěvníkům se ukáže při prvním načtení webu, pokud je to nejbližší akce, a zobrazí se i u akce na stránce Koncerty. Po změně plakátu je potřeba znovu potvrdit kontrolu a zveřejnit.</div></div>` : '<div class="hint">Bez plakátu. Pro sérii koncertů pod jedním plakátem nahrajte plakát u jedné akce a u ostatních ho vyberte ze seznamu.</div>'}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"><button class="btn sm" id="e-pup">${p ? 'Nahradit plakát' : 'Nahrát plakát'}</button>${p ? '<button class="btn sm danger" id="e-prm">Odebrat</button>' : ''}</div>
+      ${opts ? `<div style="margin-top:10px"><select id="e-puse"><option value="">Použít plakát z jiné akce…</option>${opts}</select></div>` : ''}
+      <input type="file" id="e-pfile" accept="image/*" class="hidden">`;
+    if (p) { const box = $('#e-pimg', ov); try { posterImg = posterImg && posterImg.hash === p.hash ? posterImg : { hash: p.hash, data: (await call({ action: 'poster_get', hash: p.hash })).data }; box.innerHTML = `<img alt="Plakát" style="width:100%;display:block" src="data:image/jpeg;base64,${posterImg.data}">`; } catch (e) { box.textContent = ''; } }
+    $('#e-pup', ov).onclick = () => $('#e-pfile', ov).click();
+    $('#e-pfile', ov).onchange = e => { const f = e.target.files[0]; if (f) posterDo(e.target, async () => { if (!f.type.startsWith('image/')) throw new Error('Podporované jsou jen obrázky.'); const b64 = await blobB64(await compressPoster(f)); await ensureSaved(); return { action: 'poster_save', id: rec.id, imageBase64: b64 }; }); };
+    const rm = $('#e-prm', ov); if (rm) rm.onclick = () => posterDo(rm, async () => ({ action: 'poster_remove', id: rec.id }));
+    const us = $('#e-puse', ov); if (us) us.onchange = () => { if (us.value) posterDo(us, async () => { await ensureSaved(); return { action: 'poster_use', id: rec.id, fromId: us.value }; }); };
+  }
+  async function ensureSaved() { if (!rec.id || dirty) await save(); }
+  async function posterDo(el, build) {
+    await guarded(el, async () => {
+      const r = await call(await build()); rec = { ...rec, poster: r.concert.poster || null, review: r.concert.review, updatedAt: r.concert.updatedAt };
+      await waitFor(() => { const w = (web().concerts || {})[rec.id]; return w && (w.poster ? w.poster.hash : null) === (rec.poster ? rec.poster.hash : null); });
+      toast(rec.poster ? 'Plakát uložen. Před zveřejněním znovu potvrďte kontrolu.' : 'Plakát odebrán.'); await posterView(); revState();
+    });
+  }
   let findings = null;
   async function revState() {
     const box = $('#e-rev', ov), r = (web().concerts || {})[rec.id] || rec;
@@ -334,12 +359,12 @@ async function openEditor(id) {
     await call({ action: 'concert_review', id: rec.id, acknowledged: ack });
     toast('Kontrola potvrzena.'); findings = null; chk.textContent = 'Zkontrolovat a potvrdit'; await waitFor(() => (web().concerts[rec.id].review)); revState();
   });
-  loadSiteCss().then(preview); preview(); revState();
+  loadSiteCss().then(preview); preview(); revState(); posterView();
 }
 
 /* ── zveřejnění ── */
 // veřejná podoba akce přesně jako ji skládá server (porovnání s posledním zveřejněným snímkem)
-const pubShape = c => { const o = { id: c.id, date: c.date, time: c.time || '', highlight: !!c.highlight }; ['title', 'venue', 'desc'].forEach(k => { if (c[k] && Object.keys(c[k]).length) o[k] = c[k]; }); if (c.dateDisplay && Object.keys(c.dateDisplay).length) o.dateDisplay = c.dateDisplay; ['mapsUrl', 'fbUrl', 'ticketsUrl', 'photosUrl'].forEach(k => { if (c[k]) o[k] = c[k]; }); return o; };
+const pubShape = c => { const o = { id: c.id, date: c.date, time: c.time || '', highlight: !!c.highlight }; ['title', 'venue', 'desc'].forEach(k => { if (c[k] && Object.keys(c[k]).length) o[k] = c[k]; }); if (c.dateDisplay && Object.keys(c.dateDisplay).length) o.dateDisplay = c.dateDisplay; ['mapsUrl', 'fbUrl', 'ticketsUrl', 'photosUrl'].forEach(k => { if (c[k]) o[k] = c[k]; }); if (c.poster) o.poster = { hash: c.poster.hash, w: c.poster.w, h: c.poster.h }; return o; };
 const same = (a, b) => JSON.stringify(canon(a ?? null)) === JSON.stringify(canon(b ?? null));
 const noMeta = o => { if (!o) return o; const { updatedBy, updatedAt, ...r } = o; return r; };
 async function publishPlan() {
@@ -474,8 +499,13 @@ function viewAbout(v) {
 
 /* ── Discord ── */
 let dImg = null;
-function compress(file) {
-  return new Promise((res, rej) => { const img = new Image(), u = URL.createObjectURL(file); img.onload = () => { const k = Math.min(1, 2560 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => b ? res(b) : rej(new Error('Komprese selhala.')), 'image/jpeg', 0.86); }; img.onerror = () => rej(new Error('Soubor se nepodařilo načíst jako obrázek.')); img.src = u; });
+async function compressPoster(file) {   // plakát: JPEG do 1,3 MB (server přijme nejvýš 1,5 MB)
+  for (const [side, q] of [[2000, .86], [1800, .8], [1600, .74], [1400, .68]]) { const b = await compress(file, side, q); if (b.size <= 1.3 * 1048576) return b; }
+  throw new Error('Plakát se nepodařilo zmenšit pod 1,3 MB. Zkuste menší obrázek.');
+}
+const blobB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => rej(new Error('Soubor se nepodařilo přečíst.')); r.readAsDataURL(b); });
+function compress(file, maxSide = 2560, quality = 0.86) {
+  return new Promise((res, rej) => { const img = new Image(), u = URL.createObjectURL(file); img.onload = () => { const k = Math.min(1, maxSide / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); c.toBlob(b => b ? res(b) : rej(new Error('Komprese selhala.')), 'image/jpeg', quality); }; img.onerror = () => rej(new Error('Soubor se nepodařilo načíst jako obrázek.')); img.src = u; });
 }
 function viewDiscord(v) {
   v.innerHTML = `<div class="card"><h2>Zpráva na Discord</h2><p class="sub">Odešle se do veřejného kanálu skupiny. Nevkládejte interní informace.</p><label class="l">Text <span class="hint" id="d-cnt">0 / 1800</span></label><textarea id="d-text" maxlength="1800" rows="5"></textarea><label class="l">Fotka (nepovinné)</label><div class="drop" id="d-drop">Klepněte nebo přetáhněte obrázek<div id="d-prev"></div></div><input type="file" id="d-file" accept="image/*" class="hidden"><div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px"><button class="btn" id="d-clear">Zrušit</button><button class="btn primary" id="d-send">Odeslat na Discord</button></div></div>`;
