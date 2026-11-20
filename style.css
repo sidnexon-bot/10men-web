@@ -107,6 +107,17 @@ h2.section-title { font-family: var(--font-display); font-size: clamp(1.6rem, 3.
 .event-card { background: var(--tile); border-radius: var(--radius-s); margin-bottom: 12px; overflow: hidden; }
 .event-header { display: grid; grid-template-columns: 64px 1fr auto; gap: 0 20px; align-items: center; padding: 20px 24px; cursor: pointer; user-select: none; }
 .event-header:hover .event-info h3 { color: var(--accent-text); }
+.event-badge { display: inline-block; margin-left: 6px; padding: 2px 9px; border-radius: 980px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; white-space: nowrap; }
+.event-badge.is-cancelled { background: var(--accent); color: var(--on-accent); }
+.event-badge.is-moved { background: #FFE08A; color: #5C4300; }
+:root[data-theme="dark"] .event-badge.is-moved { background: #5C4300; color: #FFE08A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .event-badge.is-moved { background: #5C4300; color: #FFE08A; } }
+.event-was-row { margin-top: 2px; font-size: 13px; color: var(--ink-2); }
+.event-card.is-cancelled .event-info h3, .event-card.is-cancelled .event-date .day { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--ink-2); }
+.event-card.is-cancelled .event-info h3 .event-badge { text-decoration: none; }
+.event-card.is-cancelled .event-desc { color: var(--ink-2); }
+.event-change-note { margin: 0 0 10px; font-weight: 600; color: var(--ink); }
+.past-event-name .event-badge { margin-left: 8px; }
 .event-date { text-align: center; line-height: 1; }
 .event-date .day { font-size: 1.8rem; font-weight: 700; letter-spacing: -.04em; }
 .event-date .month { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); margin-top: 4px; }

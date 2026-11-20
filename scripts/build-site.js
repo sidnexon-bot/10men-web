@@ -73,6 +73,16 @@ function posterOf(c) {
   return { src: `/images/plakaty/${p.hash}.jpg`, w: p.w, h: p.h, hash: p.hash };
 }
 
+// Zrušená / přesunutá akce: štítek u karty, původní datum, poznámka a správný stav pro vyhledávače.
+const CHANGE_UI = {
+  cs: { zrusena: "Zrušeno", presunuta: "Přesunuto", was: "původně" },
+  en: { zrusena: "Cancelled", presunuta: "Rescheduled", was: "originally" },
+  de: { zrusena: "Abgesagt", presunuta: "Verschoben", was: "ursprünglich" },
+  es: { zrusena: "Cancelado", presunuta: "Aplazado", was: "originalmente" },
+};
+const changeOf = (c) => (c && (c.change === "zrusena" || c.change === "presunuta") ? c.change : "");
+const changeBadge = (c, lang) => { const k = changeOf(c); return k ? `<span class="event-badge ${k === "zrusena" ? "is-cancelled" : "is-moved"}">${esc(CHANGE_UI[lang][k])}</span>` : ""; };
+
 // ── obsah akcí ──
 function dayParts(date) { const [y, m, d] = date.split("-").map(Number); return { y, m: m - 1, d }; }
 function formatDatePast(c, lang) {
@@ -86,16 +96,19 @@ function buildUpcoming(list, lang) {
   const cards = list.map((c, i) => {
     const { m, d } = dayParts(c.date), maps = safeUrl(c.mapsUrl), fb = safeUrl(c.fbUrl), tix = safeUrl(c.ticketsUrl);
     const po = posterOf(c), alt = esc(`${POSTER_ALT[lang]}: ${Lraw(c.title, lang)}`);
-    const attrs = `${maps ? ` data-maps="${esc(maps)}"` : ""} data-fb="${esc(fb)}" data-tickets="${esc(tix)}"`;
-    return `    <div class="event-card fade-up ${delays[i] || ""}"${attrs}>
+    const ch = changeOf(c), tixOk = ch === "zrusena" ? "" : tix;   // na zrušenou akci se vstupenky neprodávají
+    const attrs = `${maps ? ` data-maps="${esc(maps)}"` : ""} data-fb="${esc(fb)}" data-tickets="${esc(tixOk)}"`;
+    const was = ch === "presunuta" && c.originalDate ? `<span class="event-was">${esc(CHANGE_UI[lang].was)} ${esc(nb(dateShort(c.originalDate, lang)))}</span>` : "";
+    const note = c.changeNote && Lraw(c.changeNote, lang) ? `<p class="event-change-note">${esc(L(c.changeNote, lang))}</p>\n          ` : "";
+    return `    <div class="event-card fade-up ${delays[i] || ""}${ch ? ` ${ch === "zrusena" ? "is-cancelled" : "is-moved"}` : ""}"${attrs}>
       <div class="event-header${po ? " has-poster" : ""}">
         <div class="event-date">
           <div class="day">${d}</div>
           <div class="month">${MONTH_SHORT[lang][m]}</div>
         </div>
         <div class="event-info">
-          <h3>${esc(L(c.title, lang))}</h3>
-          <div class="event-meta">
+          <h3>${esc(L(c.title, lang))}${ch ? ` ${changeBadge(c, lang)}` : ""}</h3>
+          ${was ? `<div class="event-was-row">${was}</div>\n          ` : ""}<div class="event-meta">
             <span>${SVG_PIN} ${esc(L(c.venue, lang))}</span>
             <span>${SVG_CLOCK} ${esc(c.time || TIME_TBC[lang])}</span>
           </div>
@@ -104,14 +117,14 @@ function buildUpcoming(list, lang) {
       </div>
       <div class="event-body${po ? " has-poster" : ""}">
         <div class="event-text">
-          <p class="event-desc">${esc(L(c.desc, lang))}</p>
+          ${note}<p class="event-desc">${esc(L(c.desc, lang))}</p>
           <div class="event-links"></div>
         </div>${po ? `
         <button type="button" class="event-poster" data-poster="${po.src}" data-w="${po.w}" data-h="${po.h}" data-alt="${alt}" aria-label="${alt}"><img src="${po.src}" alt="${alt}" width="${po.w}" height="${po.h}" loading="lazy"></button>` : ""}
       </div>
     </div>`;
   }).join("\n\n");
-  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: Lraw(c.title, lang), ...(posterOf(c) ? { image: SITE + posterOf(c).src } : {}), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: "https://schema.org/EventScheduled", location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
+  const ld = list.map((c) => ({ "@context": "https://schema.org", "@type": "MusicEvent", name: Lraw(c.title, lang), ...(posterOf(c) ? { image: SITE + posterOf(c).src } : {}), startDate: c.time ? `${c.date}T${c.time}` : c.date, eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", eventStatus: changeOf(c) === "zrusena" ? "https://schema.org/EventCancelled" : changeOf(c) === "presunuta" ? "https://schema.org/EventRescheduled" : "https://schema.org/EventScheduled", ...(changeOf(c) === "presunuta" && c.originalDate ? { previousStartDate: c.originalDate } : {}), location: { "@type": "Place", name: L(c.venue, lang), address: L(c.venue, lang) }, performer: { "@type": "MusicGroup", name: "10men", url: SITE + "/" }, description: L(c.desc, lang), ...(safeUrl(c.ticketsUrl) && changeOf(c) !== "zrusena" ? { offers: { "@type": "Offer", url: safeUrl(c.ticketsUrl) } } : {}) }));
   return `${cards}\n    <script type="application/ld+json">${ldJson(ld)}</script>`;
 }
 function buildPast(list, lang) {
@@ -119,7 +132,7 @@ function buildPast(list, lang) {
   return Object.keys(byYear).sort((a, b) => b - a).map((year, yi) => {
     const rows = byYear[year].map((c) => {
       const photos = safeUrl(c.photosUrl), title = esc(L(c.title, lang));
-      return `      <div class="past-event"${photos ? ` data-photos="${esc(photos)}"` : ""}><div class="past-event-date">${esc(nb(formatDatePast(c, lang)))}</div><div class="past-event-name">${c.highlight ? `<strong>${title}</strong>` : title}</div></div>`;
+      return `      <div class="past-event"${photos ? ` data-photos="${esc(photos)}"` : ""}><div class="past-event-date">${esc(nb(formatDatePast(c, lang)))}</div><div class="past-event-name">${c.highlight ? `<strong>${title}</strong>` : title}${changeOf(c) === "zrusena" ? ` ${changeBadge(c, lang)}` : ""}</div></div>`;
     }).join("\n");
     return `  <div class="past-year-group${yi === 0 ? " open" : ""}">\n    <button class="past-year-label">${esc(year)}</button>\n    <div class="past-year-content">\n${rows}\n    </div>\n  </div>`;
   }).join("\n\n");
@@ -163,14 +176,15 @@ function mergeHome(data) {
 }
 function buildHome(home, lang, upcoming, site) {
   const H = mergeHome(home), ui = HOME_UI[lang], t = (o) => esc(L(o, lang)), P = PATHS, facts = (site && site.facts) || { founded: 2015, awards: 9, concerts: {} };
-  const nextC = upcoming[0], meta = (c) => esc([L(c.venue, lang), c.time || TIME_TBC[lang]].filter(Boolean).join(" · "));
+  const nextC = upcoming.find((c) => changeOf(c) !== "zrusena"), meta = (c) => esc([L(c.venue, lang), c.time || TIME_TBC[lang]].filter(Boolean).join(" · "));
+  // zrušená akce se nepropaguje jako „nejbližší koncert“ ani plakátem; v seznamu pod ním zůstává se štítkem
   const next = nextC ? `
       <a class="next" data-block="next" href="${P.events[lang]}">
         <span class="d"><b>${dayParts(nextC.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(nextC.date).m])}</small></span>
         <span class="t"><small>${esc(ui.next)}</small><strong>${t(nextC.title)}</strong><span>${meta(nextC)}</span></span>
         <span class="go">${esc(ui.detail)} →</span>
       </a>` : "";
-  const rows = upcoming.slice(0, 3).map((c) => `      <li><a href="${P.events[lang]}"><span class="d"><b>${dayParts(c.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(c.date).m])}</small></span><span class="t"><b>${t(c.title)}</b><span>${meta(c)}</span></span><span class="go" aria-hidden="true">→</span></a></li>`).join("\n");
+  const rows = upcoming.slice(0, 3).map((c) => `      <li><a href="${P.events[lang]}"><span class="d"><b>${dayParts(c.date).d}</b><small>${esc(MONTH_SHORT[lang][dayParts(c.date).m])}</small></span><span class="t"><b>${t(c.title)}${changeOf(c) ? ` ${changeBadge(c, lang)}` : ""}</b><span>${meta(c)}</span></span><span class="go" aria-hidden="true">→</span></a></li>`).join("\n");
   const np = posterOf(nextC), pAlt = nextC ? esc(`${POSTER_ALT[lang]}: ${Lraw(nextC.title, lang)}`) : "";
   // Plakát nejbližší akce: při prvním načtení webu v prohlížeči se ukáže jednou (shared.js si hash zapamatuje)
   const pop = np ? `<dialog class="poster-pop" id="poster-pop" data-poster="${np.hash}" aria-label="${pAlt}">

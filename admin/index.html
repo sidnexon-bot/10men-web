@@ -164,10 +164,13 @@ async function call(body) {
 }
 const canon = v => Array.isArray(v) ? v.map(canon) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, canon(v[k])])) : v;
 async function sha256(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
-const hashOf = c => sha256(JSON.stringify(canon([c.date, c.time || '', !!c.highlight, c.title || {}, c.venue || {}, c.desc || {}, c.dateDisplay || {}, c.mapsUrl || '', c.fbUrl || '', c.ticketsUrl || '', c.photosUrl || '', ...(c.poster ? [c.poster.hash] : [])])));
+const hashOf = c => sha256(JSON.stringify(canon([c.date, c.time || '', !!c.highlight, c.title || {}, c.venue || {}, c.desc || {}, c.dateDisplay || {}, c.mapsUrl || '', c.fbUrl || '', c.ticketsUrl || '', c.photosUrl || '', ...(c.poster ? [c.poster.hash] : []), ...(c.change ? [c.change, c.originalDate || '', c.changeNote || {}] : [])])));
 async function reviewed(c) { return !!(c.review && c.review.hash === await hashOf(c)); }
 const fmtWhen = ts => ts ? new Date(ts).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
 const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Prague' });
+const changeLabel = { zrusena: ['Zrušeno', 'red'], presunuta: ['Přesunuto', 'warn'] };
+const hintText = h => h.type === 'zrusena' ? (h.deleted ? 'Akce byla v 10base smazána.' : 'Akce byla v 10base zrušena.') : h.type === 'presunuta' ? `Akce byla v 10base přesunuta${h.from ? ' z ' + fmtDay(h.from) : ''} na ${fmtDay(h.date)}.` : 'Akce je v 10base opět platná, na webu je přitom označena jako zrušená.';
+const fmtDay = d => { const x = new Date(d + 'T00:00:00'); return isNaN(x) ? d : `${x.getDate()}. ${x.getMonth() + 1}. ${x.getFullYear()}`; };
 const stateLabel = { koncept: ['Koncept', ''], zverejneno: ['Zveřejněno', 'ok'], skryto: ['Skryto', 'warn'] };
 
 /* ── modální okna ── */
@@ -234,15 +237,17 @@ async function loadInbox() { try { S.inbox = (await call({ action: 'inbox' })).i
 
 async function concertRow(c, opts = {}) {
   const d = new Date(c.date + 'T00:00:00'), t = (c.title || {}).cs, rev = await reviewed(c), [sl, sc] = stateLabel[c.status] || stateLabel.koncept;
-  const flags = [`<span class="chip ${sc}">${sl}</span>`, c.status === 'zverejneno' ? (rev ? '<span class="chip ok">Zkontrolováno</span>' : '<span class="chip warn">Čeká na kontrolu</span>') : ''].join(' ');
+  const [cl, cc] = changeLabel[c.change] || [], flags = [`<span class="chip ${sc}">${sl}</span>`, cl ? `<span class="chip ${cc}">${cl}</span>` : '', c.akceHint ? '<span class="chip warn" title="Akce se v 10base změnila">Změna v 10base</span>' : '', c.status === 'zverejneno' ? (rev ? '<span class="chip ok">Zkontrolováno</span>' : '<span class="chip warn">Čeká na kontrolu</span>') : ''].join(' ');
   return `<div class="row" data-id="${esc(c.id)}"><div class="date"><b>${d.getDate()}</b><small>${MO[d.getMonth()]}</small></div><div class="info"><div class="t">${t ? esc(t) : '<i>(bez názvu)</i>'}</div><div class="m">${esc((c.venue || {}).cs || 'bez místa')}${c.time ? ' · ' + esc(c.time) : ''} ${flags}</div></div><button class="btn sm" data-edit="${esc(c.id)}">Upravit</button></div>`;
 }
 async function viewHome(v) {
   const list = concerts(), todo = [];
   for (const c of list) if (c.status === 'zverejneno' && !(await reviewed(c))) todo.push(c);
   const rows = (await Promise.all(todo.map(c => concertRow(c)))).join('');
+  const hinted = list.filter(c => c.akceHint && c.status !== 'skryto' && c.date >= today()), hrows = (await Promise.all(hinted.map(async c => (await concertRow(c)).replace('</div><button', `<div class="hint" style="margin-top:4px">${esc(hintText(c.akceHint))}</div></div><button`)))).join('');
   const inbox = S.inbox;
   v.innerHTML = `
+  ${hrows ? `<div class="card"><h2>Změny akcí v 10base</h2><p class="sub">U těchto akcí se po založení konceptu změnil termín nebo stav. Web se sám nemění: otevřete akci, změnu převezměte (zrušeno / přesunuto), případně nahrajte nový plakát a zveřejněte.</p>${hrows}</div>` : ''}
   <div class="card"><h2>Návrhy z 10base</h2><p class="sub">Nadcházející vystoupení a soutěže, které ještě nemají koncept. Pracovní název ani poznámky se na web nepřenášejí, veřejnou podobu si připravíte sami.</p>
     ${inbox === null ? '<div class="empty">Načítám…</div>' : !inbox.length ? '<div class="empty">Žádné nové návrhy.</div>' : inbox.map(i => { const d = new Date(i.date + 'T00:00:00'); return `<div class="row"><div class="date"><b>${d.getDate()}</b><small>${MO[d.getMonth()]}</small></div><div class="info"><div class="t">${esc(i.workingName)}</div><div class="m">${esc(i.place || 'místo neuvedeno')}${i.time ? ' · ' + esc(i.time) : ''} <span class="work">pracovní název</span></div></div><button class="btn sm primary" data-import="${esc(i.akceId)}">Převzít</button></div>`; }).join('')}</div>
   <div class="card"><h2>Čeká na kontrolu</h2><p class="sub">Zveřejněné akce, u kterých po poslední úpravě nebyla potvrzena kontrola. Bez ní se na web nedostanou.</p>${rows || '<div class="empty">Vše je zkontrolováno.</div>'}</div>
@@ -267,6 +272,7 @@ async function viewEvents(v) {
 /* ── editor akce ── */
 let siteCss = null;   // styl webu je ve sdíleném /style.css (náhled ho načítá odtud); proměnná zůstává kvůli šabloně náhledu
 async function loadSiteCss() { siteCss = ''; return siteCss; }
+const CN = [{ key: 'changeNote', label: 'Poznámka ke změně (nepovinné, např. důvod nebo nový termín)', max: 200 }];
 const CF = [{ key: 'title', label: 'Název', max: 120, req: true }, { key: 'venue', label: 'Místo', max: 160 }, { key: 'desc', label: 'Popis', max: 700, area: true, rows: 4 }];
 async function openEditor(id) {
   const cur = id ? (web().concerts || {})[id] : null;
@@ -279,6 +285,14 @@ async function openEditor(id) {
     ${working ? `<div class="panel" style="margin-top:6px"><span class="work">Pracovní název v 10base: <b>${esc(working)}</b></span><div class="hint">Na web se nepřenáší. Veřejný název napište níže.</div></div>` : ''}
     <div class="grid2"><div><label class="l">Datum</label><input type="date" id="e-date" value="${esc(c0.date)}"></div><div><label class="l">Čas</label><input type="time" id="e-time" value="${esc(c0.time || '')}"></div></div>
     <label class="l">Stav na webu</label><select id="e-status"><option value="koncept">Koncept (zatím nezveřejňovat)</option><option value="zverejneno">Zveřejnit na webu</option><option value="skryto">Skryto</option></select>
+    ${c0.akceHint ? `<div class="panel" id="e-hint" style="margin-top:6px;border-color:var(--warn)"><b>Změna v 10base:</b> ${esc(hintText(c0.akceHint))}<div class="hint">Web se sám nemění. Převezměte změnu do formuláře, nahrajte případně nový plakát, uložte, potvrďte kontrolu a zveřejněte.</div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn sm primary" type="button" data-hint-apply>Převzít změnu</button><button class="btn sm" type="button" data-hint-dismiss>Ignorovat</button></div></div>` : ''}
+    <label class="l">Zrušeno nebo přesunuto?</label>
+    <select id="e-change"><option value="">Beze změny</option><option value="zrusena">Akce je zrušena</option><option value="presunuta">Akce je přesunuta na nový termín</option></select>
+    <div id="e-change-box" style="display:none">
+      <div class="panel" style="margin-top:6px"><div id="e-orig-wrap" style="display:none"><label class="l" style="margin-top:0">Původní termín (datum výše je nový termín)</label><input type="date" id="e-orig" value="${esc(c0.originalDate || '')}"></div>
+      ${locBlock('e-cn', CN, c0)}
+      <div class="hint" style="margin-top:8px">Na webu se u akce ukáže štítek „Zrušeno“ / „Přesunuto“ (u přesunuté i původní datum), u zrušené zmizí vstupenky a akce se nepropaguje jako nejbližší koncert. <b>Nahrajte níže nový plakát</b> (např. s nápisem „Zrušeno“ nebo novým datem), jinak zůstane starý. Nezapomeňte nastavit stav „Zveřejnit na webu“.</div></div>
+    </div>
     <label class="l">Plakát akce</label>
     <div class="panel" id="e-poster" style="margin-top:4px"></div>
     ${locBlock('e-loc', CF, c0)}
@@ -293,18 +307,36 @@ async function openEditor(id) {
     <div class="panel" style="margin-top:6px"><h3>Náhled na webu</h3><div class="hint" style="margin-bottom:8px">Karta nadcházející akce v češtině.</div><iframe class="pv" id="e-pv" sandbox title="Náhled"></iframe></div>
     <div class="panel"><h3>Kontrola před zveřejněním</h3><div id="e-rev"></div></div>
   </div></div>`, footer: `${id ? '<button class="btn danger" data-del style="margin-right:auto">Smazat</button>' : ''}<button class="btn" data-n>Zavřít</button><button class="btn" data-save>Uložit koncept</button><button class="btn primary" data-check>Zkontrolovat a potvrdit</button>` });
-  const ov = m.ov; $('#e-status', ov).value = c0.status || 'koncept';
+  const ov = m.ov; $('#e-status', ov).value = c0.status || 'koncept'; $('#e-change', ov).value = c0.change || '';
+  const changeUi = () => { const v = $('#e-change', ov).value; $('#e-change-box', ov).style.display = v ? '' : 'none'; $('#e-orig-wrap', ov).style.display = v === 'presunuta' ? '' : 'none'; };
+  changeUi();
   const read = () => {
     const l = readLoc($('#e-loc', ov), CF), dd = readLoc($('#e-dd', ov), [{ key: 'dateDisplay' }]).dateDisplay;
-    return { date: $('#e-date', ov).value, time: $('#e-time', ov).value, status: $('#e-status', ov).value, highlight: $('#e-hl', ov).checked, akceId: c0.akceId || null, title: l.title, venue: l.venue, desc: l.desc, dateDisplay: dd, mapsUrl: $('#e-maps', ov).value.trim(), fbUrl: $('#e-fb', ov).value.trim(), ticketsUrl: $('#e-tix', ov).value.trim(), photosUrl: $('#e-photos', ov).value.trim() };
+    const chg = $('#e-change', ov).value, cn = chg ? readLoc($('#e-cn', ov), CN).changeNote : {};
+    return { ...(chg ? { change: chg, ...(chg === 'presunuta' && $('#e-orig', ov).value ? { originalDate: $('#e-orig', ov).value } : {}), ...(Object.keys(cn).length ? { changeNote: cn } : {}) } : {}), date: $('#e-date', ov).value, time: $('#e-time', ov).value, status: $('#e-status', ov).value, highlight: $('#e-hl', ov).checked, akceId: c0.akceId || null, title: l.title, venue: l.venue, desc: l.desc, dateDisplay: dd, mapsUrl: $('#e-maps', ov).value.trim(), fbUrl: $('#e-fb', ov).value.trim(), ticketsUrl: $('#e-tix', ov).value.trim(), photosUrl: $('#e-photos', ov).value.trim() };
   };
   const preview = () => {
-    const c = read(), d = new Date((c.date || today()) + 'T00:00:00'), t = esc(c.title.cs || 'Název akce'), mo = ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'][d.getMonth()];
-    $('#e-pv', ov).srcdoc = `<!doctype html><meta charset=utf-8><link rel=stylesheet href="/style.css"><style>${siteCss || ''}</style><body style="background:var(--bg);padding:12px"><div class="event-card open" style="max-width:none"><div class="event-header"><div class="event-date"><div class="day">${d.getDate()}</div><div class="month">${mo}</div></div><div class="event-info"><h3>${t}</h3><div class="event-meta"><span>${esc(c.venue.cs || 'Místo konání')}</span> <span>${esc(c.time || 'čas bude upřesněn')}</span></div></div></div><div class="event-body" style="display:block"><p class="event-desc">${esc(c.desc.cs || '')}</p></div></div>`;
+    const c = read(), d = new Date((c.date || today()) + 'T00:00:00'), t = esc(c.title.cs || 'Název akce'), bd = c.change === 'zrusena' ? ' <span class="event-badge is-cancelled">Zrušeno</span>' : c.change === 'presunuta' ? ' <span class="event-badge is-moved">Přesunuto</span>' : '', was = c.change === 'presunuta' && c.originalDate ? `<div class="event-was-row">původně ${esc(fmtDay(c.originalDate))}</div>` : '', note = c.changeNote && c.changeNote.cs ? `<p class="event-change-note">${esc(c.changeNote.cs)}</p>` : '', mo = ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'][d.getMonth()];
+    $('#e-pv', ov).srcdoc = `<!doctype html><meta charset=utf-8><link rel=stylesheet href="/style.css"><style>${siteCss || ''}</style><body style="background:var(--bg);padding:12px"><div class="event-card open${c.change === 'zrusena' ? ' is-cancelled' : ''}" style="max-width:none"><div class="event-header"><div class="event-date"><div class="day">${d.getDate()}</div><div class="month">${mo}</div></div><div class="event-info"><h3>${t}${bd}</h3>${was}<div class="event-meta"><span>${esc(c.venue.cs || 'Místo konání')}</span> <span>${esc(c.time || 'čas bude upřesněn')}</span></div></div></div><div class="event-body" style="display:block">${note}<p class="event-desc">${esc(c.desc.cs || '')}</p></div></div>`;
   };
   const markDirty = () => { dirty = true; preview(); revState(); };
-  wireLoc($('#e-loc', ov), CF, markDirty); wireLoc($('#e-dd', ov), [{ key: 'dateDisplay' }], markDirty);
-  $$('#e-date,#e-time,#e-status,#e-maps,#e-fb,#e-tix,#e-photos,#e-hl', ov).forEach(e => e.addEventListener('input', markDirty));
+  wireLoc($('#e-loc', ov), CF, markDirty); wireLoc($('#e-cn', ov), CN, markDirty); wireLoc($('#e-dd', ov), [{ key: 'dateDisplay' }], markDirty);
+  $$('#e-date,#e-time,#e-status,#e-maps,#e-fb,#e-tix,#e-photos,#e-hl,#e-orig', ov).forEach(e => e.addEventListener('input', markDirty));
+  $('#e-change', ov).addEventListener('input', () => {
+    const v = $('#e-change', ov).value;
+    if (v === 'presunuta' && !$('#e-orig', ov).value) $('#e-orig', ov).value = $('#e-date', ov).value;   // dosavadní datum se stane původním, nový termín se zadá do pole Datum
+    if (v && $('#e-status', ov).value === 'koncept') $('#e-status', ov).value = 'zverejneno';
+    changeUi(); markDirty();
+  });
+  const ha = $('[data-hint-apply]', ov), hd = $('[data-hint-dismiss]', ov), hint = c0.akceHint;
+  if (ha) ha.onclick = () => {
+    if (hint.type === 'zrusena') $('#e-change', ov).value = 'zrusena';
+    else if (hint.type === 'presunuta') { $('#e-orig', ov).value = $('#e-date', ov).value; $('#e-date', ov).value = hint.date; $('#e-change', ov).value = 'presunuta'; }
+    else $('#e-change', ov).value = '';
+    if (hint.type !== 'obnovena' && $('#e-status', ov).value === 'koncept') $('#e-status', ov).value = 'zverejneno';
+    changeUi(); markDirty(); toast('Změna převzata do formuláře. Zkontrolujte ji a uložte.');
+  };
+  if (hd) hd.onclick = () => guarded(hd, async () => { await call({ action: 'hint_dismiss', id: rec.id }); $('#e-hint', ov).remove(); toast('Upozornění skryto.'); });
   const save = async () => {
     const payload = read(); const r = await call({ action: 'concert_save', id: rec.id || undefined, baseVersion: rec.id ? rec.version : undefined, concert: payload });
     rec = r.concert; dirty = false; await waitFor(() => ((web().concerts || {})[rec.id] || {}).version >= rec.version); revState(); return rec;
@@ -364,7 +396,7 @@ async function openEditor(id) {
 
 /* ── zveřejnění ── */
 // veřejná podoba akce přesně jako ji skládá server (porovnání s posledním zveřejněným snímkem)
-const pubShape = c => { const o = { id: c.id, date: c.date, time: c.time || '', highlight: !!c.highlight }; ['title', 'venue', 'desc'].forEach(k => { if (c[k] && Object.keys(c[k]).length) o[k] = c[k]; }); if (c.dateDisplay && Object.keys(c.dateDisplay).length) o.dateDisplay = c.dateDisplay; ['mapsUrl', 'fbUrl', 'ticketsUrl', 'photosUrl'].forEach(k => { if (c[k]) o[k] = c[k]; }); if (c.poster) o.poster = { hash: c.poster.hash, w: c.poster.w, h: c.poster.h }; return o; };
+const pubShape = c => { const o = { id: c.id, date: c.date, time: c.time || '', highlight: !!c.highlight }; ['title', 'venue', 'desc'].forEach(k => { if (c[k] && Object.keys(c[k]).length) o[k] = c[k]; }); if (c.dateDisplay && Object.keys(c.dateDisplay).length) o.dateDisplay = c.dateDisplay; ['mapsUrl', 'fbUrl', 'ticketsUrl', 'photosUrl'].forEach(k => { if (c[k]) o[k] = c[k]; }); if (c.poster) o.poster = { hash: c.poster.hash, w: c.poster.w, h: c.poster.h }; if (c.change) { o.change = c.change; if (c.originalDate) o.originalDate = c.originalDate; if (c.changeNote && Object.keys(c.changeNote).length) o.changeNote = c.changeNote; } return o; };
 const same = (a, b) => JSON.stringify(canon(a ?? null)) === JSON.stringify(canon(b ?? null));
 const noMeta = o => { if (!o) return o; const { updatedBy, updatedAt, ...r } = o; return r; };
 async function publishPlan() {
